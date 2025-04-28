@@ -1,7 +1,11 @@
 
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutGrid, FileText, Users, Receipt, LogOut, Settings, SwitchCamera } from 'lucide-react';
+import { LayoutGrid, FileText, Users, Receipt, LogOut, Settings, SwitchCamera, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface SidebarProps {
   className?: string;
@@ -9,6 +13,7 @@ interface SidebarProps {
 
 const Sidebar = ({ className }: SidebarProps) => {
   const location = useLocation();
+  const isMobile = useIsMobile();
   
   const sidebarItems = [
     {
@@ -51,8 +56,8 @@ const Sidebar = ({ className }: SidebarProps) => {
     },
   ];
 
-  return (
-    <aside className={cn('w-64 flex flex-col bg-sidebar text-white h-screen', className)}>
+  const SidebarContent = () => (
+    <div className="flex flex-col h-full bg-sidebar text-white">
       <div className="p-4 flex items-center gap-2">
         <span className="text-lg font-bold">Urgent 2kay</span>
       </div>
@@ -94,6 +99,29 @@ const Sidebar = ({ className }: SidebarProps) => {
           ))}
         </nav>
       </div>
+    </div>
+  );
+
+  if (isMobile) {
+    return (
+      <>
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon" className="fixed left-4 top-4 z-50">
+              <Menu className="h-6 w-6" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="p-0 w-64">
+            <SidebarContent />
+          </SheetContent>
+        </Sheet>
+      </>
+    );
+  }
+
+  return (
+    <aside className={cn('w-64 hidden md:flex flex-col bg-sidebar text-white h-screen', className)}>
+      <SidebarContent />
     </aside>
   );
 };

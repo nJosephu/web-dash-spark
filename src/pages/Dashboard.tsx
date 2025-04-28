@@ -22,47 +22,53 @@ const Dashboard = () => {
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
       
-      <div className="flex-1 p-6">
+      <div className="flex-1 p-4 md:p-6 w-full">
         <TopNav userName="Caleb" />
         
-        <PromoBanner />
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div>
-            <h3 className="font-medium mb-3">Overview</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <StatCard 
-                title="Total bills requested" 
-                value="₦300,480" 
-                percentChange={10} 
-                color="green"
-              />
-              <StatCard 
-                title="Approved bill requests" 
-                value="₦200,480" 
-                percentChange={15} 
-                color="purple"
-              />
-              <StatCard 
-                title="Rejected bill requests" 
-                value="₦30,000" 
-                percentChange={-10} 
-                color="red"
-                increaseIsGood={false}
-              />
-              <StatCard 
-                title="Pending bill requests" 
-                value="₦70,000" 
-                percentChange={20} 
-                color="yellow"
-              />
+        <div className="max-w-[100vw] overflow-x-hidden">
+          <PromoBanner />
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6">
+            <div>
+              <h3 className="font-medium mb-3">Overview</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <StatCard 
+                  title="Total bills requested" 
+                  value="₦300,480" 
+                  percentChange={10} 
+                  color="green"
+                />
+                <StatCard 
+                  title="Approved bill requests" 
+                  value="₦200,480" 
+                  percentChange={15} 
+                  color="purple"
+                />
+                <StatCard 
+                  title="Rejected bill requests" 
+                  value="₦30,000" 
+                  percentChange={-10} 
+                  color="red"
+                  increaseIsGood={false}
+                />
+                <StatCard 
+                  title="Pending bill requests" 
+                  value="₦70,000" 
+                  percentChange={20} 
+                  color="yellow"
+                />
+              </div>
+            </div>
+            
+            <div className="w-full overflow-x-auto">
+              <DonutChart data={chartData} title="Request Rate" />
             </div>
           </div>
           
-          <DonutChart data={chartData} title="Request Rate" />
+          <div className="overflow-x-auto">
+            <RequestsTable />
+          </div>
         </div>
-        
-        <RequestsTable />
       </div>
     </div>
   );
