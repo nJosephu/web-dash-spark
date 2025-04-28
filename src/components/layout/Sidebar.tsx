@@ -2,7 +2,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { LayoutGrid, FileText, Users, Receipt, LogOut, Settings, SwitchCamera } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import logo from '/lovable-uploads/987e3ec0-c8b8-45dc-8574-a6983a82db9d.png';
 
 interface SidebarProps {
   className?: string;
@@ -55,7 +54,6 @@ const Sidebar = ({ className }: SidebarProps) => {
   return (
     <aside className={cn('w-64 flex flex-col bg-sidebar text-white h-screen', className)}>
       <div className="p-4 flex items-center gap-2">
-        {logo && <img src={logo} alt="Urgent2kay" className="h-8 w-8" />}
         <span className="text-lg font-bold">Urgent 2kay</span>
       </div>
       
