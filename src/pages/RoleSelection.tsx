@@ -31,7 +31,7 @@ const RoleSelection = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center p-6">
+    <div className="min-h-screen bg-gray-900 flex flex items-center justify-center p-6">
       <div className="w-full max-w-md">
         <div className="flex items-center justify-center mb-8">
           <div className="flex items-center gap-2">
