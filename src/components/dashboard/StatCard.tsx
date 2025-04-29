@@ -1,3 +1,4 @@
+
 import { ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 interface StatCardProps {
@@ -30,7 +31,7 @@ const StatCard = ({
         return "bg-yellow-500";
     }
   };
-  return <div className="p-4 border border-gray-200 rounded-lg\n">
+  return <div className="p-4 rounded-lg border border-gray-200">
       <div className="flex items-start gap-2">
         <div className={cn("w-3 h-3 rounded-full mt-1.5", getDotColor())}></div>
         <div className="flex-1">
