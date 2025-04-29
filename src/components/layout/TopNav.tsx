@@ -13,12 +13,22 @@ import {
   BreadcrumbItem, 
   BreadcrumbList
 } from "@/components/ui/breadcrumb";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 interface TopNavProps {
   userName: string;
 }
 
 const TopNav = ({ userName }: TopNavProps) => {
+  const navigate = useNavigate();
+  
+  const handleLogout = () => {
+    localStorage.removeItem("authenticated");
+    toast.success("Logged out successfully");
+    navigate("/login");
+  };
+
   return (
     <div className="sticky top-0 z-30 flex justify-between items-center py-4 px-4 md:px-6 mb-6 border-b border-gray-100 bg-white">
       <Breadcrumb>
@@ -54,7 +64,7 @@ const TopNav = ({ userName }: TopNavProps) => {
           <DropdownMenuContent align="end">
             <DropdownMenuItem>Profile</DropdownMenuItem>
             <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Log out</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

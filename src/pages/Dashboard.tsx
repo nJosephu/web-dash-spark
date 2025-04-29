@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+
+import { useEffect, useState } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import TopNav from "@/components/layout/TopNav";
 import PromoBanner from "@/components/dashboard/PromoBanner";
@@ -6,10 +7,22 @@ import StatCard from "@/components/dashboard/StatCard";
 import DonutChart from "@/components/dashboard/DonutChart";
 import RequestsTable from "@/components/dashboard/RequestsTable";
 import { Card } from "@/components/ui/card";
+
 const Dashboard = () => {
+  const [userName, setUserName] = useState("User");
+
   useEffect(() => {
     document.title = "Dashboard | Urgent2kay";
+    
+    // Get user data from localStorage
+    const userData = JSON.parse(localStorage.getItem("user") || "{}");
+    if (userData.email) {
+      // Extract name from email (for demo purposes)
+      const nameFromEmail = userData.email.split('@')[0];
+      setUserName(nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1));
+    }
   }, []);
+
   const chartData = [{
     name: "Approved",
     value: 80,
@@ -26,15 +39,17 @@ const Dashboard = () => {
     color: "#FFC107",
     percentage: 10
   }];
-  return <div className="flex min-h-screen bg-gray-50">
+
+  return (
+    <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
       
       <div className="flex-1 w-full md:ml-64">
-        <TopNav userName="Caleb" />
+        <TopNav userName={userName} />
         
         <div className="max-w-[100vw] overflow-x-hidden p-4 md:p-6">
           <div className="mb-6">
-            <h1 className="text-2xl font-bold">Hi, Caleb</h1>
+            <h1 className="text-2xl font-bold">Hi, {userName}</h1>
             <p className="text-gray-500">Here's what your Urgent2k dashboard looks like today</p>
           </div>
           
@@ -61,6 +76,8 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default Dashboard;
