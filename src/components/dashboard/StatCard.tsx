@@ -14,16 +14,6 @@ const StatCard = ({ title, value, percentChange, color, increaseIsGood = true }:
   const isPositive = percentChange >= 0;
   const showPositiveIndicator = (isPositive && increaseIsGood) || (!isPositive && !increaseIsGood);
 
-  // Define gradient backgrounds for different card types
-  const getBackgroundColor = () => {
-    switch (color) {
-      case "green": return "bg-[#F2FCE2]";
-      case "purple": return "bg-[#E5DEFF]";
-      case "red": return "bg-[#FFDEE2]";
-      case "yellow": return "bg-[#FEF7CD]";
-    }
-  };
-
   // Define dot colors for different card types
   const getDotColor = () => {
     switch (color) {
@@ -34,14 +24,9 @@ const StatCard = ({ title, value, percentChange, color, increaseIsGood = true }:
     }
   };
 
-  // Get the caption text based on card color
-  const getCaption = () => {
-    return "Increase this month";
-  };
-
   return (
-    <div className={cn("p-4 rounded-lg", getBackgroundColor())}>
-      <div className="flex items-start gap-2 mb-1">
+    <div className="p-4 border-b sm:border-r sm:last:border-r-0 sm:nth-of-type(2n):border-r-0 last:border-b-0">
+      <div className="flex items-start gap-2">
         <div className={cn("w-3 h-3 rounded-full mt-1.5", getDotColor())}></div>
         <div className="flex-1">
           <span className="text-sm text-gray-600">{title}</span>
@@ -49,14 +34,14 @@ const StatCard = ({ title, value, percentChange, color, increaseIsGood = true }:
           <div className="flex items-center gap-1 mt-1">
             <div 
               className={cn(
-                "flex items-center text-xs",
+                "flex items-center text-xs font-medium",
                 showPositiveIndicator ? "text-green-600" : "text-red-600"
               )}
             >
               {isPositive ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
               <span>{Math.abs(percentChange)}%</span>
             </div>
-            <span className="text-xs text-gray-500">{getCaption()}</span>
+            <span className="text-xs text-gray-500">Increase this month</span>
           </div>
         </div>
       </div>
