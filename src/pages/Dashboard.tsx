@@ -21,9 +21,9 @@ const Dashboard = () => {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
-      <TopNav userName="Caleb" />
       
       <div className="flex-1 p-4 md:p-6 w-full md:ml-64">
+        <TopNav userName="Caleb" />
         
         <div className="max-w-[100vw] overflow-x-hidden">
           <div className="mb-6">
