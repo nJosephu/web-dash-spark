@@ -1,7 +1,5 @@
-
 import { ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-
 interface StatCardProps {
   title: string;
   value: string;
@@ -9,35 +7,37 @@ interface StatCardProps {
   color: "green" | "purple" | "red" | "yellow";
   increaseIsGood?: boolean;
 }
-
-const StatCard = ({ title, value, percentChange, color, increaseIsGood = true }: StatCardProps) => {
+const StatCard = ({
+  title,
+  value,
+  percentChange,
+  color,
+  increaseIsGood = true
+}: StatCardProps) => {
   const isPositive = percentChange >= 0;
-  const showPositiveIndicator = (isPositive && increaseIsGood) || (!isPositive && !increaseIsGood);
+  const showPositiveIndicator = isPositive && increaseIsGood || !isPositive && !increaseIsGood;
 
   // Define dot colors for different card types
   const getDotColor = () => {
     switch (color) {
-      case "green": return "bg-emerald-500";
-      case "purple": return "bg-[#7B68EE]";
-      case "red": return "bg-red-500";
-      case "yellow": return "bg-yellow-500";
+      case "green":
+        return "bg-emerald-500";
+      case "purple":
+        return "bg-[#7B68EE]";
+      case "red":
+        return "bg-red-500";
+      case "yellow":
+        return "bg-yellow-500";
     }
   };
-
-  return (
-    <div className="p-4 border-b sm:border-r sm:last:border-r-0 sm:nth-of-type(2n):border-r-0 last:border-b-0">
+  return <div className="p-4 border border-gray-200 rounded-lg\n">
       <div className="flex items-start gap-2">
         <div className={cn("w-3 h-3 rounded-full mt-1.5", getDotColor())}></div>
         <div className="flex-1">
           <span className="text-sm text-gray-600">{title}</span>
           <div className="text-xl font-bold mt-1">{value}</div>
           <div className="flex items-center gap-1 mt-1">
-            <div 
-              className={cn(
-                "flex items-center text-xs font-medium",
-                showPositiveIndicator ? "text-green-600" : "text-red-600"
-              )}
-            >
+            <div className={cn("flex items-center text-xs font-medium", showPositiveIndicator ? "text-green-600" : "text-red-600")}>
               {isPositive ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
               <span>{Math.abs(percentChange)}%</span>
             </div>
@@ -45,8 +45,6 @@ const StatCard = ({ title, value, percentChange, color, increaseIsGood = true }:
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default StatCard;
