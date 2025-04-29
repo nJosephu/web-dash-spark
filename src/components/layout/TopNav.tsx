@@ -23,28 +23,28 @@ const TopNav = ({ userName }: TopNavProps) => {
     <div className="flex justify-between items-center mb-6 py-4 border-b border-gray-100">
       <Breadcrumb>
         <BreadcrumbList>
-          <BreadcrumbItem className="text-lg font-medium">
+          <BreadcrumbItem className="text-sm md:text-base font-semibold text-gray-800">
             Dashboard
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
       
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center gap-3 md:gap-4">
         <div className="text-right">
           <span className="block text-xs text-gray-500">Wallet</span>
           <span className="font-medium text-sm">₦94A...R3DC</span>
         </div>
         
-        <Button variant="outline" size="icon" className="relative h-9 w-9">
-          <Bell size={18} />
+        <Button variant="outline" size="icon" className="relative h-9 w-9 rounded-md bg-white">
+          <Bell size={18} className="text-gray-600" />
           <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
         </Button>
         
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="p-1 rounded-full">
+            <Button variant="ghost" className="p-0 h-9 w-9 rounded-full">
               <Avatar className="h-8 w-8">
-                <AvatarFallback className="bg-gray-200 text-gray-700">
+                <AvatarFallback className="bg-gray-100 text-gray-700 border border-gray-200">
                   {userName.charAt(0)}
                 </AvatarFallback>
               </Avatar>
@@ -59,18 +59,19 @@ const TopNav = ({ userName }: TopNavProps) => {
         
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="flex items-center gap-1 h-9">
+            <Button variant="outline" className="flex items-center gap-1 h-9 px-3 text-sm rounded-md bg-white border-gray-200">
               Last 30 days
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
+                width="14"
+                height="14" 
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                className="ml-1"
               >
                 <path d="m6 9 6 6 6-6" />
               </svg>
