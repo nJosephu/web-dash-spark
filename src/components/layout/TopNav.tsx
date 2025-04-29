@@ -20,7 +20,7 @@ interface TopNavProps {
 
 const TopNav = ({ userName }: TopNavProps) => {
   return (
-    <div className="sticky top-0 z-30 flex justify-between items-center py-4 px-4 md:px-6 mb-6 border-b border-gray-100 bg-white shadow-sm">
+    <div className="sticky top-0 z-30 flex justify-between items-center py-4 px-4 md:px-6 mb-6 border-b border-gray-100 bg-white">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem className="text-sm md:text-base font-semibold text-gray-800">
