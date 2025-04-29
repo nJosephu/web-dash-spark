@@ -120,7 +120,7 @@ const Sidebar = ({ className }: SidebarProps) => {
   }
 
   return (
-    <aside className={cn('w-64 hidden md:flex flex-col bg-sidebar text-white h-screen', className)}>
+    <aside className={cn('w-64 hidden md:flex flex-col bg-sidebar text-white h-screen fixed left-0 top-0', className)}>
       <SidebarContent />
     </aside>
   );
