@@ -30,9 +30,13 @@ const RoleSelection = () => {
     navigate("/");
   };
 
+  const handleCardClick = (role: string) => {
+    setSelectedRole(role);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-900 flex flex items-center justify-center p-6">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-6">
+      <div className="w-full max-w-4xl">
         <div className="flex items-center justify-center mb-8">
           <div className="flex items-center gap-2">
             <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -54,16 +58,17 @@ const RoleSelection = () => {
             </div>
             
             <RadioGroup 
-              className="gap-6"
+              className="flex flex-col md:flex-row gap-4 md:gap-6"
               value={selectedRole || ""}
               onValueChange={setSelectedRole}
             >
-              <div className={`flex items-start space-x-4 border rounded-xl p-5 ${selectedRole === 'beneficiary' ? 'border-gray-400 bg-gray-50' : 'border-gray-200'}`}>
-                <div className="pt-1">
-                  <RadioGroupItem value="beneficiary" id="beneficiary" className="border-gray-400" />
-                </div>
+              <div 
+                onClick={() => handleCardClick("beneficiary")} 
+                className={`flex-1 flex items-start justify-between border rounded-xl p-5 cursor-pointer transition-all hover:border-gray-400 hover:bg-gray-50 
+                  ${selectedRole === 'beneficiary' ? 'border-gray-400 bg-gray-50' : 'border-gray-200'}`}
+              >
                 <div className="flex-1">
-                  <Label htmlFor="beneficiary" className="text-lg font-semibold text-gray-900">Sign up as a Beneficiary</Label>
+                  <Label htmlFor="beneficiary" className="text-lg font-semibold text-gray-900 cursor-pointer">Sign up as a Beneficiary</Label>
                   <p className="text-gray-500 mt-1">
                     Request bills payments and get funds for other necessities
                   </p>
@@ -75,14 +80,18 @@ const RoleSelection = () => {
                     <span className="text-sm text-gray-600">Get your bills paid by sponsors</span>
                   </div>
                 </div>
+                <div className="ml-4">
+                  <RadioGroupItem value="beneficiary" id="beneficiary" className="border-gray-400" />
+                </div>
               </div>
               
-              <div className={`flex items-start space-x-4 border rounded-xl p-5 ${selectedRole === 'sponsor' ? 'border-gray-400 bg-gray-50' : 'border-gray-200'}`}>
-                <div className="pt-1">
-                  <RadioGroupItem value="sponsor" id="sponsor" className="border-gray-400" />
-                </div>
+              <div 
+                onClick={() => handleCardClick("sponsor")} 
+                className={`flex-1 flex items-start justify-between border rounded-xl p-5 cursor-pointer transition-all hover:border-gray-400 hover:bg-gray-50
+                  ${selectedRole === 'sponsor' ? 'border-gray-400 bg-gray-50' : 'border-gray-200'}`}
+              >
                 <div className="flex-1">
-                  <Label htmlFor="sponsor" className="text-lg font-semibold text-gray-900">Sign up as a Sponsor</Label>
+                  <Label htmlFor="sponsor" className="text-lg font-semibold text-gray-900 cursor-pointer">Sign up as a Sponsor</Label>
                   <p className="text-gray-500 mt-1">
                     Help pay bills and provide essential funds for others
                   </p>
@@ -93,6 +102,9 @@ const RoleSelection = () => {
                     </div>
                     <span className="text-sm text-gray-600">Support those in need with bill payments</span>
                   </div>
+                </div>
+                <div className="ml-4">
+                  <RadioGroupItem value="sponsor" id="sponsor" className="border-gray-400" />
                 </div>
               </div>
             </RadioGroup>
