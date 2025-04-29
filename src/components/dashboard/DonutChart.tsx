@@ -16,12 +16,12 @@ const DonutChart = ({ data, title }: DonutChartProps) => {
     <div className="p-1">
       <h3 className="text-lg font-medium mb-4">{title}</h3>
       <div className="flex flex-col md:flex-row gap-6">
-        <div className="md:w-1/2 h-48 md:h-auto flex items-center justify-center">
+        <div className="md:w-1/2 h-48 md:h-auto flex items-start justify-start">
           <ResponsiveContainer width="100%" height={200}>
             <PieChart>
               <Pie
                 data={data}
-                cx="50%"
+                cx="30%"
                 cy="50%"
                 innerRadius={60}
                 outerRadius={80}
