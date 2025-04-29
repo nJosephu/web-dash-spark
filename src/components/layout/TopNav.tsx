@@ -1,7 +1,18 @@
 
 import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
+import { 
+  Breadcrumb, 
+  BreadcrumbItem, 
+  BreadcrumbList
+} from "@/components/ui/breadcrumb";
 
 interface TopNavProps {
   userName: string;
@@ -9,11 +20,14 @@ interface TopNavProps {
 
 const TopNav = ({ userName }: TopNavProps) => {
   return (
-    <div className="flex justify-between items-center mb-6">
-      <div>
-        <h1 className="text-2xl font-bold">Hi, {userName}</h1>
-        <p className="text-gray-500">Here's what your Urgent2k dashboard looks like today</p>
-      </div>
+    <div className="flex justify-between items-center mb-6 py-4 border-b border-gray-100">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem className="text-lg font-medium">
+            Dashboard
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
       
       <div className="flex items-center space-x-4">
         <div className="text-right">
@@ -29,9 +43,11 @@ const TopNav = ({ userName }: TopNavProps) => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="p-1 rounded-full">
-              <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-700 font-medium">
-                C
-              </div>
+              <Avatar className="h-8 w-8">
+                <AvatarFallback className="bg-gray-200 text-gray-700">
+                  {userName.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">

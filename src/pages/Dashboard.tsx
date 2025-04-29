@@ -26,6 +26,11 @@ const Dashboard = () => {
         <TopNav userName="Caleb" />
         
         <div className="max-w-[100vw] overflow-x-hidden">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold">Hi, Caleb</h1>
+            <p className="text-gray-500">Here's what your Urgent2k dashboard looks like today</p>
+          </div>
+          
           <PromoBanner />
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6">
