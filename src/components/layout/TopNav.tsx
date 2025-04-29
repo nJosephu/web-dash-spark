@@ -17,11 +17,11 @@ const TopNav = ({ userName }: TopNavProps) => {
       
       <div className="flex items-center space-x-4">
         <div className="text-right">
-          <span className="block text-sm text-gray-500">Wallet</span>
-          <span className="font-medium">₦94A...R3DC</span>
+          <span className="block text-xs text-gray-500">Wallet</span>
+          <span className="font-medium text-sm">₦94A...R3DC</span>
         </div>
         
-        <Button variant="outline" size="icon" className="relative">
+        <Button variant="outline" size="icon" className="relative h-9 w-9">
           <Bell size={18} />
           <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
         </Button>
@@ -29,7 +29,7 @@ const TopNav = ({ userName }: TopNavProps) => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="p-1 rounded-full">
-              <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center text-gray-700 font-medium">
+              <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-700 font-medium">
                 C
               </div>
             </Button>
@@ -43,7 +43,7 @@ const TopNav = ({ userName }: TopNavProps) => {
         
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="flex items-center gap-1">
+            <Button variant="outline" className="flex items-center gap-1 h-9">
               Last 30 days
               <svg
                 xmlns="http://www.w3.org/2000/svg"

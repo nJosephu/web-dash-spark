@@ -57,8 +57,15 @@ const Sidebar = ({ className }: SidebarProps) => {
   ];
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full bg-sidebar text-white">
+    <div className="flex flex-col h-full bg-[#1A1F2C] text-white">
       <div className="p-4 flex items-center gap-2">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M23.1 4C25.2 6.2 26.6 9.3 26.6 12.7C26.6 16.1 25.2 19.2 23.1 21.4" stroke="#7B68EE" strokeWidth="3" strokeLinecap="round"/>
+          <path d="M4.9 21.4C2.8 19.2 1.4 16.1 1.4 12.7C1.4 9.3 2.8 6.2 4.9 4" stroke="#7B68EE" strokeWidth="3" strokeLinecap="round"/>
+          <path d="M18.2 7.80005C19.4 9.00005 20.3 10.8 20.3 12.7C20.3 14.6 19.5 16.4 18.2 17.6" stroke="#7B68EE" strokeWidth="3" strokeLinecap="round"/>
+          <path d="M9.8 17.6C8.6 16.4 7.7 14.6 7.7 12.7C7.7 10.8 8.5 9.00005 9.8 7.80005" stroke="#7B68EE" strokeWidth="3" strokeLinecap="round"/>
+          <circle cx="14" cy="12.7" r="3.5" fill="#7B68EE"/>
+        </svg>
         <span className="text-lg font-bold">Urgent 2kay</span>
       </div>
       
@@ -120,7 +127,7 @@ const Sidebar = ({ className }: SidebarProps) => {
   }
 
   return (
-    <aside className={cn('w-64 hidden md:flex flex-col bg-sidebar text-white h-screen fixed left-0 top-0', className)}>
+    <aside className={cn('w-64 hidden md:flex flex-col bg-[#1A1F2C] text-white h-screen fixed left-0 top-0', className)}>
       <SidebarContent />
     </aside>
   );

@@ -35,27 +35,27 @@ const DonutChart = ({ data, title }: DonutChartProps) => {
         </ResponsiveContainer>
       </div>
       
-      <div className="mt-4 space-y-2">
+      <div className="mt-4 space-y-4">
         {data.map((item, index) => (
-          <div key={index} className="flex items-center justify-between">
-            <div className="flex items-center">
-              <div 
-                className="w-3 h-3 rounded-full mr-2" 
-                style={{ backgroundColor: item.color }}
-              ></div>
-              <span className="text-sm text-gray-700">{item.name}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-24 h-2 bg-gray-100 rounded-full">
+          <div key={index} className="flex flex-col">
+            <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center">
                 <div 
-                  className="h-full rounded-full" 
-                  style={{ 
-                    width: `${item.percentage}%`,
-                    backgroundColor: item.color 
-                  }}
+                  className="w-3 h-3 rounded-full mr-2" 
+                  style={{ backgroundColor: item.color }}
                 ></div>
+                <span className="text-sm text-gray-700">{item.name}</span>
               </div>
               <span className="text-xs text-gray-500">{item.percentage}%</span>
+            </div>
+            <div className="w-full h-1.5 bg-gray-100 rounded-full">
+              <div 
+                className="h-full rounded-full" 
+                style={{ 
+                  width: `${item.percentage}%`,
+                  backgroundColor: item.color 
+                }}
+              ></div>
             </div>
           </div>
         ))}
