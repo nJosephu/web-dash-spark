@@ -20,7 +20,7 @@ interface TopNavProps {
 
 const TopNav = ({ userName }: TopNavProps) => {
   return (
-    <div className="flex justify-between items-center mb-6 py-4 border-b border-gray-100">
+    <div className="sticky top-0 z-30 flex justify-between items-center py-4 px-4 md:px-6 mb-6 border-b border-gray-100 bg-white shadow-sm">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem className="text-sm md:text-base font-semibold text-gray-800">
@@ -29,7 +29,7 @@ const TopNav = ({ userName }: TopNavProps) => {
         </BreadcrumbList>
       </Breadcrumb>
       
-      <div className="flex items-center gap-3 md:gap-4">
+      <div className="flex items-center gap-4">
         <div className="text-right">
           <span className="block text-xs text-gray-500">Wallet</span>
           <span className="font-medium text-sm">₦94A...R3DC</span>
@@ -54,35 +54,6 @@ const TopNav = ({ userName }: TopNavProps) => {
             <DropdownMenuItem>Profile</DropdownMenuItem>
             <DropdownMenuItem>Settings</DropdownMenuItem>
             <DropdownMenuItem>Log out</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="flex items-center gap-1 h-9 px-3 text-sm rounded-md bg-white border-gray-200">
-              Last 30 days
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="14"
-                height="14" 
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="ml-1"
-              >
-                <path d="m6 9 6 6 6-6" />
-              </svg>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>Last 7 days</DropdownMenuItem>
-            <DropdownMenuItem>Last 30 days</DropdownMenuItem>
-            <DropdownMenuItem>Last 90 days</DropdownMenuItem>
-            <DropdownMenuItem>This year</DropdownMenuItem>
-            <DropdownMenuItem>All time</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
