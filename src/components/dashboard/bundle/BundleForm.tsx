@@ -1,4 +1,3 @@
-
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
@@ -143,10 +142,9 @@ export default function BundleForm({
                 <SelectContent>
                   {sponsors.map((sponsor) => (
                     <SelectItem key={sponsor.id} value={sponsor.id.toString()}>
-                      {sponsor.name} {sponsor.verified && "✓"}
+                      {sponsor.name}
                     </SelectItem>
                   ))}
-                  <SelectItem value="none">No sponsor</SelectItem>
                 </SelectContent>
               </Select>
               <FormDescription className="text-xs text-muted-foreground">
