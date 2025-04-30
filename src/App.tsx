@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Requests from "./pages/Requests";
 import Sponsors from "./pages/Sponsors";
@@ -16,7 +16,6 @@ import SignUp from "./pages/SignUp";
 import RoleSelection from "./pages/RoleSelection";
 import NotFound from "./pages/NotFound";
 import { useEffect, useState } from "react";
-import TransitionLayout from "./components/layout/TransitionLayout";
 
 const queryClient = new QueryClient();
 
@@ -29,15 +28,6 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }
   
   return <>{children}</>;
-};
-
-// Page wrapper with transition effects
-const PageWrapper = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <TransitionLayout>
-      {children}
-    </TransitionLayout>
-  );
 };
 
 const App = () => {
@@ -58,79 +48,49 @@ const App = () => {
         <TooltipProvider>
           <Routes>
             {/* Auth Routes */}
-            <Route path="/login" element={
-              <PageWrapper>
-                <Login />
-              </PageWrapper>
-            } />
-            <Route path="/signup" element={
-              <PageWrapper>
-                <SignUp />
-              </PageWrapper>
-            } />
-            <Route path="/role-selection" element={
-              <PageWrapper>
-                <RoleSelection />
-              </PageWrapper>
-            } />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/role-selection" element={<RoleSelection />} />
             
             {/* Protected Routes */}
             <Route path="/" element={
               <ProtectedRoute>
-                <PageWrapper>
-                  <Dashboard />
-                </PageWrapper>
+                <Dashboard />
               </ProtectedRoute>
             } />
             <Route path="/requests" element={
               <ProtectedRoute>
-                <PageWrapper>
-                  <Requests />
-                </PageWrapper>
+                <Requests />
               </ProtectedRoute>
             } />
             <Route path="/sponsors" element={
               <ProtectedRoute>
-                <PageWrapper>
-                  <Sponsors />
-                </PageWrapper>
+                <Sponsors />
               </ProtectedRoute>
             } />
             <Route path="/bill-history" element={
               <ProtectedRoute>
-                <PageWrapper>
-                  <BillHistory />
-                </PageWrapper>
+                <BillHistory />
               </ProtectedRoute>
             } />
             <Route path="/switch" element={
               <ProtectedRoute>
-                <PageWrapper>
-                  <SwitchRole />
-                </PageWrapper>
+                <SwitchRole />
               </ProtectedRoute>
             } />
             <Route path="/settings" element={
               <ProtectedRoute>
-                <PageWrapper>
-                  <Settings />
-                </PageWrapper>
+                <Settings />
               </ProtectedRoute>
             } />
             <Route path="/logout" element={
               <ProtectedRoute>
-                <PageWrapper>
-                  <Logout />
-                </PageWrapper>
+                <Logout />
               </ProtectedRoute>
             } />
             
             {/* 404 Route */}
-            <Route path="*" element={
-              <PageWrapper>
-                <NotFound />
-              </PageWrapper>
-            } />
+            <Route path="*" element={<NotFound />} />
           </Routes>
           <Toaster />
           <Sonner />
