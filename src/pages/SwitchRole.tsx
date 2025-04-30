@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "@/components/layout/Sidebar";
@@ -9,6 +10,7 @@ import { FileText, BanknoteIcon } from "lucide-react";
 
 const SwitchRole = () => {
   const [userName, setUserName] = useState("User");
+  const [isLoaded, setIsLoaded] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,6 +25,9 @@ const SwitchRole = () => {
         nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1)
       );
     }
+    
+    // Add staggered animation effect
+    setIsLoaded(true);
   }, []);
 
   const handleSwitchRole = (role: string) => {
@@ -48,15 +53,15 @@ const SwitchRole = () => {
         <TopNav userName={userName} />
 
         <div className="max-w-[100vw] overflow-x-hidden p-4 pt-0 md:p-6 md:pt-0">
-          <div className="mb-6">
+          <div className={`mb-6 ${isLoaded ? 'animate-fade-in' : 'opacity-0'}`} style={{ animationDelay: "0ms" }}>
             <h1 className="text-2xl font-bold">Switch Role</h1>
             <p className="text-gray-500">
               Switch between beneficiary and sponsor roles
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="border hover:border-[#6544E4] transition-all cursor-pointer">
+          <div className={`grid grid-cols-1 md:grid-cols-2 gap-6`}>
+            <Card className={`border hover:border-[#6544E4] transition-all cursor-pointer ${isLoaded ? 'animate-slide-in' : 'opacity-0'}`} style={{ animationDelay: "200ms" }}>
               <CardHeader>
                 <CardTitle>Beneficiary Mode</CardTitle>
               </CardHeader>
@@ -105,7 +110,7 @@ const SwitchRole = () => {
               </CardContent>
             </Card>
 
-            <Card className="border hover:border-[#6544E4] transition-all cursor-pointer">
+            <Card className={`border hover:border-[#6544E4] transition-all cursor-pointer ${isLoaded ? 'animate-slide-in' : 'opacity-0'}`} style={{ animationDelay: "300ms" }}>
               <CardHeader>
                 <CardTitle>Sponsor Mode</CardTitle>
               </CardHeader>

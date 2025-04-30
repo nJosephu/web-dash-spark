@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import TopNav from "@/components/layout/TopNav";
@@ -9,6 +10,7 @@ import { Card } from "@/components/ui/card";
 
 const Dashboard = () => {
   const [userName, setUserName] = useState("User");
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     document.title = "Dashboard | Urgent2kay";
@@ -22,6 +24,9 @@ const Dashboard = () => {
         nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1)
       );
     }
+    
+    // Add staggered animation effect
+    setIsLoaded(true);
   }, []);
 
   const chartData = [
@@ -53,17 +58,19 @@ const Dashboard = () => {
         <TopNav userName={userName} />
 
         <div className="max-w-[100vw] overflow-x-hidden p-4 pt-0 md:p-6 md:pt-0">
-          <div className="mb-6">
+          <div className={`mb-6 ${isLoaded ? 'animate-fade-in' : 'opacity-0'}`} style={{ animationDelay: "0ms" }}>
             <h1 className="text-2xl font-bold">Hi, {userName}</h1>
             <p className="text-gray-500">
               Here's what your Urgent2k dashboard looks like today
             </p>
           </div>
 
-          <PromoBanner />
+          <div className={`${isLoaded ? 'animate-fade-in' : 'opacity-0'}`} style={{ animationDelay: "100ms" }}>
+            <PromoBanner />
+          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6">
-            <Card className="p-4 rounded-lg">
+            <Card className={`p-4 rounded-lg ${isLoaded ? 'animate-fade-in' : 'opacity-0'}`} style={{ animationDelay: "200ms" }}>
               <h3 className="font-medium mb-3 px-1">Overview</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <StatCard
@@ -94,12 +101,12 @@ const Dashboard = () => {
               </div>
             </Card>
 
-            <Card className="p-4 rounded-lg">
+            <Card className={`p-4 rounded-lg ${isLoaded ? 'animate-fade-in' : 'opacity-0'}`} style={{ animationDelay: "300ms" }}>
               <DonutChart data={chartData} title="Request Rate" />
             </Card>
           </div>
 
-          <div className="overflow-x-auto">
+          <div className={`overflow-x-auto ${isLoaded ? 'animate-fade-in' : 'opacity-0'}`} style={{ animationDelay: "400ms" }}>
             <RequestsTable />
           </div>
         </div>
