@@ -1,3 +1,4 @@
+
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutGrid,
@@ -79,7 +80,7 @@ const Sidebar = ({ className }: SidebarProps) => {
             className={cn(
               "flex items-center gap-3 px-4 py-3 rounded-md transition-colors",
               location.pathname === item.path
-                ? "bg-sidebar-active text-white"
+                ? "bg-[#6544E4] text-white"
                 : "text-gray-300 hover:bg-sidebar-hover"
             )}
           >
@@ -98,7 +99,7 @@ const Sidebar = ({ className }: SidebarProps) => {
               className={cn(
                 "flex items-center gap-3 px-4 py-3 rounded-md transition-colors",
                 location.pathname === item.path
-                  ? "bg-sidebar-active text-white"
+                  ? "bg-[#6544E4] text-white"
                   : "text-gray-300 hover:bg-sidebar-hover"
               )}
             >

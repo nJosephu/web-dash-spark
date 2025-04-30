@@ -12,7 +12,7 @@ const PromoBanner = () => {
         </p>
       </div>
 
-      <Button className="bg-[#7B68EE] hover:bg-purple-700 text-white absolute right-6 top-1/2 transform -translate-y-1/2 z-10">
+      <Button className="bg-[#6544E4] hover:bg-[#5A3DD0] text-white absolute right-6 top-1/2 transform -translate-y-1/2 z-10">
         Create new bundle
       </Button>
 

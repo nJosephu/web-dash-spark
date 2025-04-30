@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -142,7 +143,7 @@ const RoleSelection = () => {
             <div className="mt-8">
               <Button
                 onClick={handleContinue}
-                className="w-full bg-[#7B68EE] hover:bg-[#6A57DD] text-white rounded-lg py-6 font-medium"
+                className="w-full bg-[#6544E4] hover:bg-[#5A3DD0] text-white rounded-lg py-6 font-medium"
               >
                 Continue
               </Button>

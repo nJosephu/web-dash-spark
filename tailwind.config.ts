@@ -32,7 +32,7 @@ export default {
 				sidebar: {
 					DEFAULT: '#1A1F2C',
 					hover: '#2A2F3C',
-					active: '#7B68EE',
+					active: '#6544E4',
 					foreground: '#FFFFFF',
 				},
 				primary: {
@@ -64,7 +64,7 @@ export default {
 					foreground: 'hsl(var(--card-foreground))'
 				},
 				urgent: {
-					purple: '#7B68EE',
+					purple: '#6544E4',
 					green: '#4CAF50',
 					red: '#FF5252',
 					yellow: '#FFC107',
