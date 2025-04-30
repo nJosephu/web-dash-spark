@@ -42,8 +42,8 @@ const Login = () => {
 
   return (
     <div className="flex min-h-screen">
-      {/* Left Panel - Gradient Background */}
-      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-[#9b87f5] to-[#7E69AB] flex-col justify-between p-10">
+      {/* Left Panel - Background with Overlay */}
+      <div className="hidden md:flex md:w-1/2 bg-[#5A3CCA] flex-col justify-between p-10">
         <div>
           <div className="flex items-center gap-2 mb-12">
             <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -65,8 +65,8 @@ const Login = () => {
           
           <div className="mt-12">
             <img 
-              src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" 
-              alt="Technology" 
+              src="/uploads/image-1.png" 
+              alt="Urgent2kay Dashboard" 
               className="rounded-lg max-w-md opacity-80"
             />
           </div>

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -47,8 +48,8 @@ const SignUp = () => {
 
   return (
     <div className="flex min-h-screen">
-      {/* Left Panel - Gradient Background */}
-      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-[#9b87f5] to-[#7E69AB] flex-col justify-center p-10">
+      {/* Left Panel - Background with Overlay */}
+      <div className="hidden md:flex md:w-1/2 bg-[#5A3CCA] flex-col justify-center p-10">
         <div className="max-w-lg mx-auto">
           <div className="flex items-center gap-2 mb-10">
             <svg
@@ -97,7 +98,7 @@ const SignUp = () => {
 
           <div className="mt-12">
             <img
-              src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d"
+              src="/uploads/image-1.png"
               alt="Urgent2kay Dashboard"
               className="rounded-xl shadow-lg w-full"
             />
