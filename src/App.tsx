@@ -5,6 +5,12 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
+import Requests from "./pages/Requests";
+import Sponsors from "./pages/Sponsors";
+import BillHistory from "./pages/BillHistory";
+import SwitchRole from "./pages/SwitchRole";
+import Settings from "./pages/Settings";
+import Logout from "./pages/Logout";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import RoleSelection from "./pages/RoleSelection";
@@ -56,32 +62,32 @@ const App = () => {
             } />
             <Route path="/requests" element={
               <ProtectedRoute>
-                <Dashboard />
+                <Requests />
               </ProtectedRoute>
             } />
             <Route path="/sponsors" element={
               <ProtectedRoute>
-                <Dashboard />
+                <Sponsors />
               </ProtectedRoute>
             } />
             <Route path="/bill-history" element={
               <ProtectedRoute>
-                <Dashboard />
+                <BillHistory />
               </ProtectedRoute>
             } />
             <Route path="/switch" element={
               <ProtectedRoute>
-                <Dashboard />
+                <SwitchRole />
               </ProtectedRoute>
             } />
             <Route path="/settings" element={
               <ProtectedRoute>
-                <Dashboard />
+                <Settings />
               </ProtectedRoute>
             } />
             <Route path="/logout" element={
               <ProtectedRoute>
-                <Dashboard />
+                <Logout />
               </ProtectedRoute>
             } />
             
