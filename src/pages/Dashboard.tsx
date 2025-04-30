@@ -54,7 +54,7 @@ const Dashboard = () => {
 
         <div className="max-w-[100vw] overflow-x-hidden p-4 pt-0 md:p-6 md:pt-0">
           <div className="mb-6">
-            <h1 className="text-2xl font-bold">Hi, {userName}</h1>
+            <h1 className="text-2xl font-medium">Hi, {userName}</h1>
             <p className="text-gray-500">
               Here's what your Urgent2k dashboard looks like today
             </p>
