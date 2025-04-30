@@ -137,138 +137,144 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
         )}
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 mt-6">
             <FormField
               control={form.control}
               name="billName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Bill Name</FormLabel>
+                  <FormLabel className="text-sm font-medium">
+                    Bill Name <span className="text-red-500">*</span>
+                  </FormLabel>
                   <FormControl>
                     <Input placeholder="Enter bill name" {...field} />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="text-red-500" />
                 </FormItem>
               )}
             />
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="billType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Bill Type</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select type" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="utility">Utility</SelectItem>
-                        <SelectItem value="rent">Rent</SelectItem>
-                        <SelectItem value="subscription">Subscription</SelectItem>
-                        <SelectItem value="debt">Debt</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="serviceProvider"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Service Provider</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select provider" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="dstv">DSTV</SelectItem>
-                        <SelectItem value="nepa">NEPA</SelectItem>
-                        <SelectItem value="mtn">MTN</SelectItem>
-                        <SelectItem value="gotv">GOTV</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="amount"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Bill Amount (₦)</FormLabel>
+            <FormField
+              control={form.control}
+              name="billType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-medium">
+                    Bill Type <span className="text-red-500">*</span>
+                  </FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <Input placeholder="0.00" {...field} />
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
                     </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                    <SelectContent>
+                      <SelectItem value="utility">Utility</SelectItem>
+                      <SelectItem value="rent">Rent</SelectItem>
+                      <SelectItem value="subscription">Subscription</SelectItem>
+                      <SelectItem value="debt">Debt</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage className="text-red-500" />
+                </FormItem>
+              )}
+            />
 
-              <FormField
-                control={form.control}
-                name="dueDate"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Due Date</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, "PPP")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) =>
-                            date < new Date()
-                          }
-                          initialFocus
-                          className="pointer-events-auto"
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            <FormField
+              control={form.control}
+              name="serviceProvider"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-medium">
+                    Service Provider <span className="text-red-500">*</span>
+                  </FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select provider" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="dstv">DSTV</SelectItem>
+                      <SelectItem value="nepa">NEPA</SelectItem>
+                      <SelectItem value="mtn">MTN</SelectItem>
+                      <SelectItem value="gotv">GOTV</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage className="text-red-500" />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="amount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-medium">
+                    Bill Amount (₦) <span className="text-red-500">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="0.00" {...field} />
+                  </FormControl>
+                  <FormMessage className="text-red-500" />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="dueDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-medium">
+                    Due Date <span className="text-red-500">*</span>
+                  </FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date < new Date()
+                        }
+                        initialFocus
+                        className="pointer-events-auto"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage className="text-red-500" />
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}
               name="notes"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Notes (Optional)</FormLabel>
+                  <FormLabel className="text-sm font-medium">Notes (Optional)</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Add any additional details about this bill"
@@ -276,7 +282,7 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="text-red-500" />
                 </FormItem>
               )}
             />
@@ -285,51 +291,54 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
               control={form.control}
               name="priority"
               render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormLabel>Priority</FormLabel>
+                <FormItem>
+                  <FormLabel className="text-sm font-medium">
+                    Priority <span className="text-red-500">*</span>
+                  </FormLabel>
                   <FormControl>
                     <RadioGroup
                       onValueChange={field.onChange}
                       defaultValue={field.value}
-                      className="flex space-x-2"
+                      className="flex space-x-4"
                     >
-                      <FormItem className="flex items-center space-x-1 space-y-0">
+                      <FormItem className="flex items-center space-x-2 space-y-0">
                         <FormControl>
-                          <RadioGroupItem value="high" />
+                          <RadioGroupItem value="high" className="border-[#6544E4]" />
                         </FormControl>
                         <FormLabel className="font-normal cursor-pointer">High</FormLabel>
                       </FormItem>
-                      <FormItem className="flex items-center space-x-1 space-y-0">
+                      <FormItem className="flex items-center space-x-2 space-y-0">
                         <FormControl>
-                          <RadioGroupItem value="medium" />
+                          <RadioGroupItem value="medium" className="border-[#6544E4]" />
                         </FormControl>
                         <FormLabel className="font-normal cursor-pointer">Medium</FormLabel>
                       </FormItem>
-                      <FormItem className="flex items-center space-x-1 space-y-0">
+                      <FormItem className="flex items-center space-x-2 space-y-0">
                         <FormControl>
-                          <RadioGroupItem value="low" />
+                          <RadioGroupItem value="low" className="border-[#6544E4]" />
                         </FormControl>
                         <FormLabel className="font-normal cursor-pointer">Low</FormLabel>
                       </FormItem>
                     </RadioGroup>
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="text-red-500" />
                 </FormItem>
               )}
             />
 
-            <div className="mt-4 pt-4 border-t flex items-center justify-center">
+            <div className="pt-4">
               <Button
                 type="button"
                 variant="outline"
                 onClick={form.handleSubmit(handleAddAnotherBill)}
-                className="w-full"
+                className="w-full border-dashed border-gray-300 flex items-center justify-center gap-2 hover:bg-gray-50"
               >
-                <Plus className="mr-2 h-4 w-4" /> Add another bill
+                <Plus className="h-4 w-4" />
+                Add another bill
               </Button>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mt-6 pt-4 border-t">
+            <div className="grid grid-cols-2 gap-4 pt-4 mt-5 border-t">
               <Button 
                 type="button" 
                 variant="outline" 
