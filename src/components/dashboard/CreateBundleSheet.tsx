@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -48,6 +48,9 @@ const FormSchema = z.object({
   serviceProvider: z.string({
     required_error: "Please select a service provider.",
   }),
+  sponsor: z.string({
+    required_error: "Please select a sponsor.",
+  }),
   amount: z.string().min(1, {
     message: "Please enter a valid amount.",
   }),
@@ -66,9 +69,71 @@ interface CreateBundleSheetProps {
   trigger?: React.ReactNode;
 }
 
+// Sponsor data type
+interface Sponsor {
+  id: number;
+  name: string;
+  avatar: string;
+  sponsoredAmount: string;
+  activeRequests: number;
+  joinedDate: string;
+  verified: boolean;
+  rating: number;
+}
+
 export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
   const [open, setOpen] = useState(false);
   const [bills, setBills] = useState<FormValues[]>([]);
+  const [sponsors, setSponsors] = useState<Sponsor[]>([]);
+
+  // Fetch sponsor data (in a real app this would come from an API)
+  useEffect(() => {
+    // Using the sponsorsData from Sponsors.tsx
+    const sponsorsData = [
+      {
+        id: 1,
+        name: "John Doe",
+        avatar: "JD",
+        sponsoredAmount: "₦350,000",
+        activeRequests: 2,
+        joinedDate: "Jan 2025",
+        verified: true,
+        rating: 4.8,
+      },
+      {
+        id: 2,
+        name: "Sarah Williams",
+        avatar: "SW",
+        sponsoredAmount: "₦280,000",
+        activeRequests: 1,
+        joinedDate: "Feb 2025",
+        verified: true,
+        rating: 4.9,
+      },
+      {
+        id: 3,
+        name: "Michael Brown",
+        avatar: "MB",
+        sponsoredAmount: "₦420,000",
+        activeRequests: 3,
+        joinedDate: "Dec 2024",
+        verified: true,
+        rating: 4.7,
+      },
+      {
+        id: 4,
+        name: "Lisa Johnson",
+        avatar: "LJ",
+        sponsoredAmount: "₦175,000",
+        activeRequests: 1,
+        joinedDate: "Mar 2025",
+        verified: false,
+        rating: 4.6,
+      },
+    ];
+    
+    setSponsors(sponsorsData);
+  }, []);
 
   // Default values for the form
   const defaultValues: Partial<FormValues> = {
@@ -203,6 +268,38 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
                       <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
+                  <FormMessage className="text-red-500" />
+                </FormItem>
+              )}
+            />
+
+            {/* New Sponsor dropdown field */}
+            <FormField
+              control={form.control}
+              name="sponsor"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-medium">
+                    Sponsor <span className="text-red-500">*</span>
+                  </FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select sponsor" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {sponsors.map((sponsor) => (
+                        <SelectItem key={sponsor.id} value={sponsor.id.toString()}>
+                          {sponsor.name} {sponsor.verified && "✓"}
+                        </SelectItem>
+                      ))}
+                      <SelectItem value="none">No sponsor</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormDescription className="text-xs text-muted-foreground">
+                    Select who will sponsor this bill
+                  </FormDescription>
                   <FormMessage className="text-red-500" />
                 </FormItem>
               )}
