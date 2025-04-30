@@ -1,196 +1,122 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import Sidebar from "@/components/layout/Sidebar";
+import TopNav from "@/components/layout/TopNav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Settings = () => {
-  const [generalForm, setGeneralForm] = useState({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "(555) 123-4567"
-  });
+  const [userName, setUserName] = useState("User");
 
-  const [securityForm, setSecurityForm] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: ""
-  });
-
-  const handleGeneralSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast.success("Profile information updated successfully");
-  };
-
-  const handleSecuritySubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (securityForm.newPassword !== securityForm.confirmPassword) {
-      toast.error("New passwords do not match");
-      return;
+  useEffect(() => {
+    document.title = "Settings | Urgent2kay";
+    
+    // Get user data from localStorage
+    const userData = JSON.parse(localStorage.getItem("user") || "{}");
+    if (userData.email) {
+      // Extract name from email (for demo purposes)
+      const nameFromEmail = userData.email.split('@')[0];
+      setUserName(nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1));
     }
-    toast.success("Password updated successfully");
-    setSecurityForm({
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: ""
-    });
-  };
+  }, []);
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-8">Account Settings</h1>
+    <div className="flex min-h-screen bg-gray-50">
+      <Sidebar />
       
-      <Tabs defaultValue="general" className="w-full">
-        <TabsList className="mb-6">
-          <TabsTrigger value="general">General</TabsTrigger>
-          <TabsTrigger value="security">Security</TabsTrigger>
-          <TabsTrigger value="billing">Billing</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-        </TabsList>
+      <div className="flex-1 w-full md:ml-64">
+        <TopNav userName={userName} />
         
-        <TabsContent value="general">
-          <Card>
-            <CardHeader>
-              <CardTitle>Profile Information</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleGeneralSubmit} className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Full Name</Label>
-                  <Input 
-                    id="name" 
-                    value={generalForm.name} 
-                    onChange={(e) => setGeneralForm({...generalForm, name: e.target.value})}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
-                  <Input 
-                    id="email" 
-                    type="email" 
-                    value={generalForm.email} 
-                    onChange={(e) => setGeneralForm({...generalForm, email: e.target.value})}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <Input 
-                    id="phone" 
-                    value={generalForm.phone} 
-                    onChange={(e) => setGeneralForm({...generalForm, phone: e.target.value})}
-                  />
-                </div>
-                
-                <Button type="submit">Save Changes</Button>
-              </form>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="security">
-          <Card>
-            <CardHeader>
-              <CardTitle>Change Password</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSecuritySubmit} className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="currentPassword">Current Password</Label>
-                  <Input 
-                    id="currentPassword" 
-                    type="password" 
-                    value={securityForm.currentPassword} 
-                    onChange={(e) => setSecurityForm({...securityForm, currentPassword: e.target.value})}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="newPassword">New Password</Label>
-                  <Input 
-                    id="newPassword" 
-                    type="password" 
-                    value={securityForm.newPassword} 
-                    onChange={(e) => setSecurityForm({...securityForm, newPassword: e.target.value})}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">Confirm New Password</Label>
-                  <Input 
-                    id="confirmPassword" 
-                    type="password" 
-                    value={securityForm.confirmPassword} 
-                    onChange={(e) => setSecurityForm({...securityForm, confirmPassword: e.target.value})}
-                  />
-                </div>
-                
-                <Button type="submit">Update Password</Button>
-              </form>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="billing">
-          <Card>
-            <CardHeader>
-              <CardTitle>Subscription Plan</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="mb-6">
-                <div className="flex items-center justify-between mb-4">
+        <div className="max-w-[100vw] overflow-x-hidden p-4 md:p-6">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold">Settings</h1>
+            <p className="text-gray-500">Manage your account settings and preferences</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Profile Settings</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-500 mb-4">Update your personal information and how others see you on the platform</p>
+                <div className="space-y-4">
                   <div>
-                    <h3 className="font-medium text-lg">Current Plan</h3>
-                    <p className="text-muted-foreground">Pro Plan <Badge className="ml-2">Active</Badge></p>
+                    <label className="text-sm font-medium">Full Name</label>
+                    <input type="text" className="w-full mt-1 px-3 py-2 border rounded-md" defaultValue={userName} />
                   </div>
-                  <Badge variant="outline" className="text-green-600 bg-green-50">Renews May 30, 2025</Badge>
-                </div>
-                <Button variant="outline">Change Plan</Button>
-              </div>
-              
-              <div className="border-t pt-6">
-                <h3 className="font-medium text-lg mb-4">Payment Method</h3>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <div className="w-12 h-8 bg-slate-200 rounded mr-3 flex items-center justify-center">
-                      VISA
-                    </div>
-                    <div>
-                      <p>Visa ending in 4242</p>
-                      <p className="text-sm text-muted-foreground">Expires 12/2026</p>
-                    </div>
+                  <div>
+                    <label className="text-sm font-medium">Email Address</label>
+                    <input type="email" className="w-full mt-1 px-3 py-2 border rounded-md" defaultValue="user@example.com" />
                   </div>
-                  <Button variant="ghost">Edit</Button>
+                  <div>
+                    <label className="text-sm font-medium">Phone Number</label>
+                    <input type="tel" className="w-full mt-1 px-3 py-2 border rounded-md" defaultValue="+234 800 000 0000" />
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="notifications">
-          <Card>
-            <CardHeader>
-              <CardTitle>Notification Preferences</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                <p className="text-muted-foreground mb-4">
-                  Configure how and when you want to be notified.
-                </p>
-                
-                {/* Notification preferences content would go here */}
-                <p>Notification preferences placeholder content</p>
-                
-                <Button>Save Preferences</Button>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Security</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-500 mb-4">Manage your password and account security preferences</p>
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium">Current Password</label>
+                    <input type="password" className="w-full mt-1 px-3 py-2 border rounded-md" />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">New Password</label>
+                    <input type="password" className="w-full mt-1 px-3 py-2 border rounded-md" />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium">Confirm New Password</label>
+                    <input type="password" className="w-full mt-1 px-3 py-2 border rounded-md" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Notifications</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-500 mb-4">Configure how you receive notifications and updates</p>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">Email Notifications</span>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" className="sr-only peer" defaultChecked />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#6544E4]"></div>
+                    </label>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">SMS Notifications</span>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" className="sr-only peer" />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#6544E4]"></div>
+                    </label>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">Push Notifications</span>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" className="sr-only peer" defaultChecked />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#6544E4]"></div>
+                    </label>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <div className="mt-6 flex justify-end">
+            <button className="px-4 py-2 bg-gray-200 rounded-md mr-2">Cancel</button>
+            <button className="px-4 py-2 bg-[#6544E4] text-white rounded-md">Save Changes</button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

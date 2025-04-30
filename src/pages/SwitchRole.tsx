@@ -1,18 +1,26 @@
-
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "@/components/layout/Sidebar";
 import TopNav from "@/components/layout/TopNav";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { FileText, BanknoteIcon } from "lucide-react";
 
 const SwitchRole = () => {
+  const [userName, setUserName] = useState("User");
   const navigate = useNavigate();
   
   useEffect(() => {
     document.title = "Switch Role | Urgent2kay";
+    
+    // Get user data from localStorage
+    const userData = JSON.parse(localStorage.getItem("user") || "{}");
+    if (userData.email) {
+      // Extract name from email (for demo purposes)
+      const nameFromEmail = userData.email.split('@')[0];
+      setUserName(nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1));
+    }
   }, []);
 
   const handleSwitchRole = (role: string) => {
@@ -35,7 +43,7 @@ const SwitchRole = () => {
       <Sidebar />
 
       <div className="flex-1 w-full md:ml-64">
-        <TopNav userName="User" />
+        <TopNav userName={userName} />
 
         <div className="max-w-[100vw] overflow-x-hidden p-4 md:p-6">
           <div className="mb-6">
@@ -47,6 +55,9 @@ const SwitchRole = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="border hover:border-[#6544E4] transition-all cursor-pointer">
+              <CardHeader>
+                <CardTitle>Beneficiary Mode</CardTitle>
+              </CardHeader>
               <CardContent className="p-6">
                 <div className="flex flex-col items-center text-center p-6">
                   <div className="p-4 bg-[#6544E4] rounded-full mb-4">
@@ -85,6 +96,9 @@ const SwitchRole = () => {
             </Card>
 
             <Card className="border hover:border-[#6544E4] transition-all cursor-pointer">
+              <CardHeader>
+                <CardTitle>Sponsor Mode</CardTitle>
+              </CardHeader>
               <CardContent className="p-6">
                 <div className="flex flex-col items-center text-center p-6">
                   <div className="p-4 bg-[#6544E4] rounded-full mb-4">

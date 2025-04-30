@@ -1,5 +1,4 @@
-
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import TopNav from "@/components/layout/TopNav";
 import {
@@ -16,8 +15,18 @@ import { Button } from "@/components/ui/button";
 import { Users, Star, MessageCircle } from "lucide-react";
 
 const Sponsors = () => {
+  const [userName, setUserName] = useState("User");
+
   useEffect(() => {
     document.title = "Sponsors | Urgent2kay";
+    
+    // Get user data from localStorage
+    const userData = JSON.parse(localStorage.getItem("user") || "{}");
+    if (userData.email) {
+      // Extract name from email (for demo purposes)
+      const nameFromEmail = userData.email.split('@')[0];
+      setUserName(nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1));
+    }
   }, []);
 
   const sponsorsData = [
@@ -68,7 +77,7 @@ const Sponsors = () => {
       <Sidebar />
 
       <div className="flex-1 w-full md:ml-64">
-        <TopNav userName="User" />
+        <TopNav userName={userName} />
 
         <div className="max-w-[100vw] overflow-x-hidden p-4 md:p-6">
           <div className="flex justify-between items-center mb-6">
