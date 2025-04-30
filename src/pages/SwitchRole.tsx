@@ -10,16 +10,18 @@ import { FileText, BanknoteIcon } from "lucide-react";
 const SwitchRole = () => {
   const [userName, setUserName] = useState("User");
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     document.title = "Switch Role | Urgent2kay";
-    
+
     // Get user data from localStorage
     const userData = JSON.parse(localStorage.getItem("user") || "{}");
     if (userData.email) {
       // Extract name from email (for demo purposes)
-      const nameFromEmail = userData.email.split('@')[0];
-      setUserName(nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1));
+      const nameFromEmail = userData.email.split("@")[0];
+      setUserName(
+        nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1)
+      );
     }
   }, []);
 
@@ -33,7 +35,7 @@ const SwitchRole = () => {
         role: role,
       })
     );
-    
+
     toast.success(`Switched to ${role} role`);
     navigate("/");
   };
@@ -45,7 +47,7 @@ const SwitchRole = () => {
       <div className="flex-1 w-full md:ml-64">
         <TopNav userName={userName} />
 
-        <div className="max-w-[100vw] overflow-x-hidden p-4 md:p-6">
+        <div className="max-w-[100vw] overflow-x-hidden p-4 pt-0 md:p-6 md:pt-0">
           <div className="mb-6">
             <h1 className="text-2xl font-bold">Switch Role</h1>
             <p className="text-gray-500">
@@ -69,23 +71,31 @@ const SwitchRole = () => {
                   </p>
                   <ul className="text-left space-y-2 mb-8">
                     <li className="flex items-center">
-                      <span className="bg-green-100 p-1 rounded-full mr-2">✓</span>
+                      <span className="bg-green-100 p-1 rounded-full mr-2">
+                        ✓
+                      </span>
                       Submit bill payment requests
                     </li>
                     <li className="flex items-center">
-                      <span className="bg-green-100 p-1 rounded-full mr-2">✓</span>
+                      <span className="bg-green-100 p-1 rounded-full mr-2">
+                        ✓
+                      </span>
                       Track payment status
                     </li>
                     <li className="flex items-center">
-                      <span className="bg-green-100 p-1 rounded-full mr-2">✓</span>
+                      <span className="bg-green-100 p-1 rounded-full mr-2">
+                        ✓
+                      </span>
                       Connect with sponsors
                     </li>
                     <li className="flex items-center">
-                      <span className="bg-green-100 p-1 rounded-full mr-2">✓</span>
+                      <span className="bg-green-100 p-1 rounded-full mr-2">
+                        ✓
+                      </span>
                       Manage your bill history
                     </li>
                   </ul>
-                  <Button 
+                  <Button
                     onClick={() => handleSwitchRole("beneficiary")}
                     className="w-full bg-[#6544E4] hover:bg-[#5A3DD0]"
                   >
@@ -110,23 +120,31 @@ const SwitchRole = () => {
                   </p>
                   <ul className="text-left space-y-2 mb-8">
                     <li className="flex items-center">
-                      <span className="bg-green-100 p-1 rounded-full mr-2">✓</span>
+                      <span className="bg-green-100 p-1 rounded-full mr-2">
+                        ✓
+                      </span>
                       Browse bill payment requests
                     </li>
                     <li className="flex items-center">
-                      <span className="bg-green-100 p-1 rounded-full mr-2">✓</span>
+                      <span className="bg-green-100 p-1 rounded-full mr-2">
+                        ✓
+                      </span>
                       Fund requests directly
                     </li>
                     <li className="flex items-center">
-                      <span className="bg-green-100 p-1 rounded-full mr-2">✓</span>
+                      <span className="bg-green-100 p-1 rounded-full mr-2">
+                        ✓
+                      </span>
                       Track your contributions
                     </li>
                     <li className="flex items-center">
-                      <span className="bg-green-100 p-1 rounded-full mr-2">✓</span>
+                      <span className="bg-green-100 p-1 rounded-full mr-2">
+                        ✓
+                      </span>
                       Connect with beneficiaries
                     </li>
                   </ul>
-                  <Button 
+                  <Button
                     onClick={() => handleSwitchRole("sponsor")}
                     className="w-full bg-[#6544E4] hover:bg-[#5A3DD0]"
                   >

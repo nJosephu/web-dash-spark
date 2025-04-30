@@ -19,13 +19,15 @@ const Requests = () => {
 
   useEffect(() => {
     document.title = "My Requests | Urgent2kay";
-    
+
     // Get user data from localStorage
     const userData = JSON.parse(localStorage.getItem("user") || "{}");
     if (userData.email) {
       // Extract name from email (for demo purposes)
-      const nameFromEmail = userData.email.split('@')[0];
-      setUserName(nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1));
+      const nameFromEmail = userData.email.split("@")[0];
+      setUserName(
+        nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1)
+      );
     }
   }, []);
 
@@ -88,11 +90,11 @@ const Requests = () => {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
-      
+
       <div className="flex-1 w-full md:ml-64">
         <TopNav userName={userName} />
-        
-        <div className="max-w-[100vw] overflow-x-hidden p-4 md:p-6">
+
+        <div className="mmax-w-[100vw] overflow-x-hidden p-4 pt-0 md:p-6 md:pt-0">
           <div className="flex justify-between items-center mb-6">
             <div>
               <h1 className="text-2xl font-bold">My Requests</h1>

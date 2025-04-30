@@ -20,13 +20,15 @@ const BillHistory = () => {
 
   useEffect(() => {
     document.title = "Bill History | Urgent2kay";
-    
+
     // Get user data from localStorage
     const userData = JSON.parse(localStorage.getItem("user") || "{}");
     if (userData.email) {
       // Extract name from email (for demo purposes)
-      const nameFromEmail = userData.email.split('@')[0];
-      setUserName(nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1));
+      const nameFromEmail = userData.email.split("@")[0];
+      setUserName(
+        nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1)
+      );
     }
   }, []);
 
@@ -90,11 +92,11 @@ const BillHistory = () => {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
-      
+
       <div className="flex-1 w-full md:ml-64">
         <TopNav userName={userName} />
-        
-        <div className="max-w-[100vw] overflow-x-hidden p-4 md:p-6">
+
+        <div className="max-w-[100vw] overflow-x-hidden p-4 pt-0 md:p-6 md:pt-0">
           <div className="flex justify-between items-center mb-6">
             <div>
               <h1 className="text-2xl font-bold">Bill History</h1>
@@ -130,7 +132,9 @@ const BillHistory = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-[#6544E4]">₦232,800</div>
+                <div className="text-2xl font-bold text-[#6544E4]">
+                  ₦232,800
+                </div>
               </CardContent>
             </Card>
             <Card>
@@ -140,7 +144,9 @@ const BillHistory = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-green-600">₦172,800</div>
+                <div className="text-2xl font-bold text-green-600">
+                  ₦172,800
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -149,7 +155,9 @@ const BillHistory = () => {
             <CardHeader className="bg-white">
               <div className="flex items-center">
                 <Receipt className="mr-2 h-5 w-5 text-[#6544E4]" />
-                <CardTitle className="text-lg font-medium">Bills Payment History</CardTitle>
+                <CardTitle className="text-lg font-medium">
+                  Bills Payment History
+                </CardTitle>
               </div>
             </CardHeader>
             <CardContent className="p-0">

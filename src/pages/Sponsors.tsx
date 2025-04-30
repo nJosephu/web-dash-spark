@@ -19,13 +19,15 @@ const Sponsors = () => {
 
   useEffect(() => {
     document.title = "Sponsors | Urgent2kay";
-    
+
     // Get user data from localStorage
     const userData = JSON.parse(localStorage.getItem("user") || "{}");
     if (userData.email) {
       // Extract name from email (for demo purposes)
-      const nameFromEmail = userData.email.split('@')[0];
-      setUserName(nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1));
+      const nameFromEmail = userData.email.split("@")[0];
+      setUserName(
+        nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1)
+      );
     }
   }, []);
 
@@ -69,7 +71,7 @@ const Sponsors = () => {
       joinedDate: "Mar 2025",
       verified: false,
       rating: 4.6,
-    }
+    },
   ];
 
   return (
@@ -79,7 +81,7 @@ const Sponsors = () => {
       <div className="flex-1 w-full md:ml-64">
         <TopNav userName={userName} />
 
-        <div className="max-w-[100vw] overflow-x-hidden p-4 md:p-6">
+        <div className="max-w-[100vw] overflow-x-hidden p-4 pt-0 md:p-6 md:pt-0">
           <div className="flex justify-between items-center mb-6">
             <div>
               <h1 className="text-2xl font-bold">Sponsors</h1>
@@ -120,7 +122,9 @@ const Sponsors = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-[#6544E4]">₦1,225,000</div>
+                <div className="text-2xl font-bold text-[#6544E4]">
+                  ₦1,225,000
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -152,7 +156,10 @@ const Sponsors = () => {
                             <div className="flex items-center text-sm text-gray-500">
                               <span>Since {sponsor.joinedDate}</span>
                               {sponsor.verified && (
-                                <Badge className="ml-2 bg-green-100 text-green-800" variant="outline">
+                                <Badge
+                                  className="ml-2 bg-green-100 text-green-800"
+                                  variant="outline"
+                                >
                                   Verified
                                 </Badge>
                               )}
@@ -165,11 +172,15 @@ const Sponsors = () => {
                       <div className="grid grid-cols-2 gap-2 text-sm">
                         <div>
                           <p className="text-gray-500">Sponsored</p>
-                          <p className="font-medium">{sponsor.sponsoredAmount}</p>
+                          <p className="font-medium">
+                            {sponsor.sponsoredAmount}
+                          </p>
                         </div>
                         <div>
                           <p className="text-gray-500">Active Requests</p>
-                          <p className="font-medium">{sponsor.activeRequests}</p>
+                          <p className="font-medium">
+                            {sponsor.activeRequests}
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-center mt-2">
@@ -181,7 +192,10 @@ const Sponsors = () => {
                       <Button variant="outline" size="sm" className="text-xs">
                         <MessageCircle className="h-3 w-3 mr-1" /> Message
                       </Button>
-                      <Button size="sm" className="text-xs bg-[#6544E4] hover:bg-[#5A3DD0]">
+                      <Button
+                        size="sm"
+                        className="text-xs bg-[#6544E4] hover:bg-[#5A3DD0]"
+                      >
                         View Details
                       </Button>
                     </CardFooter>
