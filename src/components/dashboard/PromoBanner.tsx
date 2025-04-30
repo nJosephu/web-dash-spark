@@ -1,5 +1,7 @@
+
 import { Button } from "@/components/ui/button";
 import money3d from "../../images/money3d.png";
+import CreateBundleSheet from "./CreateBundleSheet";
 
 const PromoBanner = () => {
   return (
@@ -14,9 +16,13 @@ const PromoBanner = () => {
         </p>
       </div>
 
-      <Button className="bg-[#6544E4] hover:bg-[#5A3DD0] text-white absolute right-6 top-1/2 transform -translate-y-1/2 z-10">
-        Create new bundle
-      </Button>
+      <CreateBundleSheet 
+        trigger={
+          <Button className="bg-[#6544E4] hover:bg-[#5A3DD0] text-white absolute right-6 top-1/2 transform -translate-y-1/2 z-10">
+            Create new bundle
+          </Button>
+        }
+      />
 
       {/* Money graphic in green */}
       <div className="absolute right-[170px] h-full w-1/3 overflow-hidden">
