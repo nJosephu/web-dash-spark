@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import TopNav from "@/components/layout/TopNav";
@@ -141,7 +140,7 @@ const Requests = () => {
       <div className="flex-1 w-full md:ml-64">
         <TopNav userName={userName} />
 
-        <div className="mmax-w-[100vw] overflow-x-hidden p-4 pt-0 md:p-6 md:pt-0">
+        <div className="max-w-[100vw] overflow-x-hidden p-4 pt-0 md:p-6 md:pt-0">
           <div className="flex justify-between items-center mb-6">
             <div>
               <h1 className="text-2xl font-bold">My Requests</h1>
@@ -195,7 +194,7 @@ const Requests = () => {
             </Card>
           </div>
 
-          <Card className="mb-8">
+          <Card className="mb-6">
             <CardHeader className="bg-white flex flex-col md:flex-row md:items-center md:justify-between">
               <CardTitle className="text-lg font-medium">
                 Recent Requests
@@ -209,7 +208,7 @@ const Requests = () => {
                     placeholder="Search requests..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-9 pr-4 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-[#6544E4] focus:border-[#6544E4]"
+                    className="pl-9 pr-4 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-[#6544E4] focus:border-[#6544E4] text-sm"
                   />
                 </div>
 
@@ -217,13 +216,12 @@ const Requests = () => {
                 <div className="relative">
                   <Button 
                     variant="outline"
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 text-sm"
                     onClick={() => setStatusFilter(statusFilter === null ? "pending" : null)}
                   >
                     <Filter size={16} />
                     {statusFilter ? `Filter: ${statusFilter}` : "Filter"}
                   </Button>
-                  {/* We could add a dropdown menu here for more filter options */}
                 </div>
               </div>
             </CardHeader>
@@ -234,7 +232,7 @@ const Requests = () => {
           </div>
           
           {filteredRequests.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredRequests.map((request) => (
                 <RequestCard 
                   key={request.id}
