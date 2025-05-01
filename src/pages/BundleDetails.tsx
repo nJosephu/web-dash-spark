@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "@/components/layout/Sidebar";
@@ -10,8 +11,8 @@ import BundleItems from "@/components/bundle/BundleItems";
 import BundleSummary from "@/components/bundle/BundleSummary";
 import ActivityLog from "@/components/bundle/ActivityLog";
 
-// Import types from the bundle.d.ts file
-import { Bundle } from "@/types/bundle.d.ts";
+// Import types from the new combined types file
+import { Bundle } from "@/types/bundleTypes";
 
 // Mock data for the bundle details (moved to the main component for simplicity)
 const mockBundles: Record<string, Bundle> = {
