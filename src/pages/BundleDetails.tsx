@@ -7,13 +7,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ArrowLeft, Calendar, Clock, File, FileText, Package, Tag, X } from "lucide-react";
+import { ArrowLeft, Calendar, Check, Clock, File, FileText, Package, Tag, X } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 interface BundleItem {
   name: string;
   amount: string;
   priority?: "high" | "medium" | "low";
+  category?: string;
 }
 
 interface ActivityLog {
@@ -24,6 +25,7 @@ interface ActivityLog {
     name: string;
     avatar?: string;
   };
+  completed?: boolean;
 }
 
 interface Bundle {
@@ -45,7 +47,7 @@ interface Bundle {
 // Mock data for the bundle details
 const mockBundles: Record<string, Bundle> = {
   "REQ-001": {
-    id: "REQ-001",
+    id: "U2K-001289",
     title: "Rent Payment",
     amount: "₦120,000",
     date: "2025-04-25",
@@ -57,7 +59,7 @@ const mockBundles: Record<string, Bundle> = {
     priority: "high",
     description: "Monthly rent payment for apartment",
     items: [
-      { name: "Rent", amount: "₦120,000", priority: "high" }
+      { name: "Rent", amount: "₦120,000", priority: "high", category: "Accommodation" }
     ],
     activityLog: [
       {
@@ -66,7 +68,8 @@ const mockBundles: Record<string, Bundle> = {
         timestamp: "2025-04-20T10:30:00",
         user: {
           name: "You"
-        }
+        },
+        completed: true
       },
       {
         type: "sent",
@@ -74,7 +77,8 @@ const mockBundles: Record<string, Bundle> = {
         timestamp: "2025-04-20T10:35:00",
         user: {
           name: "System"
-        }
+        },
+        completed: true
       },
       {
         type: "viewed",
@@ -82,7 +86,8 @@ const mockBundles: Record<string, Bundle> = {
         timestamp: "2025-04-21T14:22:00",
         user: {
           name: "John Doe"
-        }
+        },
+        completed: true
       },
       {
         type: "approved",
@@ -90,7 +95,8 @@ const mockBundles: Record<string, Bundle> = {
         timestamp: "2025-04-22T09:15:00",
         user: {
           name: "John Doe"
-        }
+        },
+        completed: true
       },
       {
         type: "completed",
@@ -98,12 +104,13 @@ const mockBundles: Record<string, Bundle> = {
         timestamp: "2025-04-23T11:30:00",
         user: {
           name: "System"
-        }
+        },
+        completed: true
       }
     ]
   },
   "REQ-002": {
-    id: "REQ-002",
+    id: "U2K-001290",
     title: "Electricity Bill",
     amount: "₦45,000",
     date: "2025-04-22",
@@ -115,7 +122,7 @@ const mockBundles: Record<string, Bundle> = {
     priority: "medium",
     description: "Monthly electricity bill payment",
     items: [
-      { name: "Electricity", amount: "₦45,000", priority: "medium" }
+      { name: "Electricity", amount: "₦45,000", priority: "medium", category: "Utilities" }
     ],
     activityLog: [
       {
@@ -124,7 +131,8 @@ const mockBundles: Record<string, Bundle> = {
         timestamp: "2025-04-18T08:30:00",
         user: {
           name: "You"
-        }
+        },
+        completed: true
       },
       {
         type: "sent",
@@ -132,7 +140,8 @@ const mockBundles: Record<string, Bundle> = {
         timestamp: "2025-04-18T08:35:00",
         user: {
           name: "System"
-        }
+        },
+        completed: true
       },
       {
         type: "viewed",
@@ -140,12 +149,22 @@ const mockBundles: Record<string, Bundle> = {
         timestamp: "2025-04-19T10:15:00",
         user: {
           name: "Jane Smith"
-        }
+        },
+        completed: true
+      },
+      {
+        type: "pending",
+        message: "Awaiting sponsor approval",
+        timestamp: "2025-04-19T10:20:00",
+        user: {
+          name: "System"
+        },
+        completed: false
       }
     ]
   },
   "REQ-003": {
-    id: "REQ-003",
+    id: "U2K-001291",
     title: "Water Bill",
     amount: "₦15,000",
     date: "2025-04-18",
@@ -157,7 +176,7 @@ const mockBundles: Record<string, Bundle> = {
     priority: "low",
     description: "Monthly water bill payment",
     items: [
-      { name: "Water", amount: "₦15,000", priority: "low" }
+      { name: "Water", amount: "₦15,000", priority: "low", category: "Utilities" }
     ],
     activityLog: [
       {
@@ -166,7 +185,8 @@ const mockBundles: Record<string, Bundle> = {
         timestamp: "2025-04-15T14:30:00",
         user: {
           name: "You"
-        }
+        },
+        completed: true
       },
       {
         type: "sent",
@@ -174,7 +194,8 @@ const mockBundles: Record<string, Bundle> = {
         timestamp: "2025-04-15T14:35:00",
         user: {
           name: "System"
-        }
+        },
+        completed: true
       },
       {
         type: "viewed",
@@ -182,7 +203,8 @@ const mockBundles: Record<string, Bundle> = {
         timestamp: "2025-04-16T09:22:00",
         user: {
           name: "Mike Johnson"
-        }
+        },
+        completed: true
       },
       {
         type: "rejected",
@@ -190,12 +212,13 @@ const mockBundles: Record<string, Bundle> = {
         timestamp: "2025-04-16T10:15:00",
         user: {
           name: "Mike Johnson"
-        }
+        },
+        completed: true
       }
     ]
   },
   "REQ-004": {
-    id: "REQ-004",
+    id: "U2K-001292",
     title: "Internet Payment",
     amount: "₦25,000",
     date: "2025-04-15",
@@ -207,7 +230,7 @@ const mockBundles: Record<string, Bundle> = {
     priority: "medium",
     description: "Monthly internet subscription",
     items: [
-      { name: "Internet", amount: "₦25,000", priority: "medium" }
+      { name: "Internet", amount: "₦25,000", priority: "medium", category: "Utilities" }
     ],
     activityLog: [
       {
@@ -216,7 +239,8 @@ const mockBundles: Record<string, Bundle> = {
         timestamp: "2025-04-10T10:30:00",
         user: {
           name: "You"
-        }
+        },
+        completed: true
       },
       {
         type: "sent",
@@ -224,7 +248,8 @@ const mockBundles: Record<string, Bundle> = {
         timestamp: "2025-04-10T10:35:00",
         user: {
           name: "System"
-        }
+        },
+        completed: true
       },
       {
         type: "viewed",
@@ -232,7 +257,8 @@ const mockBundles: Record<string, Bundle> = {
         timestamp: "2025-04-12T14:22:00",
         user: {
           name: "Mike Johnson"
-        }
+        },
+        completed: true
       },
       {
         type: "approved",
@@ -240,7 +266,8 @@ const mockBundles: Record<string, Bundle> = {
         timestamp: "2025-04-12T15:15:00",
         user: {
           name: "Mike Johnson"
-        }
+        },
+        completed: true
       },
       {
         type: "completed",
@@ -248,12 +275,13 @@ const mockBundles: Record<string, Bundle> = {
         timestamp: "2025-04-13T11:30:00",
         user: {
           name: "System"
-        }
+        },
+        completed: true
       }
     ]
   },
   "REQ-005": {
-    id: "REQ-005",
+    id: "U2K-001293",
     title: "School Fees",
     amount: "₦180,000",
     date: "2025-04-10",
@@ -265,8 +293,8 @@ const mockBundles: Record<string, Bundle> = {
     priority: "high",
     description: "Semester school fees payment",
     items: [
-      { name: "Tuition", amount: "₦150,000", priority: "high" },
-      { name: "Books", amount: "₦30,000", priority: "medium" }
+      { name: "Tuition", amount: "₦150,000", priority: "high", category: "Education" },
+      { name: "Books", amount: "₦30,000", priority: "medium", category: "Education" }
     ],
     activityLog: [
       {
@@ -275,7 +303,8 @@ const mockBundles: Record<string, Bundle> = {
         timestamp: "2025-04-05T16:30:00",
         user: {
           name: "You"
-        }
+        },
+        completed: true
       },
       {
         type: "sent",
@@ -283,7 +312,8 @@ const mockBundles: Record<string, Bundle> = {
         timestamp: "2025-04-05T16:35:00",
         user: {
           name: "System"
-        }
+        },
+        completed: true
       },
       {
         type: "viewed",
@@ -291,7 +321,17 @@ const mockBundles: Record<string, Bundle> = {
         timestamp: "2025-04-07T09:22:00",
         user: {
           name: "Sarah Williams"
-        }
+        },
+        completed: true
+      },
+      {
+        type: "pending",
+        message: "Awaiting sponsor approval",
+        timestamp: "2025-04-07T09:30:00",
+        user: {
+          name: "System"
+        },
+        completed: false
       }
     ]
   },
@@ -377,7 +417,11 @@ const BundleDetails = () => {
     });
   };
 
-  const getActivityIcon = (type: string) => {
+  const getActivityIcon = (type: string, completed: boolean | undefined) => {
+    if (completed) {
+      return <Check className="h-4 w-4 text-green-500" />;
+    }
+    
     switch (type) {
       case "created":
         return <FileText className="h-4 w-4 text-blue-500" />;
@@ -391,14 +435,54 @@ const BundleDetails = () => {
         return <X className="h-4 w-4 text-red-500" />;
       case "completed":
         return <Package className="h-4 w-4 text-blue-500" />;
+      case "pending":
+        return <Clock className="h-4 w-4 text-yellow-500" />;
       default:
         return <Clock className="h-4 w-4 text-gray-500" />;
     }
   };
 
+  const renderStatusBadge = (status: string) => {
+    let bgColor, textColor;
+    
+    switch (status) {
+      case "pending":
+        bgColor = "bg-yellow-500";
+        textColor = "text-white";
+        break;
+      case "approved":
+        bgColor = "bg-green-500";
+        textColor = "text-white";
+        break;
+      case "rejected":
+        bgColor = "bg-red-500";
+        textColor = "text-white";
+        break;
+      default:
+        bgColor = "bg-gray-500";
+        textColor = "text-white";
+    }
+    
+    return (
+      <Badge className={`${bgColor} ${textColor} capitalize px-3 py-1`}>
+        {status}
+      </Badge>
+    );
+  };
+
   if (!bundle) {
     return <div>Loading...</div>;
   }
+
+  // Group bundle items by category
+  const groupedItems: Record<string, BundleItem[]> = {};
+  bundle.items.forEach(item => {
+    const category = item.category || 'Other';
+    if (!groupedItems[category]) {
+      groupedItems[category] = [];
+    }
+    groupedItems[category].push(item);
+  });
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -419,25 +503,37 @@ const BundleDetails = () => {
           </Button>
 
           {/* Bundle header */}
-          <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-6 gap-4">
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Badge
-                  className={`${getStatusColor(bundle.status)} capitalize`}
-                  variant="outline"
-                >
-                  {bundle.status}
-                </Badge>
-                <span className="text-sm text-gray-500">{bundle.id}</span>
+              <div className="flex flex-wrap items-center gap-3 mb-2">
+                {renderStatusBadge(bundle.status)}
+                <span className="text-sm font-medium text-gray-500">{bundle.id}</span>
               </div>
-              <h1 className="text-2xl font-bold">{bundle.title}</h1>
+              <h1 className="text-2xl font-bold mb-1">{bundle.title}</h1>
               <p className="text-gray-500">Created on {formatDate(bundle.date)}</p>
             </div>
-            {bundle.status === "pending" && (
-              <Button className="bg-[#6544E4] hover:bg-[#5A3DD0]">
-                Resend request
-              </Button>
-            )}
+            <div className="flex gap-3">
+              {bundle.status === "pending" && (
+                <>
+                  <Button variant="outline" className="border-[#6544E4] text-[#6544E4]">
+                    Cancel Request
+                  </Button>
+                  <Button className="bg-[#6544E4] hover:bg-[#5A3DD0]">
+                    Resend Request
+                  </Button>
+                </>
+              )}
+              {bundle.status === "rejected" && (
+                <Button className="bg-[#6544E4] hover:bg-[#5A3DD0]">
+                  Resend Request
+                </Button>
+              )}
+              {bundle.status === "approved" && (
+                <Button className="bg-green-500 hover:bg-green-600">
+                  Download Receipt
+                </Button>
+              )}
+            </div>
           </div>
 
           {/* Bundle content */}
@@ -445,8 +541,8 @@ const BundleDetails = () => {
             {/* Left section - Bundle information */}
             <div className="md:col-span-2 space-y-6">
               {/* Stats cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                <Card>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <Card className="border shadow-sm">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium text-gray-500">
                       Total Amount
@@ -456,22 +552,8 @@ const BundleDetails = () => {
                     <div className="text-2xl font-bold">{bundle.amount}</div>
                   </CardContent>
                 </Card>
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-gray-500">
-                      Status
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <Badge
-                      className={`${getStatusColor(bundle.status)} capitalize text-xs`}
-                      variant="outline"
-                    >
-                      {bundle.status}
-                    </Badge>
-                  </CardContent>
-                </Card>
-                <Card>
+                
+                <Card className="border shadow-sm">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium text-gray-500">
                       Due Date
@@ -484,7 +566,8 @@ const BundleDetails = () => {
                     </div>
                   </CardContent>
                 </Card>
-                <Card>
+                
+                <Card className="border shadow-sm">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium text-gray-500">
                       Priority
@@ -504,34 +587,41 @@ const BundleDetails = () => {
               </div>
 
               {/* Bundle items */}
-              <Card>
+              <Card className="border shadow-sm">
                 <CardHeader>
                   <CardTitle>Bundle Items</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    {bundle.items.map((item, index) => (
-                      <div 
-                        key={index}
-                        className="flex justify-between items-center p-3 bg-gray-50 rounded-md"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="bg-[#6544E4]/10 p-2 rounded">
-                            <Package className="h-5 w-5 text-[#6544E4]" />
-                          </div>
-                          <div>
-                            <p className="font-medium">{item.name}</p>
-                            {item.priority && (
-                              <Badge
-                                className={`${getPriorityColor(item.priority)} capitalize mt-1 text-xs`}
-                                variant="outline"
-                              >
-                                {item.priority}
-                              </Badge>
-                            )}
-                          </div>
+                  <div className="space-y-6">
+                    {Object.entries(groupedItems).map(([category, items]) => (
+                      <div key={category}>
+                        <h3 className="font-medium text-sm text-gray-500 mb-3">{category}</h3>
+                        <div className="space-y-3">
+                          {items.map((item, index) => (
+                            <div 
+                              key={index}
+                              className="flex justify-between items-center p-3 bg-gray-50 rounded-md border border-gray-100"
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className="bg-[#6544E4]/10 p-2 rounded">
+                                  <Package className="h-5 w-5 text-[#6544E4]" />
+                                </div>
+                                <div>
+                                  <p className="font-medium">{item.name}</p>
+                                  {item.priority && (
+                                    <Badge
+                                      className={`${getPriorityColor(item.priority)} capitalize mt-1 text-xs`}
+                                      variant="outline"
+                                    >
+                                      {item.priority}
+                                    </Badge>
+                                  )}
+                                </div>
+                              </div>
+                              <span className="font-semibold">{item.amount}</span>
+                            </div>
+                          ))}
                         </div>
-                        <span className="font-semibold">{item.amount}</span>
                       </div>
                     ))}
                   </div>
@@ -539,7 +629,7 @@ const BundleDetails = () => {
               </Card>
 
               {/* Bundle summary */}
-              <Card>
+              <Card className="border shadow-sm">
                 <CardHeader>
                   <CardTitle>Bundle Summary</CardTitle>
                 </CardHeader>
@@ -579,17 +669,17 @@ const BundleDetails = () => {
 
             {/* Right section - Activity log */}
             <div>
-              <Card className="sticky top-6">
-                <CardHeader>
+              <Card className="sticky top-6 border shadow-sm">
+                <CardHeader className="border-b">
                   <CardTitle>Activity Log</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="pt-4">
                   <div className="space-y-4">
                     {bundle.activityLog.map((activity, index) => (
                       <div key={index} className="flex gap-3">
                         <div className="relative">
-                          <div className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center">
-                            {getActivityIcon(activity.type)}
+                          <div className={`w-7 h-7 rounded-full flex items-center justify-center ${activity.completed ? "bg-green-100" : "bg-gray-100"}`}>
+                            {getActivityIcon(activity.type, activity.completed)}
                           </div>
                           {index < bundle.activityLog.length - 1 && (
                             <div className="absolute top-7 left-1/2 transform -translate-x-1/2 h-full w-0.5 bg-gray-200" />
@@ -608,7 +698,7 @@ const BundleDetails = () => {
                             )}
                           </div>
                           {index < bundle.activityLog.length - 1 && (
-                            <Separator className="my-4" />
+                            <Separator className="my-4 bg-transparent" />
                           )}
                         </div>
                       </div>
