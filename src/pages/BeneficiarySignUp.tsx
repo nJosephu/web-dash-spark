@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -40,9 +39,12 @@ const BeneficiarySignUp = () => {
     }
 
     // Set user role as beneficiary
-    localStorage.setItem("user", JSON.stringify({ email, role: "beneficiary" }));
+    localStorage.setItem(
+      "user",
+      JSON.stringify({ email, role: "beneficiary" })
+    );
     localStorage.setItem("authenticated", "true");
-    
+
     toast.success("Account created successfully");
     navigate("/");
   };
@@ -62,10 +64,11 @@ const BeneficiarySignUp = () => {
 
           <div className="mt-20 max-w-[556px]">
             <h1 className="text-4xl font-bold text-white mb-4">
-              Sign up as a Beneficiary
+              Bundle all your bills in one app — Bill payment made easy
             </h1>
             <p className="text-gray-100 text-lg max-w-md">
-              Create an account to start requesting bill payments and receive support for your essential needs.
+              We simplify financial support by bundling bills into one clear
+              request and sending payments directly to service providers.
             </p>
           </div>
 
