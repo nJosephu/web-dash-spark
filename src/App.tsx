@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Requests from "./pages/Requests";
+import BundleDetails from "./pages/BundleDetails";
 import Sponsors from "./pages/Sponsors";
 import BillHistory from "./pages/BillHistory";
 import SwitchRole from "./pages/SwitchRole";
@@ -65,6 +66,11 @@ const App = () => {
             <Route path="/requests" element={
               <ProtectedRoute>
                 <Requests />
+              </ProtectedRoute>
+            } />
+            <Route path="/requests/:bundleId" element={
+              <ProtectedRoute>
+                <BundleDetails />
               </ProtectedRoute>
             } />
             <Route path="/sponsors" element={
