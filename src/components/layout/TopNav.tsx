@@ -108,7 +108,7 @@ const TopNav = ({ userName }: TopNavProps) => {
           className="relative h-9 w-9 rounded-md bg-white"
         >
           <Bell size={18} className="text-gray-600" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+          <span className="absolute top-1 right-1 w-2 h-2 bg-[#6544E4] rounded-full"></span>
         </Button>
 
         <DropdownMenu>
