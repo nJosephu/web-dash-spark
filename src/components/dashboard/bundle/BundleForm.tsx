@@ -32,14 +32,12 @@ interface BundleFormProps {
   sponsors: Sponsor[];
   onSubmit: (data: FormValues) => void;
   onAddAnotherBill: (data: FormValues) => void;
-  onSaveToDraft: () => void;
 }
 
 export default function BundleForm({
   sponsors,
   onSubmit,
   onAddAnotherBill,
-  onSaveToDraft,
 }: BundleFormProps) {
   // Default values for the form
   const defaultValues: Partial<FormValues> = {
@@ -285,15 +283,8 @@ export default function BundleForm({
           </Button>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 pt-4 mt-5 border-t">
-          <Button 
-            type="button" 
-            variant="outline" 
-            onClick={onSaveToDraft}
-          >
-            Save to draft
-          </Button>
-          <Button type="submit" className="bg-[#6544E4] hover:bg-[#5A3DD0]">
+        <div className="pt-4 mt-5 border-t">
+          <Button type="submit" className="w-full bg-[#6544E4] hover:bg-[#5A3DD0]">
             Continue
           </Button>
         </div>

@@ -36,12 +36,6 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
     toast.success("Bill added to bundle");
   }
 
-  function handleSaveToDraft() {
-    console.log("Saved to draft");
-    toast.success("Bundle saved to draft");
-    setOpen(false);
-  }
-
   function handleRemoveBill(index: number) {
     setBills(bills.filter((_, i) => i !== index));
     toast.success("Bill removed from bundle");
@@ -63,7 +57,6 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
           sponsors={sponsors}
           onSubmit={onSubmit}
           onAddAnotherBill={handleAddAnotherBill}
-          onSaveToDraft={handleSaveToDraft}
         />
       </SheetContent>
     </Sheet>
