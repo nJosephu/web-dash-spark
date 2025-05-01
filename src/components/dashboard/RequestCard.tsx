@@ -73,6 +73,7 @@ const RequestCard = ({
 
   return (
     <Card className="overflow-hidden border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+      {/* Card Header with ID, status and priority */}
       <div className="flex items-center justify-between border-b border-gray-100 p-4">
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5">
@@ -99,14 +100,18 @@ const RequestCard = ({
       </div>
       
       <CardContent className="p-4">
-        <h3 className="text-base font-medium mb-4 truncate">{title}</h3>
+        {/* Title */}
+        <h3 className="text-base font-medium mb-4 line-clamp-1">{title}</h3>
 
+        {/* Details */}
         <div className="flex flex-col space-y-3">
+          {/* Amount */}
           <div className="flex justify-between items-center">
             <span className="text-xs text-gray-500">Amount</span>
             <span className="text-sm font-semibold">{amount}</span>
           </div>
 
+          {/* Due date */}
           <div className="flex justify-between items-center">
             <span className="text-xs text-gray-500">Due date</span>
             <div className="flex items-center text-xs">
@@ -115,6 +120,7 @@ const RequestCard = ({
             </div>
           </div>
 
+          {/* Sponsor */}
           <div className="flex justify-between items-center">
             <span className="text-xs text-gray-500">Sponsor</span>
             <div className="flex items-center gap-1.5">
@@ -131,6 +137,7 @@ const RequestCard = ({
           </div>
         </div>
 
+        {/* Actions */}
         <div className="mt-4 space-y-2">
           <Button
             asChild

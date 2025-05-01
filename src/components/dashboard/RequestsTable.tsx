@@ -83,11 +83,11 @@ const RequestsTable = () => {
               <input
                 type="text"
                 placeholder="Search"
-                className="pl-9 pr-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-[#7B68EE] focus:border-[#7B68EE] h-9"
+                className="pl-9 pr-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-[#6544E4] focus:border-[#6544E4] h-9"
               />
             </div>
           </div>
-          <Button variant="ghost" className="text-[#7B68EE] hover:text-[#7B68EE]/90 hover:bg-purple-50 h-9">
+          <Button variant="ghost" className="text-[#6544E4] hover:text-[#6544E4]/90 hover:bg-purple-50 h-9">
             View all
           </Button>
         </div>
@@ -134,7 +134,7 @@ const RequestsTable = () => {
                 <TableCell>{request.created}</TableCell>
                 <TableCell>{request.dueDate}</TableCell>
                 <TableCell>
-                  <Button variant="ghost" size="sm" className="text-[#7B68EE]">
+                  <Button variant="ghost" size="sm" className="text-[#6544E4]">
                     View more info
                   </Button>
                 </TableCell>
