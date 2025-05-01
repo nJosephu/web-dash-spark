@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ArrowLeft, Calendar, Clock, File, FileText, Package, Tag } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, File, FileText, Package, Tag, X } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 interface BundleItem {
