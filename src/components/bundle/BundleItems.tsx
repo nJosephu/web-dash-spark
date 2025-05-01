@@ -1,0 +1,86 @@
+
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Package } from "lucide-react";
+
+interface BundleItem {
+  name: string;
+  amount: string;
+  priority?: "high" | "medium" | "low";
+  category?: string;
+}
+
+interface BundleItemsProps {
+  items: BundleItem[];
+}
+
+const BundleItems: React.FC<BundleItemsProps> = ({ items }) => {
+  const getPriorityColor = (priority: string | undefined) => {
+    switch (priority) {
+      case "high":
+        return "bg-red-100 text-red-800";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800";
+      case "low":
+        return "bg-blue-100 text-blue-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  // Group bundle items by category
+  const groupedItems: Record<string, BundleItem[]> = {};
+  items.forEach(item => {
+    const category = item.category || 'Other';
+    if (!groupedItems[category]) {
+      groupedItems[category] = [];
+    }
+    groupedItems[category].push(item);
+  });
+
+  return (
+    <Card className="border shadow-sm">
+      <CardHeader>
+        <CardTitle>Bundle Items</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-6">
+          {Object.entries(groupedItems).map(([category, items]) => (
+            <div key={category}>
+              <h3 className="font-medium text-sm text-gray-500 mb-3">{category}</h3>
+              <div className="space-y-3">
+                {items.map((item, index) => (
+                  <div 
+                    key={index}
+                    className="flex justify-between items-center p-3 bg-gray-50 rounded-md border border-gray-100"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="bg-[#6544E4]/10 p-2 rounded">
+                        <Package className="h-5 w-5 text-[#6544E4]" />
+                      </div>
+                      <div>
+                        <p className="font-medium">{item.name}</p>
+                        {item.priority && (
+                          <Badge
+                            className={`${getPriorityColor(item.priority)} capitalize mt-1 text-xs`}
+                            variant="outline"
+                          >
+                            {item.priority}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                    <span className="font-semibold">{item.amount}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default BundleItems;
