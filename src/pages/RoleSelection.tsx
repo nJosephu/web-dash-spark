@@ -19,19 +19,12 @@ const RoleSelection = () => {
       return;
     }
 
-    // Save the role in localStorage
-    const userData = JSON.parse(localStorage.getItem("user") || "{}");
-    localStorage.setItem(
-      "user",
-      JSON.stringify({
-        ...userData,
-        role: selectedRole,
-      })
-    );
-
-    localStorage.setItem("authenticated", "true");
-    toast.success("Account setup completed");
-    navigate("/");
+    // Navigate to the appropriate signup page based on role
+    if (selectedRole === "beneficiary") {
+      navigate("/beneficiary-signup");
+    } else if (selectedRole === "sponsor") {
+      navigate("/sponsor-signup");
+    }
   };
 
   const handleCardClick = (role: string) => {
