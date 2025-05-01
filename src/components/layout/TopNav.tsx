@@ -1,3 +1,4 @@
+
 import {
   Bell,
   LayoutGrid,
@@ -7,6 +8,7 @@ import {
   SwitchCamera,
   Settings,
   LogOut,
+  Package,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -39,6 +41,14 @@ const TopNav = ({ userName }: TopNavProps) => {
   };
 
   const getPageInfo = () => {
+    // Check if we're on a bundle details page
+    if (location.pathname.match(/^\/requests\/[^\/]+$/)) {
+      return {
+        title: "Bundle Details",
+        icon: <Package size={18} className="text-gray-700" />,
+      };
+    }
+
     switch (location.pathname) {
       case "/":
         return {

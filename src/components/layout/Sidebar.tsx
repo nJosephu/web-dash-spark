@@ -66,6 +66,15 @@ const Sidebar = ({ className }: SidebarProps) => {
     },
   ];
 
+  // Helper function to determine if an item is active
+  const isItemActive = (path: string): boolean => {
+    if (path === "/") {
+      return location.pathname === "/";
+    }
+    // For request details pages, highlight the "My requests" link
+    return location.pathname.startsWith(path);
+  };
+
   const SidebarContent = () => (
     <div className="flex flex-col h-full bg-[#1A1F2C] text-white">
       <div className="p-4 flex items-center gap-2">
@@ -79,7 +88,7 @@ const Sidebar = ({ className }: SidebarProps) => {
             to={item.path}
             className={cn(
               "flex items-center gap-3 px-4 py-3 rounded-md transition-colors",
-              location.pathname === item.path
+              isItemActive(item.path)
                 ? "bg-[#6544E4] text-white"
                 : "text-gray-300 hover:bg-sidebar-hover"
             )}
