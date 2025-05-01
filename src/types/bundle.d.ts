@@ -1,5 +1,5 @@
 
-// Extending the existing bundle.ts to include BundleDetails types
+// Bundle types definitions
 export interface BundleItem {
   name: string;
   amount: string;
