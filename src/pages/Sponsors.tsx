@@ -172,10 +172,13 @@ const Sponsors = () => {
       toast.success("Sponsor updated successfully");
       setIsEditDialogOpen(false);
     } else {
-      // Create new sponsor
+      // Create new sponsor - FIX: Ensure all required properties are explicitly set
       const newSponsor: Sponsor = {
         id: Math.max(0, ...sponsors.map((s) => s.id)) + 1,
-        ...data,
+        name: data.name,
+        relationship: data.relationship,
+        email: data.email,
+        phone: data.phone,
         joinedDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
       };
       setSponsors([...sponsors, newSponsor]);
