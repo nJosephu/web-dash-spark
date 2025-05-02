@@ -1,4 +1,3 @@
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -81,24 +80,17 @@ const RequestCard = ({
             <span className="text-xs font-medium text-gray-500">{id}</span>
           </div>
           <Badge
-            className={`${getStatusColor(status)} text-xs font-medium capitalize`}
+            className={`${getStatusColor(
+              status
+            )} text-xs font-medium capitalize`}
             variant="outline"
           >
             {status}
           </Badge>
         </div>
-        <div>
-          {priority && (
-            <Badge
-              className={`${getPriorityColor(priority)} text-xs font-medium capitalize`}
-              variant="outline"
-            >
-              {priority}
-            </Badge>
-          )}
-        </div>
+        <div></div>
       </div>
-      
+
       <CardContent className="p-4">
         {/* Title */}
         <h3 className="text-base font-medium mb-4 line-clamp-1">{title}</h3>
@@ -148,7 +140,7 @@ const RequestCard = ({
               <ArrowRight className="h-3.5 w-3.5 ml-1" />
             </Link>
           </Button>
-          
+
           <div className="flex gap-2">
             <Button
               variant="outline"
