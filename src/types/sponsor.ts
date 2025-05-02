@@ -1,4 +1,6 @@
 
+import * as z from "zod";
+
 // Define sponsor related types
 export interface Sponsor {
   id: number;
