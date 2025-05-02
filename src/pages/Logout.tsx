@@ -1,22 +1,22 @@
-import { useEffect, useState } from "react";
+
+import { useEffect } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import TopNav from "@/components/layout/TopNav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthContext";
 
 const Logout = () => {
-  const [userName, setUserName] = useState("User");
+  const { user, logout } = useAuth();
+  const userName = user?.name || "User";
 
   useEffect(() => {
     document.title = "Logout | Urgent2kay";
-    
-    // Get user data from localStorage
-    const userData = JSON.parse(localStorage.getItem("user") || "{}");
-    if (userData.email) {
-      // Extract name from email (for demo purposes)
-      const nameFromEmail = userData.email.split('@')[0];
-      setUserName(nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1));
-    }
   }, []);
+
+  const handleLogout = () => {
+    logout();
+  };
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -30,8 +30,22 @@ const Logout = () => {
             <CardHeader>
               <CardTitle>Logout</CardTitle>
             </CardHeader>
-            <CardContent>
-              Are you sure you want to log out?
+            <CardContent className="space-y-4">
+              <p>Are you sure you want to log out?</p>
+              <div className="flex gap-4">
+                <Button 
+                  variant="destructive" 
+                  onClick={handleLogout}
+                >
+                  Yes, Log me out
+                </Button>
+                <Button 
+                  variant="outline"
+                  onClick={() => window.history.back()}
+                >
+                  Cancel
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>

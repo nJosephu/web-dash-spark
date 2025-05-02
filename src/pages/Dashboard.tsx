@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+
+import { useEffect } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import TopNav from "@/components/layout/TopNav";
 import PromoBanner from "@/components/dashboard/PromoBanner";
@@ -6,22 +7,14 @@ import StatCard from "@/components/dashboard/StatCard";
 import DonutChart from "@/components/dashboard/DonutChart";
 import RequestsTable from "@/components/dashboard/RequestsTable";
 import { Card } from "@/components/ui/card";
+import { useAuth } from "@/context/AuthContext";
 
 const Dashboard = () => {
-  const [userName, setUserName] = useState("User");
+  const { user } = useAuth();
+  const userName = user?.name || "User";
 
   useEffect(() => {
     document.title = "Dashboard | Urgent2kay";
-
-    // Get user data from localStorage
-    const userData = JSON.parse(localStorage.getItem("user") || "{}");
-    if (userData.email) {
-      // Extract name from email (for demo purposes)
-      const nameFromEmail = userData.email.split("@")[0];
-      setUserName(
-        nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1)
-      );
-    }
   }, []);
 
   const chartData = [

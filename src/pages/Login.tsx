@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Mail, Eye, EyeOff } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 import DashboardImage from "../images/signupDashboard.png";
 import googleIcon from "../images/google.png";
 import logo from "../images/logo2k.png";
@@ -16,9 +18,10 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { login } = useAuth();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!email || !password) {
@@ -26,12 +29,14 @@ const Login = () => {
       return;
     }
 
-    // Simple mock authentication
-    localStorage.setItem("authenticated", "true");
-    localStorage.setItem("user", JSON.stringify({ email }));
-
-    toast.success("Login successful");
-    navigate("/");
+    try {
+      setIsSubmitting(true);
+      await login(email, password);
+      // The redirect is handled in the AuthContext
+    } catch (error) {
+      // Error toast is already shown in the AuthContext
+      setIsSubmitting(false);
+    }
   };
 
   const handleGoogleLogin = () => {
@@ -118,6 +123,7 @@ const Login = () => {
                     className="pl-10"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    disabled={isSubmitting}
                   />
                 </div>
 
@@ -155,6 +161,7 @@ const Login = () => {
                     className="pl-10 pr-10"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    disabled={isSubmitting}
                   />
                   <div
                     className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
@@ -177,6 +184,7 @@ const Login = () => {
                     onCheckedChange={(checked) =>
                       setRememberMe(checked === true)
                     }
+                    disabled={isSubmitting}
                   />
                   <Label htmlFor="remember" className="text-sm font-normal">
                     Remember me
@@ -193,8 +201,9 @@ const Login = () => {
               <Button
                 type="submit"
                 className="w-full bg-[#6544E4] hover:bg-[#6A57DD] rounded-md"
+                disabled={isSubmitting}
               >
-                Login in
+                {isSubmitting ? "Logging in..." : "Login in"}
               </Button>
 
               <p className="text-center text-sm text-gray-500">

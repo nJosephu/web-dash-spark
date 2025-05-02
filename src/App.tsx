@@ -19,18 +19,81 @@ import BeneficiarySignUp from "./pages/BeneficiarySignUp";
 import SponsorSignUp from "./pages/SponsorSignUp";
 import NotFound from "./pages/NotFound";
 import { useEffect, useState } from "react";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 
 const queryClient = new QueryClient();
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const isAuthenticated = localStorage.getItem("authenticated") === "true";
+  const { isAuthenticated, isLoading } = useAuth();
+  
+  if (isLoading) {
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+  }
   
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
   
   return <>{children}</>;
+};
+
+const AppRoutes = () => {
+  return (
+    <Routes>
+      {/* Auth Routes */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<SignUp />} />
+      <Route path="/role-selection" element={<RoleSelection />} />
+      <Route path="/beneficiary-signup" element={<BeneficiarySignUp />} />
+      <Route path="/sponsor-signup" element={<SponsorSignUp />} />
+      
+      {/* Protected Routes */}
+      <Route path="/" element={
+        <ProtectedRoute>
+          <Dashboard />
+        </ProtectedRoute>
+      } />
+      <Route path="/requests" element={
+        <ProtectedRoute>
+          <Requests />
+        </ProtectedRoute>
+      } />
+      <Route path="/requests/:bundleId" element={
+        <ProtectedRoute>
+          <BundleDetails />
+        </ProtectedRoute>
+      } />
+      <Route path="/sponsors" element={
+        <ProtectedRoute>
+          <Sponsors />
+        </ProtectedRoute>
+      } />
+      <Route path="/bill-history" element={
+        <ProtectedRoute>
+          <BillHistory />
+        </ProtectedRoute>
+      } />
+      <Route path="/switch" element={
+        <ProtectedRoute>
+          <SwitchRole />
+        </ProtectedRoute>
+      } />
+      <Route path="/settings" element={
+        <ProtectedRoute>
+          <Settings />
+        </ProtectedRoute>
+      } />
+      <Route path="/logout" element={
+        <ProtectedRoute>
+          <Logout />
+        </ProtectedRoute>
+      } />
+      
+      {/* 404 Route */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
 };
 
 const App = () => {
@@ -48,63 +111,13 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <TooltipProvider>
-          <Routes>
-            {/* Auth Routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/role-selection" element={<RoleSelection />} />
-            <Route path="/beneficiary-signup" element={<BeneficiarySignUp />} />
-            <Route path="/sponsor-signup" element={<SponsorSignUp />} />
-            
-            {/* Protected Routes */}
-            <Route path="/" element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/requests" element={
-              <ProtectedRoute>
-                <Requests />
-              </ProtectedRoute>
-            } />
-            <Route path="/requests/:bundleId" element={
-              <ProtectedRoute>
-                <BundleDetails />
-              </ProtectedRoute>
-            } />
-            <Route path="/sponsors" element={
-              <ProtectedRoute>
-                <Sponsors />
-              </ProtectedRoute>
-            } />
-            <Route path="/bill-history" element={
-              <ProtectedRoute>
-                <BillHistory />
-              </ProtectedRoute>
-            } />
-            <Route path="/switch" element={
-              <ProtectedRoute>
-                <SwitchRole />
-              </ProtectedRoute>
-            } />
-            <Route path="/settings" element={
-              <ProtectedRoute>
-                <Settings />
-              </ProtectedRoute>
-            } />
-            <Route path="/logout" element={
-              <ProtectedRoute>
-                <Logout />
-              </ProtectedRoute>
-            } />
-            
-            {/* 404 Route */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <Toaster />
-          <Sonner />
-        </TooltipProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <AppRoutes />
+            <Toaster />
+            <Sonner />
+          </TooltipProvider>
+        </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>
   );
