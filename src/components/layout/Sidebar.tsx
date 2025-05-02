@@ -1,4 +1,3 @@
-
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutGrid,
@@ -129,7 +128,7 @@ const Sidebar = ({ className }: SidebarProps) => {
             <Button
               variant="ghost"
               size="icon"
-              className="fixed left-4 top-4 z-50"
+              className="fixed left-4 top-4 z-50 bg-[#F1EDFF]"
             >
               <Menu className="h-6 w-6" />
             </Button>
@@ -145,7 +144,7 @@ const Sidebar = ({ className }: SidebarProps) => {
   return (
     <aside
       className={cn(
-        "w-64 hidden md:flex flex-col bg-[#1A1F2C] text-white h-screen fixed left-0 top-0",
+        "w-64 hidden md:flex flex-col bg-[#1A1F2C] text-white h-full fixed left-0 top-0",
         className
       )}
     >

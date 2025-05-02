@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -12,9 +11,14 @@ interface BundleHeaderProps {
   status: "pending" | "approved" | "rejected";
 }
 
-const BundleHeader: React.FC<BundleHeaderProps> = ({ id, title, date, status }) => {
+const BundleHeader: React.FC<BundleHeaderProps> = ({
+  id,
+  title,
+  date,
+  status,
+}) => {
   const navigate = useNavigate();
-  
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -23,10 +27,10 @@ const BundleHeader: React.FC<BundleHeaderProps> = ({ id, title, date, status }) 
       year: "numeric",
     });
   };
-  
+
   const renderStatusBadge = (status: string) => {
     let bgColor, textColor;
-    
+
     switch (status) {
       case "pending":
         bgColor = "bg-yellow-500";
@@ -44,7 +48,7 @@ const BundleHeader: React.FC<BundleHeaderProps> = ({ id, title, date, status }) 
         bgColor = "bg-gray-500";
         textColor = "text-white";
     }
-    
+
     return (
       <Badge className={`${bgColor} ${textColor} capitalize px-3 py-1`}>
         {status}
@@ -77,7 +81,10 @@ const BundleHeader: React.FC<BundleHeaderProps> = ({ id, title, date, status }) 
         <div className="flex gap-3">
           {status === "pending" && (
             <>
-              <Button variant="outline" className="border-[#6544E4] text-[#6544E4]">
+              <Button
+                variant="outline"
+                className="border-[#6544E4] text-[#6544E4]"
+              >
                 Cancel Request
               </Button>
               <Button className="bg-[#6544E4] hover:bg-[#5A3DD0]">
@@ -91,7 +98,7 @@ const BundleHeader: React.FC<BundleHeaderProps> = ({ id, title, date, status }) 
             </Button>
           )}
           {status === "approved" && (
-            <Button className="bg-green-500 hover:bg-green-600">
+            <Button className="bg-[#6544E4] hover:bg-[#5A3DD0]">
               Download Receipt
             </Button>
           )}

@@ -71,7 +71,7 @@ const RequestCard = ({
   };
 
   return (
-    <Card className="overflow-hidden border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+    <Card className="overflow-hidden border border-gray-200 rounded-lg ">
       {/* Card Header with ID, status and priority */}
       <div className="flex items-center justify-between border-b border-gray-100 p-4">
         <div className="flex items-center gap-2">
@@ -88,7 +88,6 @@ const RequestCard = ({
             {status}
           </Badge>
         </div>
-        <div></div>
       </div>
 
       <CardContent className="p-4">
@@ -131,6 +130,7 @@ const RequestCard = ({
 
         {/* Actions */}
         <div className="mt-4 space-y-2">
+          {/* View Details - always shown */}
           <Button
             asChild
             className="w-full bg-[#6544E4] hover:bg-[#5A3DD0] rounded-md h-9 text-xs"
@@ -141,21 +141,24 @@ const RequestCard = ({
             </Link>
           </Button>
 
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              className="flex-1 text-red-600 border-red-200 hover:bg-red-50 h-9 text-xs rounded-md"
-            >
-              <X className="h-3.5 w-3.5 mr-1" />
-              Cancel
-            </Button>
-            <Button
-              variant="outline"
-              className="flex-1 text-[#6544E4] border-[#6544E4] hover:bg-[#6544E4]/10 h-9 text-xs rounded-md"
-            >
-              Remind
-            </Button>
-          </div>
+          {/* Cancel and Remind - shown only if not approved */}
+          {status !== "approved" && (
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                className="flex-1 text-red-600 border-red-200 hover:bg-red-50 h-9 text-xs rounded-md"
+              >
+                <X className="h-3.5 w-3.5 mr-1" />
+                Cancel
+              </Button>
+              <Button
+                variant="outline"
+                className="flex-1 text-[#6544E4] border-[#6544E4] hover:bg-[#6544E4]/10 h-9 text-xs rounded-md"
+              >
+                Remind
+              </Button>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -31,8 +30,8 @@ const BundleItems: React.FC<BundleItemsProps> = ({ items }) => {
 
   // Group bundle items by category
   const groupedItems: Record<string, BundleItem[]> = {};
-  items.forEach(item => {
-    const category = item.category || 'Other';
+  items.forEach((item) => {
+    const category = item.category || "Other";
     if (!groupedItems[category]) {
       groupedItems[category] = [];
     }
@@ -40,7 +39,7 @@ const BundleItems: React.FC<BundleItemsProps> = ({ items }) => {
   });
 
   return (
-    <Card className="border shadow-sm">
+    <Card className="border">
       <CardHeader>
         <CardTitle>Bundle Items</CardTitle>
       </CardHeader>
@@ -48,10 +47,12 @@ const BundleItems: React.FC<BundleItemsProps> = ({ items }) => {
         <div className="space-y-6">
           {Object.entries(groupedItems).map(([category, items]) => (
             <div key={category}>
-              <h3 className="font-medium text-sm text-gray-500 mb-3">{category}</h3>
+              <h3 className="font-medium text-sm text-gray-500 mb-3">
+                {category}
+              </h3>
               <div className="space-y-3">
                 {items.map((item, index) => (
-                  <div 
+                  <div
                     key={index}
                     className="flex justify-between items-center p-3 bg-gray-50 rounded-md border border-gray-100"
                   >
@@ -63,7 +64,9 @@ const BundleItems: React.FC<BundleItemsProps> = ({ items }) => {
                         <p className="font-medium">{item.name}</p>
                         {item.priority && (
                           <Badge
-                            className={`${getPriorityColor(item.priority)} capitalize mt-1 text-xs`}
+                            className={`${getPriorityColor(
+                              item.priority
+                            )} capitalize mt-1 text-xs`}
                             variant="outline"
                           >
                             {item.priority}

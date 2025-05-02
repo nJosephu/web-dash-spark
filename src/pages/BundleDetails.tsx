@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "@/components/layout/Sidebar";
@@ -24,12 +23,23 @@ const mockBundles: Record<string, Bundle> = {
     status: "approved",
     sponsor: {
       name: "John Doe",
-      avatar: ""
+      avatar: "",
     },
     priority: "high",
     description: "Monthly rent payment for apartment",
     items: [
-      { name: "Rent", amount: "₦120,000", priority: "high", category: "Accommodation" }
+      {
+        name: "Rent",
+        amount: "₦120,000",
+        priority: "high",
+        category: "Accommodation",
+      },
+      {
+        name: "Rent",
+        amount: "₦120,000",
+        priority: "high",
+        category: "Accommodation",
+      },
     ],
     activityLog: [
       {
@@ -37,47 +47,47 @@ const mockBundles: Record<string, Bundle> = {
         message: "Bundle was created",
         timestamp: "2025-04-20T10:30:00",
         user: {
-          name: "You"
+          name: "You",
         },
-        completed: true
+        completed: true,
       },
       {
         type: "sent",
         message: "Bundle was sent to John Doe",
         timestamp: "2025-04-20T10:35:00",
         user: {
-          name: "System"
+          name: "System",
         },
-        completed: true
+        completed: true,
       },
       {
         type: "viewed",
         message: "John Doe viewed the bundle",
         timestamp: "2025-04-21T14:22:00",
         user: {
-          name: "John Doe"
+          name: "John Doe",
         },
-        completed: true
+        completed: true,
       },
       {
         type: "approved",
         message: "Bundle was approved",
         timestamp: "2025-04-22T09:15:00",
         user: {
-          name: "John Doe"
+          name: "John Doe",
         },
-        completed: true
+        completed: true,
       },
       {
         type: "completed",
         message: "Payment was processed",
         timestamp: "2025-04-23T11:30:00",
         user: {
-          name: "System"
+          name: "System",
         },
-        completed: true
-      }
-    ]
+        completed: true,
+      },
+    ],
   },
   "REQ-002": {
     id: "U2K-001290",
@@ -87,12 +97,17 @@ const mockBundles: Record<string, Bundle> = {
     status: "pending",
     sponsor: {
       name: "Jane Smith",
-      avatar: ""
+      avatar: "",
     },
     priority: "medium",
     description: "Monthly electricity bill payment",
     items: [
-      { name: "Electricity", amount: "₦45,000", priority: "medium", category: "Utilities" }
+      {
+        name: "Electricity",
+        amount: "₦45,000",
+        priority: "medium",
+        category: "Utilities",
+      },
     ],
     activityLog: [
       {
@@ -100,38 +115,38 @@ const mockBundles: Record<string, Bundle> = {
         message: "Bundle was created",
         timestamp: "2025-04-18T08:30:00",
         user: {
-          name: "You"
+          name: "You",
         },
-        completed: true
+        completed: true,
       },
       {
         type: "sent",
         message: "Bundle was sent to Jane Smith",
         timestamp: "2025-04-18T08:35:00",
         user: {
-          name: "System"
+          name: "System",
         },
-        completed: true
+        completed: true,
       },
       {
         type: "viewed",
         message: "Jane Smith viewed the bundle",
         timestamp: "2025-04-19T10:15:00",
         user: {
-          name: "Jane Smith"
+          name: "Jane Smith",
         },
-        completed: true
+        completed: true,
       },
       {
         type: "pending",
         message: "Awaiting sponsor approval",
         timestamp: "2025-04-19T10:20:00",
         user: {
-          name: "System"
+          name: "System",
         },
-        completed: false
-      }
-    ]
+        completed: false,
+      },
+    ],
   },
   "REQ-003": {
     id: "U2K-001291",
@@ -141,12 +156,17 @@ const mockBundles: Record<string, Bundle> = {
     status: "rejected",
     sponsor: {
       name: "Mike Johnson",
-      avatar: ""
+      avatar: "",
     },
     priority: "low",
     description: "Monthly water bill payment",
     items: [
-      { name: "Water", amount: "₦15,000", priority: "low", category: "Utilities" }
+      {
+        name: "Water",
+        amount: "₦15,000",
+        priority: "low",
+        category: "Utilities",
+      },
     ],
     activityLog: [
       {
@@ -154,38 +174,38 @@ const mockBundles: Record<string, Bundle> = {
         message: "Bundle was created",
         timestamp: "2025-04-15T14:30:00",
         user: {
-          name: "You"
+          name: "You",
         },
-        completed: true
+        completed: true,
       },
       {
         type: "sent",
         message: "Bundle was sent to Mike Johnson",
         timestamp: "2025-04-15T14:35:00",
         user: {
-          name: "System"
+          name: "System",
         },
-        completed: true
+        completed: true,
       },
       {
         type: "viewed",
         message: "Mike Johnson viewed the bundle",
         timestamp: "2025-04-16T09:22:00",
         user: {
-          name: "Mike Johnson"
+          name: "Mike Johnson",
         },
-        completed: true
+        completed: true,
       },
       {
         type: "rejected",
         message: "Bundle was rejected: Not in budget this month",
         timestamp: "2025-04-16T10:15:00",
         user: {
-          name: "Mike Johnson"
+          name: "Mike Johnson",
         },
-        completed: true
-      }
-    ]
+        completed: true,
+      },
+    ],
   },
   "REQ-004": {
     id: "U2K-001292",
@@ -195,12 +215,17 @@ const mockBundles: Record<string, Bundle> = {
     status: "approved",
     sponsor: {
       name: "Mike Johnson",
-      avatar: ""
+      avatar: "",
     },
     priority: "medium",
     description: "Monthly internet subscription",
     items: [
-      { name: "Internet", amount: "₦25,000", priority: "medium", category: "Utilities" }
+      {
+        name: "Internet",
+        amount: "₦25,000",
+        priority: "medium",
+        category: "Utilities",
+      },
     ],
     activityLog: [
       {
@@ -208,47 +233,47 @@ const mockBundles: Record<string, Bundle> = {
         message: "Bundle was created",
         timestamp: "2025-04-10T10:30:00",
         user: {
-          name: "You"
+          name: "You",
         },
-        completed: true
+        completed: true,
       },
       {
         type: "sent",
         message: "Bundle was sent to Mike Johnson",
         timestamp: "2025-04-10T10:35:00",
         user: {
-          name: "System"
+          name: "System",
         },
-        completed: true
+        completed: true,
       },
       {
         type: "viewed",
         message: "Mike Johnson viewed the bundle",
         timestamp: "2025-04-12T14:22:00",
         user: {
-          name: "Mike Johnson"
+          name: "Mike Johnson",
         },
-        completed: true
+        completed: true,
       },
       {
         type: "approved",
         message: "Bundle was approved",
         timestamp: "2025-04-12T15:15:00",
         user: {
-          name: "Mike Johnson"
+          name: "Mike Johnson",
         },
-        completed: true
+        completed: true,
       },
       {
         type: "completed",
         message: "Payment was processed",
         timestamp: "2025-04-13T11:30:00",
         user: {
-          name: "System"
+          name: "System",
         },
-        completed: true
-      }
-    ]
+        completed: true,
+      },
+    ],
   },
   "REQ-005": {
     id: "U2K-001293",
@@ -258,13 +283,23 @@ const mockBundles: Record<string, Bundle> = {
     status: "pending",
     sponsor: {
       name: "Sarah Williams",
-      avatar: ""
+      avatar: "",
     },
     priority: "high",
     description: "Semester school fees payment",
     items: [
-      { name: "Tuition", amount: "₦150,000", priority: "high", category: "Education" },
-      { name: "Books", amount: "₦30,000", priority: "medium", category: "Education" }
+      {
+        name: "Tuition",
+        amount: "₦150,000",
+        priority: "high",
+        category: "Education",
+      },
+      {
+        name: "Books",
+        amount: "₦30,000",
+        priority: "medium",
+        category: "Education",
+      },
     ],
     activityLog: [
       {
@@ -272,38 +307,38 @@ const mockBundles: Record<string, Bundle> = {
         message: "Bundle was created",
         timestamp: "2025-04-05T16:30:00",
         user: {
-          name: "You"
+          name: "You",
         },
-        completed: true
+        completed: true,
       },
       {
         type: "sent",
         message: "Bundle was sent to Sarah Williams",
         timestamp: "2025-04-05T16:35:00",
         user: {
-          name: "System"
+          name: "System",
         },
-        completed: true
+        completed: true,
       },
       {
         type: "viewed",
         message: "Sarah Williams viewed the bundle",
         timestamp: "2025-04-07T09:22:00",
         user: {
-          name: "Sarah Williams"
+          name: "Sarah Williams",
         },
-        completed: true
+        completed: true,
       },
       {
         type: "pending",
         message: "Awaiting sponsor approval",
         timestamp: "2025-04-07T09:30:00",
         user: {
-          name: "System"
+          name: "System",
         },
-        completed: false
-      }
-    ]
+        completed: false,
+      },
+    ],
   },
 };
 
@@ -312,7 +347,7 @@ const BundleDetails = () => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState("User");
   const [bundle, setBundle] = useState<Bundle | null>(null);
-  
+
   useEffect(() => {
     // Get user data from localStorage
     const userData = JSON.parse(localStorage.getItem("user") || "{}");
@@ -346,11 +381,11 @@ const BundleDetails = () => {
 
         <div className="max-w-[100vw] overflow-x-hidden p-4 pt-0 md:p-6 md:pt-0">
           {/* Bundle header with navigation and action buttons */}
-          <BundleHeader 
-            id={bundle.id} 
-            title={bundle.title} 
-            date={bundle.date} 
-            status={bundle.status} 
+          <BundleHeader
+            id={bundle.id}
+            title={bundle.title}
+            date={bundle.date}
+            status={bundle.status}
           />
 
           {/* Bundle content */}
@@ -358,20 +393,20 @@ const BundleDetails = () => {
             {/* Left section - Bundle information */}
             <div className="md:col-span-2 space-y-6">
               {/* Stats cards */}
-              <StatCards 
-                amount={bundle.amount} 
-                date={bundle.date} 
-                priority={bundle.priority} 
+              <StatCards
+                amount={bundle.amount}
+                date={bundle.date}
+                priority={bundle.priority}
               />
 
               {/* Bundle items */}
               <BundleItems items={bundle.items} />
 
               {/* Bundle summary */}
-              <BundleSummary 
-                description={bundle.description} 
-                sponsor={bundle.sponsor} 
-                amount={bundle.amount} 
+              <BundleSummary
+                description={bundle.description}
+                sponsor={bundle.sponsor}
+                amount={bundle.amount}
               />
             </div>
 

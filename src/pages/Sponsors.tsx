@@ -1,20 +1,64 @@
-
 import { useEffect, useState } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import TopNav from "@/components/layout/TopNav";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Search, MoreHorizontal, Edit, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useApi } from "@/hooks/useApi";
 import { useToast } from "@/hooks/use-toast";
 import { toast } from "sonner";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Sponsor, SponsorFormValues, sponsorFormSchema } from "@/types/sponsor";
@@ -102,7 +146,7 @@ const Sponsors = () => {
   // Filter sponsors based on search query
   const filteredSponsors = sponsors.filter((sponsor) => {
     if (!searchQuery.trim()) return true;
-    
+
     const query = searchQuery.toLowerCase();
     return (
       sponsor.name.toLowerCase().includes(query) ||
@@ -141,9 +185,7 @@ const Sponsors = () => {
     if (isEditSheetOpen && selectedSponsor) {
       // Update existing sponsor
       const updatedSponsors = sponsors.map((s) =>
-        s.id === selectedSponsor.id
-          ? { ...s, ...data }
-          : s
+        s.id === selectedSponsor.id ? { ...s, ...data } : s
       );
       setSponsors(updatedSponsors);
       toast.success("Sponsor updated successfully");
@@ -156,7 +198,10 @@ const Sponsors = () => {
         relationship: data.relationship,
         email: data.email,
         phone: data.phone,
-        joinedDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+        joinedDate: new Date().toLocaleDateString("en-US", {
+          month: "short",
+          year: "numeric",
+        }),
       };
       setSponsors([...sponsors, newSponsor]);
       toast.success("Sponsor added successfully");
@@ -190,7 +235,13 @@ const Sponsors = () => {
     }
   };
 
-  const relationshipOptions = ["Family", "Friend", "Colleague", "Business", "Other"];
+  const relationshipOptions = [
+    "Family",
+    "Friend",
+    "Colleague",
+    "Business",
+    "Other",
+  ];
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -200,27 +251,26 @@ const Sponsors = () => {
         <TopNav userName={userName} />
 
         <div className="max-w-[100vw] overflow-x-hidden p-4 pt-0 md:p-6 md:pt-0">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <h1 className="text-2xl font-bold">Sponsors</h1>
-              <p className="text-gray-500">
-                View and manage your bill sponsors
-              </p>
-            </div>
-          </div>
-
           <Card>
             <CardHeader>
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
-                  <CardTitle>Your Sponsors</CardTitle>
+                  <div className="flex items-center gap-2">
+                    <CardTitle>All Sponsors</CardTitle>{" "}
+                    <div className="inline-flex items-center px-2.5 py-0.5 text-[#6544E4] rounded-lg bg-[#F1EDFF]">
+                      4
+                    </div>
+                  </div>
                   <CardDescription>
                     People who have sponsored your bill requests
                   </CardDescription>
                 </div>
                 <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto">
                   <div className="relative w-full md:w-64">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                    <Search
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      size={16}
+                    />
                     <Input
                       type="text"
                       placeholder="Search sponsors..."
@@ -229,7 +279,7 @@ const Sponsors = () => {
                       className="pl-9"
                     />
                   </div>
-                  <Button 
+                  <Button
                     className="bg-[#6544E4] hover:bg-[#5A3DD0] gap-2"
                     onClick={handleCreateSponsor}
                   >
@@ -243,42 +293,48 @@ const Sponsors = () => {
               {isLoading ? (
                 <div className="text-center p-4">Loading sponsors...</div>
               ) : filteredSponsors.length > 0 ? (
-                <div className="rounded-md border">
+                <div className="rounded-md">
                   <Table>
-                    <TableHeader>
+                    <TableHeader className="bg-[#F5F5F5]">
                       <TableRow>
                         <TableHead className="w-12">S/N</TableHead>
                         <TableHead>Name</TableHead>
                         <TableHead>Relationship</TableHead>
                         <TableHead>Email Address</TableHead>
                         <TableHead>Phone Number</TableHead>
-                        <TableHead>Joined</TableHead>
                         <TableHead className="text-right">Action</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {filteredSponsors.map((sponsor, index) => (
                         <TableRow key={sponsor.id}>
-                          <TableCell className="font-medium">{index + 1}</TableCell>
+                          <TableCell className="font-medium py-9">
+                            {index + 1}
+                          </TableCell>
                           <TableCell>{sponsor.name}</TableCell>
                           <TableCell>{sponsor.relationship}</TableCell>
                           <TableCell>{sponsor.email}</TableCell>
                           <TableCell>{sponsor.phone}</TableCell>
-                          <TableCell>{sponsor.joinedDate}</TableCell>
                           <TableCell className="text-right">
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-8 w-8 p-0"
+                                >
                                   <span className="sr-only">Open menu</span>
                                   <MoreHorizontal className="h-4 w-4" />
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={() => handleEditSponsor(sponsor)}>
+                                <DropdownMenuItem
+                                  onClick={() => handleEditSponsor(sponsor)}
+                                >
                                   <Edit className="mr-2 h-4 w-4" />
                                   <span>Edit</span>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem 
+                                <DropdownMenuItem
                                   onClick={() => handleDeleteSponsor(sponsor)}
                                   className="text-red-600"
                                 >
@@ -295,7 +351,10 @@ const Sponsors = () => {
                 </div>
               ) : (
                 <div className="text-center py-6">
-                  <p className="text-gray-500">No sponsors found. Try adjusting your search or add a new sponsor.</p>
+                  <p className="text-gray-500">
+                    No sponsors found. Try adjusting your search or add a new
+                    sponsor.
+                  </p>
                 </div>
               )}
             </CardContent>
@@ -307,11 +366,16 @@ const Sponsors = () => {
       <Sheet open={isCreateSheetOpen} onOpenChange={setIsCreateSheetOpen}>
         <SheetContent className="sm:max-w-[450px] overflow-y-auto">
           <SheetHeader>
-            <SheetTitle className="text-xl font-bold">Add New Sponsor</SheetTitle>
+            <SheetTitle className="text-xl font-bold">
+              Add New Sponsor
+            </SheetTitle>
           </SheetHeader>
           <div className="mt-6">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
                 <FormField
                   control={form.control}
                   name="name"
@@ -331,8 +395,8 @@ const Sponsors = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Relationship</FormLabel>
-                      <Select 
-                        onValueChange={field.onChange} 
+                      <Select
+                        onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
                         <FormControl>
@@ -341,8 +405,10 @@ const Sponsors = () => {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {relationshipOptions.map(option => (
-                            <SelectItem key={option} value={option}>{option}</SelectItem>
+                          {relationshipOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -357,7 +423,11 @@ const Sponsors = () => {
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input type="email" placeholder="john@example.com" {...field} />
+                        <Input
+                          type="email"
+                          placeholder="john@example.com"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -377,14 +447,19 @@ const Sponsors = () => {
                   )}
                 />
                 <div className="flex justify-end space-x-2 pt-4">
-                  <Button 
-                    type="button" 
-                    variant="outline" 
+                  <Button
+                    type="button"
+                    variant="outline"
                     onClick={() => setIsCreateSheetOpen(false)}
                   >
                     Cancel
                   </Button>
-                  <Button type="submit" className="bg-[#6544E4] hover:bg-[#5A3DD0]">Add Sponsor</Button>
+                  <Button
+                    type="submit"
+                    className="bg-[#6544E4] hover:bg-[#5A3DD0]"
+                  >
+                    Add Sponsor
+                  </Button>
                 </div>
               </form>
             </Form>
@@ -400,7 +475,10 @@ const Sponsors = () => {
           </SheetHeader>
           <div className="mt-6">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
                 <FormField
                   control={form.control}
                   name="name"
@@ -420,8 +498,8 @@ const Sponsors = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Relationship</FormLabel>
-                      <Select 
-                        onValueChange={field.onChange} 
+                      <Select
+                        onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
                         <FormControl>
@@ -430,8 +508,10 @@ const Sponsors = () => {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {relationshipOptions.map(option => (
-                            <SelectItem key={option} value={option}>{option}</SelectItem>
+                          {relationshipOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -446,7 +526,11 @@ const Sponsors = () => {
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input type="email" placeholder="john@example.com" {...field} />
+                        <Input
+                          type="email"
+                          placeholder="john@example.com"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -466,14 +550,19 @@ const Sponsors = () => {
                   )}
                 />
                 <div className="flex justify-end space-x-2 pt-4">
-                  <Button 
-                    type="button" 
-                    variant="outline" 
+                  <Button
+                    type="button"
+                    variant="outline"
                     onClick={() => setIsEditSheetOpen(false)}
                   >
                     Cancel
                   </Button>
-                  <Button type="submit" className="bg-[#6544E4] hover:bg-[#5A3DD0]">Save Changes</Button>
+                  <Button
+                    type="submit"
+                    className="bg-[#6544E4] hover:bg-[#5A3DD0]"
+                  >
+                    Save Changes
+                  </Button>
                 </div>
               </form>
             </Form>
@@ -482,7 +571,10 @@ const Sponsors = () => {
       </Sheet>
 
       {/* Delete Sponsor Dialog */}
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Clock, File, FileText, Package, Tag, X } from "lucide-react";
@@ -35,7 +34,7 @@ const ActivityLog: React.FC<ActivityLogProps> = ({ activities }) => {
     if (completed) {
       return <Check className="h-4 w-4 text-green-500" />;
     }
-    
+
     switch (type) {
       case "created":
         return <FileText className="h-4 w-4 text-blue-500" />;
@@ -57,7 +56,7 @@ const ActivityLog: React.FC<ActivityLogProps> = ({ activities }) => {
   };
 
   return (
-    <Card className="sticky top-6 border shadow-sm">
+    <Card className="sticky top-6 border">
       <CardHeader className="border-b">
         <CardTitle>Activity Log</CardTitle>
       </CardHeader>
@@ -66,7 +65,11 @@ const ActivityLog: React.FC<ActivityLogProps> = ({ activities }) => {
           {activities.map((activity, index) => (
             <div key={index} className="flex gap-3">
               <div className="relative">
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center ${activity.completed ? "bg-green-100" : "bg-gray-100"}`}>
+                <div
+                  className={`w-7 h-7 rounded-full flex items-center justify-center ${
+                    activity.completed ? "bg-green-100" : "bg-gray-100"
+                  }`}
+                >
                   {getActivityIcon(activity.type, activity.completed)}
                 </div>
                 {index < activities.length - 1 && (

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -35,7 +34,7 @@ const StatCards: React.FC<StatCardsProps> = ({ amount, date, priority }) => {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-      <Card className="border shadow-sm">
+      <Card className="border">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-gray-500">
             Total Amount
@@ -45,8 +44,8 @@ const StatCards: React.FC<StatCardsProps> = ({ amount, date, priority }) => {
           <div className="text-2xl font-bold">{amount}</div>
         </CardContent>
       </Card>
-      
-      <Card className="border shadow-sm">
+
+      <Card className="border">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-gray-500">
             Due Date
@@ -59,8 +58,8 @@ const StatCards: React.FC<StatCardsProps> = ({ amount, date, priority }) => {
           </div>
         </CardContent>
       </Card>
-      
-      <Card className="border shadow-sm">
+
+      <Card className="border">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-gray-500">
             Priority
