@@ -12,6 +12,7 @@ import { useAuth } from "@/context/AuthContext";
 import DashboardImage from "../images/signupDashboard.png";
 import googleIcon from "../images/google.png";
 import logo from "../images/logo2k.png";
+import authService from "@/services/authService";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -40,7 +41,7 @@ const Login = () => {
   };
 
   const handleGoogleLogin = () => {
-    toast.info("Google login not implemented yet");
+    authService.loginWithGoogle();
   };
 
   const toggleShowPassword = () => {
@@ -95,7 +96,7 @@ const Login = () => {
                 className="w-full mb-4 flex items-center justify-center"
                 onClick={handleGoogleLogin}
               >
-                <img src={googleIcon} alt="Google" className="w-5 h-5" />
+                <img src={googleIcon} alt="Google" className="w-5 h-5 mr-2" />
                 Sign in with Google
               </Button>
 
@@ -203,7 +204,7 @@ const Login = () => {
                 className="w-full bg-[#6544E4] hover:bg-[#6A57DD] rounded-md"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Logging in..." : "Login in"}
+                {isSubmitting ? "Logging in..." : "Login"}
               </Button>
 
               <p className="text-center text-sm text-gray-500">

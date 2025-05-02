@@ -17,6 +17,7 @@ import SignUp from "./pages/SignUp";
 import RoleSelection from "./pages/RoleSelection";
 import BeneficiarySignUp from "./pages/BeneficiarySignUp";
 import SponsorSignUp from "./pages/SponsorSignUp";
+import OAuthCallback from "./pages/OAuthCallback";
 import NotFound from "./pages/NotFound";
 import { useEffect, useState } from "react";
 import { AuthProvider, useAuth } from "./context/AuthContext";
@@ -47,6 +48,7 @@ const AppRoutes = () => {
       <Route path="/role-selection" element={<RoleSelection />} />
       <Route path="/beneficiary-signup" element={<BeneficiarySignUp />} />
       <Route path="/sponsor-signup" element={<SponsorSignUp />} />
+      <Route path="/auth/callback" element={<OAuthCallback />} />
       
       {/* Protected Routes */}
       <Route path="/" element={

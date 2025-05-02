@@ -40,6 +40,11 @@ const authService = {
     }
   },
   
+  // Google OAuth login - redirects user to Google auth page
+  loginWithGoogle: () => {
+    window.location.href = `${API_URL}/auth/google`;
+  },
+  
   // Helper method to get auth token
   getToken: (): string | null => {
     return localStorage.getItem('token');
