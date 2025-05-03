@@ -7,8 +7,8 @@ export const signupFormSchema = z.object({
   phone: z.string().min(10, "Phone number must be at least 10 digits"),
   password: z.string().min(8, "Password must be at least 8 characters"),
   confirmPassword: z.string(),
-  acceptTerms: z.literal(true, {
-    errorMap: () => ({ message: "You must accept the terms and conditions" }),
+  acceptTerms: z.boolean().refine((val) => val === true, {
+    message: "You must accept the terms and conditions",
   }),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match",
