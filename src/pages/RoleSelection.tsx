@@ -1,190 +1,142 @@
 
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
-import { FileText, BanknoteIcon } from "lucide-react";
-import logo from "../images/logo2kpurple.png";
-import { useAuth } from "@/context/AuthContext";
-
-interface TempUser {
-  name: string;
-  email: string;
-  phone: string;
-  password: string;
-}
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import authService from "@/services/authService";
+import { useEffect } from "react";
 
 const RoleSelection = () => {
-  const [selectedRole, setSelectedRole] = useState<string | null>(null);
-  const [tempUser, setTempUser] = useState<TempUser | null>(null);
-  const navigate = useNavigate();
-  const { register } = useAuth();
-
   useEffect(() => {
-    // Retrieve user data from sessionStorage instead of localStorage
-    const storedUser = sessionStorage.getItem("tempUser");
-    if (storedUser) {
-      setTempUser(JSON.parse(storedUser));
-    }
+    document.title = "Select your role | Urgent2kay";
+    
+    // Check if we're already logged in
+    const isLoggedIn = sessionStorage.getItem('token') && sessionStorage.getItem('user');
+    console.log("RoleSelection - Authentication check:", { isLoggedIn });
   }, []);
-
-  const handleContinue = async () => {
-    if (!selectedRole) {
-      toast.error("Please select a role");
-      return;
-    }
-
-    // If we have temporary user data, register directly
-    if (tempUser) {
-      try {
-        const roleForAPI = selectedRole === "beneficiary" ? "benefactee" : "sponsor";
-        await register({
-          name: tempUser.name,
-          email: tempUser.email,
-          phone: tempUser.phone,
-          password: tempUser.password,
-          role: roleForAPI.toUpperCase()
-        });
-        // Clear temporary user data
-        sessionStorage.removeItem("tempUser");
-      } catch (error) {
-        // Error is handled in register function
-        // Just navigate to the appropriate signup page as fallback
-        if (selectedRole === "beneficiary") {
-          navigate("/beneficiary-signup");
-        } else if (selectedRole === "sponsor") {
-          navigate("/sponsor-signup");
-        }
-      }
-    } else {
-      // No temporary data, navigate to role-specific signup page
-      if (selectedRole === "beneficiary") {
-        navigate("/beneficiary-signup");
-      } else if (selectedRole === "sponsor") {
-        navigate("/sponsor-signup");
-      }
-    }
-  };
-
-  const handleCardClick = (role: string) => {
-    setSelectedRole(role);
+  
+  const handleGoogleLogin = (redirectTarget: string) => {
+    console.log(`RoleSelection - Initiating Google login with redirect to: ${redirectTarget}`);
+    // Direct the Google auth flow to go directly to the Dashboard with the token in the URL
+    authService.loginWithGoogle(redirectTarget);
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 lg:p-8">
       <div className="w-full max-w-4xl">
-        <div className="flex items-center justify-center mb-8">
-          <div className="flex items-center gap-2">
-            <img src={logo} alt="Urgent 2kay" className="h-6 md:h-8" />
-          </div>
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900">Choose your role</h1>
+          <p className="text-gray-500 mt-2">Select how you want to use Urgent2k</p>
         </div>
 
-        <Card className="border-0 shadow-2xl rounded-xl overflow-hidden bg-white">
-          <CardContent className="p-8">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-medium text-gray-900">
-                How do you want to sign up?
-              </h2>
-              <p className="text-gray-500 mt-2">
-                Choose a category to sign up in
-              </p>
-            </div>
-
-            <RadioGroup
-              className="flex flex-col md:flex-row gap-4 md:gap-6"
-              value={selectedRole || ""}
-              onValueChange={setSelectedRole}
-            >
-              <div
-                onClick={() => handleCardClick("beneficiary")}
-                className={`flex-1 flex items-start justify-between border rounded-xl p-5 cursor-pointer transition-all hover:border-gray-400 hover:bg-gray-50 
-                  ${
-                    selectedRole === "beneficiary"
-                      ? "border-gray-400 bg-gray-50"
-                      : "border-gray-200"
-                  }`}
-              >
-                <div className="flex-1">
-                  <Label
-                    htmlFor="beneficiary"
-                    className="text-lg font-medium text-gray-900 cursor-pointer"
-                  >
-                    Sign up as a Beneficiary
-                  </Label>
-                  <p className="text-gray-500 mt-1">
-                    Request bills payments and get funds for other necessities
-                  </p>
-
-                  <div className="mt-4 flex items-center gap-2">
-                    <div className="p-2 bg-gray-100 rounded-full">
-                      <FileText className="h-5 w-5 text-gray-600" />
-                    </div>
-                    <span className="text-sm text-gray-600">
-                      Get your bills paid by sponsors
-                    </span>
-                  </div>
-                </div>
-                <div className="ml-4">
-                  <RadioGroupItem
-                    value="beneficiary"
-                    id="beneficiary"
-                    className="border-gray-400"
-                  />
-                </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+          {/* Beneficiary Card */}
+          <Card className="border-2 hover:border-primary transition-all">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-xl">I'm a Beneficiary</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="text-gray-500 text-sm">
+                <p className="mb-4">
+                  Register to receive recurring directed bill payments from
+                  sponsors.
+                </p>
+                <ul className="space-y-2">
+                  <li className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-green-500"></span>
+                    Create bundles of bills
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-green-500"></span>
+                    Request payment from sponsors
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-green-500"></span>
+                    Get bills paid directly
+                  </li>
+                </ul>
               </div>
 
-              <div
-                onClick={() => handleCardClick("sponsor")}
-                className={`flex-1 flex items-start justify-between border rounded-xl p-5 cursor-pointer transition-all hover:border-gray-400 hover:bg-gray-50
-                  ${
-                    selectedRole === "sponsor"
-                      ? "border-gray-400 bg-gray-50"
-                      : "border-gray-200"
-                  }`}
-              >
-                <div className="flex-1">
-                  <Label
-                    htmlFor="sponsor"
-                    className="text-lg font-medium text-gray-900 cursor-pointer"
-                  >
-                    Sign up as a Sponsor
-                  </Label>
-                  <p className="text-gray-500 mt-1">
-                    Help pay bills and provide essential funds for others
-                  </p>
-
-                  <div className="mt-4 flex items-center gap-2">
-                    <div className="p-2 bg-gray-100 rounded-full">
-                      <BanknoteIcon className="h-5 w-5 text-gray-600" />
-                    </div>
-                    <span className="text-sm text-gray-600">
-                      Support those in need with bill payments
-                    </span>
-                  </div>
-                </div>
-                <div className="ml-4">
-                  <RadioGroupItem
-                    value="sponsor"
-                    id="sponsor"
-                    className="border-gray-400"
+              <div className="space-y-3">
+                <Button asChild className="w-full">
+                  <Link to="/beneficiary-signup">
+                    Register now <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => handleGoogleLogin("/dashboard")}
+                >
+                  <img
+                    src="/src/images/google.png"
+                    alt="Google logo"
+                    className="h-4 w-4 mr-2"
                   />
-                </div>
+                  Register with Google
+                </Button>
               </div>
-            </RadioGroup>
+            </CardContent>
+          </Card>
 
-            <div className="mt-8">
-              <Button
-                onClick={handleContinue}
-                className="w-full bg-[#6544E4] hover:bg-[#5A3DD0] text-white rounded-lg py-6 font-medium"
-              >
-                {tempUser ? "Create Account" : "Continue"}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+          {/* Sponsor Card */}
+          <Card className="border-2 hover:border-primary transition-all">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-xl">I'm a Sponsor</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="text-gray-500 text-sm">
+                <p className="mb-4">
+                  Register to sponsor individuals by paying their bills
+                  directly.
+                </p>
+                <ul className="space-y-2">
+                  <li className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-green-500"></span>
+                    View bill payment requests
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-green-500"></span>
+                    Approve or reject requests
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-green-500"></span>
+                    Track your sponsorships
+                  </li>
+                </ul>
+              </div>
+
+              <div className="space-y-3">
+                <Button asChild className="w-full">
+                  <Link to="/sponsor-signup">
+                    Register now <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => handleGoogleLogin("/dashboard")}
+                >
+                  <img
+                    src="/src/images/google.png"
+                    alt="Google logo"
+                    className="h-4 w-4 mr-2"
+                  />
+                  Register with Google
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="mt-8 text-center">
+          <p className="text-gray-500">
+            Already have an account?{" "}
+            <Link to="/login" className="text-primary font-medium">
+              Sign in
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
