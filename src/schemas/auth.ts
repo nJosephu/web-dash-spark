@@ -17,12 +17,6 @@ export const signupFormSchema = z.object({
 
 export type SignupFormValues = z.infer<typeof signupFormSchema>;
 
-// Add the missing loginSchema
-export const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(1, "Password is required"),
-});
-
 // Helper to convert form values to API format
 export const mapSignupToApiFormat = (values: SignupFormValues, role: string) => {
   return {

@@ -1,12 +1,20 @@
-
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { Mail, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import DashboardImage from "../images/signupDashboard.png";
+import googleIcon from "../images/google.png";
+import logo from "../images/logo2k.png";
+import authService from "@/services/authService";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema } from "@/schemas/auth";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -15,149 +23,251 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import authService from "@/services/authService";
 
-type FormValues = z.infer<typeof loginSchema>;
+// Login form schema
+const loginFormSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  rememberMe: z.boolean().optional(),
+});
+
+type LoginFormValues = z.infer<typeof loginFormSchema>;
 
 const Login = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { login } = useAuth();
-  const navigate = useNavigate();
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginFormSchema),
     defaultValues: {
       email: "",
       password: "",
+      rememberMe: false,
     },
   });
 
-  const onSubmit = async (data: FormValues) => {
-    setLoading(true);
-    setError(null);
-    
+  const handleLogin = async (values: LoginFormValues) => {
     try {
-      await login(data.email, data.password);
-      // No need for navigate here as it's called in the login function
+      setIsSubmitting(true);
+      await login(values.email, values.password);
+      // The redirect is handled in the AuthContext
     } catch (error) {
-      if (error instanceof Error) {
-        setError(error.message);
-      } else {
-        setError("An unexpected error occurred. Please try again.");
-      }
-    } finally {
-      setLoading(false);
+      // Error toast is already shown in the AuthContext
+      setIsSubmitting(false);
     }
   };
 
   const handleGoogleLogin = () => {
-    // Use the new direct dashboard redirect for Google login
-    console.log("Login - Starting Google login with dashboard redirect");
-    authService.loginWithGoogle("/dashboard");
+    authService.loginWithGoogle();
+  };
+
+  const toggleShowPassword = () => {
+    setShowPassword((prev) => !prev);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-sm border p-6 w-full max-w-md">
-        <div className="flex justify-center mb-6">
-          <img
-            src="/src/images/logo2kpurple.png"
-            alt="Urgent2k Logo"
-            className="h-10"
-          />
-        </div>
-
-        <h1 className="text-2xl font-bold text-center mb-6">Welcome back</h1>
-
-        {error && (
-          <div className="bg-red-50 text-red-500 p-3 rounded-md mb-4 text-sm">
-            {error}
+    <div className="flex min-h-screen p-0 sm:p-8">
+      {/* Left Panel - Background with Overlay */}
+      <div className="relative hidden md:flex md:w-1/2 bg-[#5A3CCA] flex-col justify-between p-10 rounded-[20px]">
+        <div>
+          <div className="flex items-center gap-2 mb-12">
+            <img src={logo} alt="Urgent 2kay" className="h-6 md:h-8" />
           </div>
-        )}
 
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4"
-            noValidate
-          >
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="your.email@example.com"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+          <div className="mt-20 max-w-[556px]">
+            <h1 className="text-4xl font-bold text-white mb-4">
+              Bundle all your bills in one app — Bill payment made easy
+            </h1>
+            <p className="text-gray-100 text-lg max-w-md">
+              We simplify financial support by bundling bills into one clear
+              request and sending payments directly to service providers.
+            </p>
+          </div>
+
+          <div className="mt-12">
+            <img
+              src={DashboardImage}
+              alt="Urgent2kay Dashboard"
+              className="w-full max-w-[650px] rounded-lg absolute right-0 bottom-0"
             />
-
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder="********" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Signing in..." : "Sign in"}
-            </Button>
-          </form>
-        </Form>
-
-        <div className="mt-6">
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t"></span>
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-2 text-gray-500">
-                Or continue with
-              </span>
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <Button
-              variant="outline"
-              type="button"
-              className="w-full"
-              onClick={handleGoogleLogin}
-            >
-              <img
-                src="/src/images/google.png"
-                alt="Google logo"
-                className="h-4 w-4 mr-2"
-              />
-              Google
-            </Button>
           </div>
         </div>
+      </div>
 
-        <div className="mt-6 text-center text-sm">
-          <p className="text-gray-500">
-            Don't have an account?{" "}
-            <Link to="/" className="text-primary font-medium">
-              Sign up
-            </Link>
-          </p>
-        </div>
+      {/* Right Panel - Login Form */}
+      <div className="w-full md:w-1/2 flex items-center justify-center p-6 bg-white max-w-[380px] mx-auto">
+        <Card className="w-full max-w-md border-none shadow-none">
+          <CardContent className="p-0">
+            <div className=" mb-8">
+              <h2 className="text-3xl font-medium">Login</h2>
+              <p className="mt-2">
+                Bundle your bills the easy way, all in one app
+              </p>
+            </div>
+
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(handleLogin)}
+                className="space-y-6"
+              >
+                {/* Google Sign-in Button */}
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full mb-4 flex items-center justify-center"
+                  onClick={handleGoogleLogin}
+                  disabled={isSubmitting}
+                >
+                  <img src={googleIcon} alt="Google" className="w-5 h-5 mr-2" />
+                  Sign in with Google
+                </Button>
+
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t"></span>
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-white px-2 text-gray-500">
+                      Or continue with email
+                    </span>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  {/* Email Input */}
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="relative">
+                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                              <Mail size={18} className="text-gray-400" />
+                            </div>
+                            <Input
+                              id="email"
+                              type="email"
+                              placeholder="Email address"
+                              className="pl-10"
+                              disabled={isSubmitting}
+                              {...field}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Password Input */}
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="relative">
+                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                              <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="text-gray-400"
+                              >
+                                <path
+                                  d="M19 11H5C3.89543 11 3 11.8954 3 13V20C3 21.1046 3.89543 22 5 22H19C20.1046 22 21 21.1046 21 20V13C21 11.8954 20.1046 11 19 11Z"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                                <path
+                                  d="M7 11V7C7 5.67392 7.52678 4.40215 8.46447 3.46447C9.40215 2.52678 10.6739 2 12 2C13.3261 2 14.5979 2.52678 15.5355 3.46447C16.4732 4.40215 17 5.67392 17 7V11"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            </div>
+                            <Input
+                              id="password"
+                              type={showPassword ? "text" : "password"}
+                              placeholder="Password"
+                              className="pl-10 pr-10"
+                              disabled={isSubmitting}
+                              {...field}
+                            />
+                            <div
+                              className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                              onClick={toggleShowPassword}
+                            >
+                              {showPassword ? (
+                                <EyeOff size={18} className="text-gray-400" />
+                              ) : (
+                                <Eye size={18} className="text-gray-400" />
+                              )}
+                            </div>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <FormField
+                    control={form.control}
+                    name="rememberMe"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            disabled={isSubmitting}
+                          />
+                        </FormControl>
+                        <FormLabel className="text-sm font-normal">
+                          Remember me
+                        </FormLabel>
+                      </FormItem>
+                    )}
+                  />
+                  <Link
+                    to="#"
+                    className="text-sm text-urgent-purple hover:underline"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
+
+                <Button
+                  type="submit"
+                  className="w-full bg-[#6544E4] hover:bg-[#6A57DD] rounded-md"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Logging in..." : "Login"}
+                </Button>
+
+                <p className="text-center text-sm text-gray-500">
+                  Don't have an account?{" "}
+                  <Link
+                    to="/role-selection"
+                    className="font-medium text-[#7B68EE] hover:underline"
+                  >
+                    Sign up
+                  </Link>
+                </p>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

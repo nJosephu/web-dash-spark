@@ -1,3 +1,4 @@
+
 interface LoginResponse {
   message: string;
   token: string;
@@ -95,38 +96,16 @@ const authService = {
     }
   },
   
-  // Google OAuth registration/login with customizable redirect
-  loginWithGoogle: (redirectPath?: string) => {
-    const redirectTo = redirectPath || '/auth/callback';
-    console.log(`Redirecting to Google OAuth login with redirect to: ${redirectTo}`);
-    
-    // Create the OAuth URL with the redirect specified
-    const oauthUrl = new URL(`${API_URL}/auth/google`);
-    
-    // Add the redirect parameter if it's not the default
-    if (redirectPath) {
-      oauthUrl.searchParams.append('redirect', redirectPath);
-    }
-    
-    console.log(`Complete OAuth URL: ${oauthUrl.toString()}`);
-    window.location.href = oauthUrl.toString();
+  // Google OAuth registration/login - redirects user to Google auth page
+  loginWithGoogle: () => {
+    console.log("Redirecting to Google OAuth login");
+    window.location.href = `${API_URL}/auth/google`;
   },
 
-  // Use the same Google auth endpoint for signup with customizable redirect
-  registerWithGoogle: (redirectPath?: string) => {
-    const redirectTo = redirectPath || '/auth/callback';
-    console.log(`Redirecting to Google OAuth signup with redirect to: ${redirectTo}`);
-    
-    // Create the OAuth URL with the redirect specified
-    const oauthUrl = new URL(`${API_URL}/auth/google`);
-    
-    // Add the redirect parameter if it's not the default
-    if (redirectPath) {
-      oauthUrl.searchParams.append('redirect', redirectPath);
-    }
-    
-    console.log(`Complete OAuth URL: ${oauthUrl.toString()}`);
-    window.location.href = oauthUrl.toString();
+  // Use the same Google auth endpoint for signup
+  registerWithGoogle: () => {
+    console.log("Redirecting to Google OAuth signup");
+    window.location.href = `${API_URL}/auth/google`;
   },
   
   // Helper method to get auth token

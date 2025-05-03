@@ -8,86 +8,14 @@ import DonutChart from "@/components/dashboard/DonutChart";
 import RequestsTable from "@/components/dashboard/RequestsTable";
 import { Card } from "@/components/ui/card";
 import { useAuth } from "@/context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 const Dashboard = () => {
-  const { user, setUser, setToken } = useAuth();
+  const { user } = useAuth();
   const userName = user?.name || "User";
-  const navigate = useNavigate();
 
   useEffect(() => {
     document.title = "Dashboard | Urgent2kay";
-    
-    // Check for token in URL (from Google OAuth)
-    const urlParams = new URLSearchParams(window.location.search);
-    const googleToken = urlParams.get("token");
-    
-    if (googleToken) {
-      console.log("Dashboard - Google token found in URL parameters");
-      
-      try {
-        // Store the token in sessionStorage (not localStorage to match rest of app)
-        sessionStorage.setItem("token", googleToken);
-        
-        // Try to extract user data from token (JWT)
-        let userData = null;
-        try {
-          // If the token contains user data (JWT payload)
-          const base64Url = googleToken.split('.')[1];
-          if (base64Url) {
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const payload = JSON.parse(window.atob(base64));
-            if (payload) {
-              userData = {
-                id: payload.sub || payload.id || "",
-                email: payload.email || "",
-                name: payload.name || "Google User",
-                role: payload.role || "beneficiary"
-              };
-              console.log("Dashboard - Extracted user data from token:", {
-                id: userData.id,
-                email: userData.email,
-                name: userData.name,
-                role: userData.role
-              });
-            }
-          }
-        } catch (e) {
-          console.error("Dashboard - Failed to extract user data from token:", e);
-        }
-        
-        // If we couldn't extract user data, use default
-        if (!userData) {
-          userData = {
-            id: "google-user",
-            email: "",
-            name: "Google User",
-            role: "beneficiary"
-          };
-          console.log("Dashboard - Using default user data for Google auth");
-        }
-        
-        // Store user data
-        sessionStorage.setItem("user", JSON.stringify(userData));
-        sessionStorage.setItem("authenticated", "true");
-        
-        // Update auth context
-        setToken(googleToken);
-        setUser(userData);
-        
-        // Clean the URL by removing the token parameter
-        navigate("/dashboard", { replace: true });
-        
-        toast.success("Successfully signed in with Google");
-      } catch (error) {
-        console.error("Dashboard - Error processing Google token:", error);
-        toast.error("Failed to process authentication data");
-      }
-    } else {
-      console.log("Dashboard - No token in URL, normal page load");
-    }
-  }, [navigate, setToken, setUser]);
+  }, []);
 
   const chartData = [
     {
