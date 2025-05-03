@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Requests from "./pages/Requests";
 import BundleDetails from "./pages/BundleDetails";
@@ -58,10 +58,11 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+// Modified AppRoutes to place ALL routes inside AuthProvider
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Auth Routes */}
+      {/* Public Routes */}
       <Route path="/" element={<RoleSelection />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
