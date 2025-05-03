@@ -1,3 +1,4 @@
+
 import {
   Bell,
   LayoutGrid,
@@ -23,7 +24,7 @@ import {
   BreadcrumbList,
 } from "@/components/ui/breadcrumb";
 import { useNavigate, useLocation } from "react-router-dom";
-import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
 
 interface TopNavProps {
   userName: string;
@@ -32,11 +33,10 @@ interface TopNavProps {
 const TopNav = ({ userName }: TopNavProps) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { logout } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem("authenticated");
-    toast.success("Logged out successfully");
-    navigate("/login");
+    logout();
   };
 
   const getPageInfo = () => {
@@ -133,7 +133,7 @@ const TopNav = ({ userName }: TopNavProps) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/settings")}>Settings</DropdownMenuItem>
             <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

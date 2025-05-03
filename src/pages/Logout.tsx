@@ -1,5 +1,6 @@
 
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "@/components/layout/Sidebar";
 import TopNav from "@/components/layout/TopNav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +10,7 @@ import { useAuth } from "@/context/AuthContext";
 const Logout = () => {
   const { user, logout } = useAuth();
   const userName = user?.name || "User";
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.title = "Logout | Urgent2kay";
@@ -17,6 +19,13 @@ const Logout = () => {
   const handleLogout = () => {
     logout();
   };
+
+  // If we're at the logout page but not authenticated, redirect to login
+  useEffect(() => {
+    if (!user) {
+      navigate("/login", { replace: true });
+    }
+  }, [user, navigate]);
 
   return (
     <div className="flex min-h-screen bg-gray-50">

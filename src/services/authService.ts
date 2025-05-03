@@ -96,7 +96,7 @@ const authService = {
   
   // Helper method to get auth token
   getToken: (): string | null => {
-    return localStorage.getItem('token');
+    return sessionStorage.getItem('token');
   },
   
   // For future use with API requests that require authentication
@@ -106,7 +106,21 @@ const authService = {
       return { Authorization: `Bearer ${token}` };
     }
     return undefined;
+  },
+
+  // Check if token is valid
+  isAuthenticated: (): boolean => {
+    const token = sessionStorage.getItem('token');
+    const user = sessionStorage.getItem('user');
+    return !!token && !!user;
+  },
+  
+  // Clear authentication data
+  clearAuth: (): void => {
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('user');
+    sessionStorage.removeItem('authenticated');
   }
-};
+}
 
 export default authService;

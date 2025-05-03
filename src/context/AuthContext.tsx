@@ -1,3 +1,4 @@
+
 import React, {
   createContext,
   useState,
@@ -65,12 +66,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (storedToken && storedUser) {
         setToken(storedToken);
         setUser(JSON.parse(storedUser));
+      } else {
+        // If no token or user, make sure state is reset
+        setToken(null);
+        setUser(null);
       }
       setIsLoading(false);
     };
 
     checkAuth();
   }, []);
+
+  // Check authentication status periodically
+  useEffect(() => {
+    // Check every 5 minutes if authentication is still valid
+    const interval = setInterval(() => {
+      if (!authService.isAuthenticated() && user !== null) {
+        // Force logout if token is missing but state shows as logged in
+        logout();
+        toast.error("Your session has expired. Please login again.");
+        navigate("/login", { replace: true });
+      }
+    }, 5 * 60 * 1000); // 5 minutes
+
+    return () => clearInterval(interval);
+  }, [navigate, user]);
 
   const register = async (userInput: {
     name: string;
@@ -142,17 +162,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const logout = () => {
-    // Clear local storage
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("user");
-    sessionStorage.removeItem("authenticated");
+    // Clear sessionStorage
+    authService.clearAuth();
 
     // Reset state
     setToken(null);
     setUser(null);
 
     toast.info("You have been logged out");
-    navigate("/login");
+    navigate("/login", { replace: true });
   };
 
   const value = {

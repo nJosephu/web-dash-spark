@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,12 +21,27 @@ import OAuthCallback from "./pages/OAuthCallback";
 import NotFound from "./pages/NotFound";
 import { useEffect, useState } from "react";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import authService from "./services/authService";
 
 const queryClient = new QueryClient();
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, logout } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Double-check authentication status using the token in sessionStorage
+    const checkAuth = () => {
+      if (!isLoading && !authService.isAuthenticated()) {
+        // If not authenticated according to sessionStorage, force logout
+        logout();
+        navigate("/login", { replace: true });
+      }
+    };
+
+    checkAuth();
+  }, [isLoading, logout, navigate]);
 
   if (isLoading) {
     return (
