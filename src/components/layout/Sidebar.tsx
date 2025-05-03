@@ -28,7 +28,7 @@ const Sidebar = ({ className }: SidebarProps) => {
     {
       title: "Dashboard",
       icon: LayoutGrid,
-      path: "/",
+      path: "/dashboard",
     },
     {
       title: "My requests",
