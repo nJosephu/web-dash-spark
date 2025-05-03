@@ -19,6 +19,13 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  register: (userData: {
+    name: string;
+    email: string;
+    phone: string;
+    password: string;
+    role: string;
+  }) => Promise<void>;
   logout: () => void;
   setUser: (user: User) => void;
   setToken: (token: string) => void;
@@ -59,6 +66,42 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     
     checkAuth();
   }, []);
+
+  const register = async (userData: {
+    name: string;
+    email: string;
+    phone: string;
+    password: string;
+    role: string;
+  }) => {
+    try {
+      setIsLoading(true);
+      const { token: newToken, user: userData } = await authService.register(userData);
+      
+      // Save to localStorage
+      localStorage.setItem('token', newToken);
+      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('authenticated', 'true');
+      
+      // Update state
+      setToken(newToken);
+      setUser(userData);
+      
+      toast.success("Registration successful");
+      
+      // Navigate based on role
+      navigate('/');
+    } catch (error) {
+      let message = "Registration failed";
+      if (error instanceof Error) {
+        message = error.message;
+      }
+      toast.error(message);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const login = async (email: string, password: string) => {
     try {
@@ -108,6 +151,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isAuthenticated: !!token,
     isLoading,
     login,
+    register,
     logout,
     setUser,
     setToken,

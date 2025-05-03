@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,22 +8,64 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { FileText, BanknoteIcon } from "lucide-react";
 import logo from "../images/logo2kpurple.png";
+import { useAuth } from "@/context/AuthContext";
+
+interface TempUser {
+  name: string;
+  email: string;
+  phone: string;
+  password: string;
+}
 
 const RoleSelection = () => {
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
+  const [tempUser, setTempUser] = useState<TempUser | null>(null);
   const navigate = useNavigate();
+  const { register } = useAuth();
 
-  const handleContinue = () => {
+  useEffect(() => {
+    // Retrieve user data from localStorage if available
+    const storedUser = localStorage.getItem("tempUser");
+    if (storedUser) {
+      setTempUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const handleContinue = async () => {
     if (!selectedRole) {
       toast.error("Please select a role");
       return;
     }
 
-    // Navigate to the appropriate signup page based on role
-    if (selectedRole === "beneficiary") {
-      navigate("/beneficiary-signup");
-    } else if (selectedRole === "sponsor") {
-      navigate("/sponsor-signup");
+    // If we have temporary user data, register directly
+    if (tempUser) {
+      try {
+        const roleForAPI = selectedRole === "beneficiary" ? "benefactee" : "sponsor";
+        await register({
+          name: tempUser.name,
+          email: tempUser.email,
+          phone: tempUser.phone,
+          password: tempUser.password,
+          role: roleForAPI.toUpperCase()
+        });
+        // Clear temporary user data
+        localStorage.removeItem("tempUser");
+      } catch (error) {
+        // Error is handled in register function
+        // Just navigate to the appropriate signup page as fallback
+        if (selectedRole === "beneficiary") {
+          navigate("/beneficiary-signup");
+        } else if (selectedRole === "sponsor") {
+          navigate("/sponsor-signup");
+        }
+      }
+    } else {
+      // No temporary data, navigate to role-specific signup page
+      if (selectedRole === "beneficiary") {
+        navigate("/beneficiary-signup");
+      } else if (selectedRole === "sponsor") {
+        navigate("/sponsor-signup");
+      }
     }
   };
 
@@ -138,7 +180,7 @@ const RoleSelection = () => {
                 onClick={handleContinue}
                 className="w-full bg-[#6544E4] hover:bg-[#5A3DD0] text-white rounded-lg py-6 font-medium"
               >
-                Continue
+                {tempUser ? "Create Account" : "Continue"}
               </Button>
             </div>
           </CardContent>

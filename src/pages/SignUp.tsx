@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -21,10 +22,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import authService from "@/services/authService";
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const form = useForm<SignupFormValues>({
@@ -39,19 +42,20 @@ const SignUp = () => {
     },
   });
 
-  const handleSignUp = (values: SignupFormValues) => {
-    // Simple mock user registration
-    localStorage.setItem("user", JSON.stringify({ 
+  const handleSignUp = async (values: SignupFormValues) => {
+    // Store basic user info and redirect to role selection
+    // This is the general signup page that leads to role selection
+    localStorage.setItem("tempUser", JSON.stringify({ 
+      name: values.username,
       email: values.email,
-      username: values.username,
-      phone: values.phone
+      phone: values.phone,
+      password: values.password
     }));
-    toast.success("Account created successfully");
     navigate("/role-selection");
   };
 
   const handleGoogleSignUp = () => {
-    toast.info("Google signup not implemented yet");
+    authService.registerWithGoogle();
   };
 
   return (
@@ -102,6 +106,7 @@ const SignUp = () => {
                   variant="outline"
                   className="w-full flex items-center justify-center mb-6"
                   onClick={handleGoogleSignUp}
+                  disabled={isSubmitting}
                 >
                   <img src={googleIcon} alt="Google" className="w-5 h-5 mr-2" />
                   Sign up with Google
@@ -131,6 +136,7 @@ const SignUp = () => {
                             <Input
                               placeholder="Username"
                               className="pl-4 py-6 text-base"
+                              disabled={isSubmitting}
                               {...field}
                             />
                           </div>
@@ -152,6 +158,7 @@ const SignUp = () => {
                               type="email"
                               placeholder="Email address"
                               className="pl-4 py-6 text-base"
+                              disabled={isSubmitting}
                               {...field}
                             />
                           </div>
@@ -173,6 +180,7 @@ const SignUp = () => {
                               type="tel"
                               placeholder="Phone number"
                               className="pl-4 py-6 text-base"
+                              disabled={isSubmitting}
                               {...field}
                             />
                           </div>
@@ -194,6 +202,7 @@ const SignUp = () => {
                               type={showPassword ? "text" : "password"}
                               placeholder="Password"
                               className="pl-4 py-6 pr-10 text-base"
+                              disabled={isSubmitting}
                               {...field}
                             />
                             <div
@@ -225,6 +234,7 @@ const SignUp = () => {
                               type={showConfirmPassword ? "text" : "password"}
                               placeholder="Confirm password"
                               className="pl-4 py-6 pr-10 text-base"
+                              disabled={isSubmitting}
                               {...field}
                             />
                             <div
@@ -255,6 +265,7 @@ const SignUp = () => {
                           checked={field.value}
                           onCheckedChange={field.onChange}
                           className="mt-1"
+                          disabled={isSubmitting}
                         />
                       </FormControl>
                       <div className="space-y-1 leading-none">
@@ -277,8 +288,9 @@ const SignUp = () => {
                 <Button
                   type="submit"
                   className="w-full bg-[#6544E4] hover:bg-[#6A57DD] rounded-md py-6 mt-6"
+                  disabled={isSubmitting}
                 >
-                  Create account
+                  {isSubmitting ? "Proceeding..." : "Continue to role selection"}
                 </Button>
 
                 <p className="text-center text-sm text-gray-500 mt-6">

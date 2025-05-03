@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -12,7 +13,7 @@ import googleIcon from "../images/google.png";
 import logo from "../images/logo2k.png";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signupFormSchema, SignupFormValues } from "@/schemas/auth";
+import { signupFormSchema, SignupFormValues, mapSignupToApiFormat } from "@/schemas/auth";
 import {
   Form,
   FormControl,
@@ -21,11 +22,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useAuth } from "@/context/AuthContext";
+import authService from "@/services/authService";
 
 const SponsorSignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const { register } = useAuth();
 
   const form = useForm<SignupFormValues>({
     resolver: zodResolver(signupFormSchema),
@@ -39,25 +44,23 @@ const SponsorSignUp = () => {
     },
   });
 
-  const handleSignUp = (values: SignupFormValues) => {
-    // Set user role as sponsor
-    localStorage.setItem(
-      "user",
-      JSON.stringify({ 
-        email: values.email,
-        username: values.username,
-        phone: values.phone,
-        role: "sponsor" 
-      })
-    );
-    localStorage.setItem("authenticated", "true");
-    
-    toast.success("Account created successfully");
-    navigate("/");
+  const handleSignUp = async (values: SignupFormValues) => {
+    try {
+      setIsSubmitting(true);
+      // Convert form values to API format with role "SPONSOR"
+      const userData = mapSignupToApiFormat(values, "sponsor");
+      await register(userData);
+      // Navigation is handled in the register function
+    } catch (error) {
+      console.error("Registration error:", error);
+      // Error is already handled in the register function
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleGoogleSignUp = () => {
-    toast.info("Google signup not implemented yet");
+    authService.registerWithGoogle();
   };
 
   return (
@@ -107,6 +110,7 @@ const SponsorSignUp = () => {
                   variant="outline"
                   className="w-full flex items-center justify-center mb-6"
                   onClick={handleGoogleSignUp}
+                  disabled={isSubmitting}
                 >
                   <img src={googleIcon} alt="Google" className="w-5 h-5 mr-2" />
                   Sign up with Google
@@ -136,6 +140,7 @@ const SponsorSignUp = () => {
                             <Input
                               placeholder="Username"
                               className="pl-4 py-6 text-base"
+                              disabled={isSubmitting}
                               {...field}
                             />
                           </div>
@@ -157,6 +162,7 @@ const SponsorSignUp = () => {
                               type="email"
                               placeholder="Email address"
                               className="pl-4 py-6 text-base"
+                              disabled={isSubmitting}
                               {...field}
                             />
                           </div>
@@ -178,6 +184,7 @@ const SponsorSignUp = () => {
                               type="tel"
                               placeholder="Phone number"
                               className="pl-4 py-6 text-base"
+                              disabled={isSubmitting}
                               {...field}
                             />
                           </div>
@@ -199,6 +206,7 @@ const SponsorSignUp = () => {
                               type={showPassword ? "text" : "password"}
                               placeholder="Password"
                               className="pl-4 py-6 pr-10 text-base"
+                              disabled={isSubmitting}
                               {...field}
                             />
                             <div
@@ -230,6 +238,7 @@ const SponsorSignUp = () => {
                               type={showConfirmPassword ? "text" : "password"}
                               placeholder="Confirm password"
                               className="pl-4 py-6 pr-10 text-base"
+                              disabled={isSubmitting}
                               {...field}
                             />
                             <div
@@ -260,6 +269,7 @@ const SponsorSignUp = () => {
                           checked={field.value}
                           onCheckedChange={field.onChange}
                           className="mt-1"
+                          disabled={isSubmitting}
                         />
                       </FormControl>
                       <div className="space-y-1 leading-none">
@@ -282,8 +292,9 @@ const SponsorSignUp = () => {
                 <Button
                   type="submit"
                   className="w-full bg-[#6544E4] hover:bg-[#6A57DD] rounded-md py-6 mt-6"
+                  disabled={isSubmitting}
                 >
-                  Create Sponsor Account
+                  {isSubmitting ? "Creating Account..." : "Create Sponsor Account"}
                 </Button>
 
                 <p className="text-center text-sm text-gray-500 mt-6">
