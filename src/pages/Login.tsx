@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -108,7 +107,10 @@ const Login = () => {
             </div>
 
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-6">
+              <form
+                onSubmit={form.handleSubmit(handleLogin)}
+                className="space-y-6"
+              >
                 {/* Google Sign-in Button */}
                 <Button
                   type="button"
@@ -256,7 +258,7 @@ const Login = () => {
                 <p className="text-center text-sm text-gray-500">
                   Don't have an account?{" "}
                   <Link
-                    to="/signup"
+                    to="/role-selection"
                     className="font-medium text-[#7B68EE] hover:underline"
                   >
                     Sign up

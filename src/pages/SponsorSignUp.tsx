@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -13,7 +12,11 @@ import googleIcon from "../images/google.png";
 import logo from "../images/logo2k.png";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signupFormSchema, SignupFormValues, mapSignupToApiFormat } from "@/schemas/auth";
+import {
+  signupFormSchema,
+  SignupFormValues,
+  mapSignupToApiFormat,
+} from "@/schemas/auth";
 import {
   Form,
   FormControl,
@@ -48,7 +51,7 @@ const SponsorSignUp = () => {
     try {
       setIsSubmitting(true);
       // Convert form values to API format with role "SPONSOR"
-      const userData = mapSignupToApiFormat(values, "sponsor");
+      const userData = mapSignupToApiFormat(values, "benefactor");
       await register(userData);
       // Navigation is handled in the register function
     } catch (error) {
@@ -77,7 +80,8 @@ const SponsorSignUp = () => {
               Sign up as a Sponsor
             </h1>
             <p className="text-gray-100 text-lg max-w-md">
-              Create an account to start helping others by sponsoring bill payments and providing essential support.
+              Create an account to start helping others by sponsoring bill
+              payments and providing essential support.
             </p>
           </div>
 
@@ -103,7 +107,10 @@ const SponsorSignUp = () => {
             </div>
 
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(handleSignUp)} className="space-y-4">
+              <form
+                onSubmit={form.handleSubmit(handleSignUp)}
+                className="space-y-4"
+              >
                 {/* Google Sign-in Button */}
                 <Button
                   type="button"
@@ -243,7 +250,9 @@ const SponsorSignUp = () => {
                             />
                             <div
                               className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
-                              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                              onClick={() =>
+                                setShowConfirmPassword(!showConfirmPassword)
+                              }
                             >
                               {showConfirmPassword ? (
                                 <EyeOff size={18} className="text-gray-400" />
@@ -275,11 +284,17 @@ const SponsorSignUp = () => {
                       <div className="space-y-1 leading-none">
                         <FormLabel className="text-sm font-normal">
                           By signing up, I agree to the{" "}
-                          <Link to="#" className="text-[#7B68EE] hover:underline">
+                          <Link
+                            to="#"
+                            className="text-[#7B68EE] hover:underline"
+                          >
                             Terms of Service
                           </Link>{" "}
                           and{" "}
-                          <Link to="#" className="text-[#7B68EE] hover:underline">
+                          <Link
+                            to="#"
+                            className="text-[#7B68EE] hover:underline"
+                          >
                             Privacy Policy
                           </Link>
                         </FormLabel>
@@ -294,7 +309,9 @@ const SponsorSignUp = () => {
                   className="w-full bg-[#6544E4] hover:bg-[#6A57DD] rounded-md py-6 mt-6"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "Creating Account..." : "Create Sponsor Account"}
+                  {isSubmitting
+                    ? "Creating Account..."
+                    : "Create Sponsor Account"}
                 </Button>
 
                 <p className="text-center text-sm text-gray-500 mt-6">
