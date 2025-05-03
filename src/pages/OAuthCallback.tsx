@@ -31,18 +31,18 @@ const OAuthCallback = () => {
           return;
         }
 
-        // Store token and user data
-        localStorage.setItem("token", token);
+        // Store token and user data in sessionStorage instead of localStorage
+        sessionStorage.setItem("token", token);
         const user = JSON.parse(userData);
-        localStorage.setItem("user", userData);
-        localStorage.setItem("authenticated", "true");
+        sessionStorage.setItem("user", userData);
+        sessionStorage.setItem("authenticated", "true");
 
         // Update auth context
         setToken(token);
         setUser(user);
 
         toast.success("Login successful");
-        navigate("/");
+        navigate("/dashboard");
       } catch (error) {
         console.error("OAuth callback error:", error);
         toast.error("Failed to process authentication");
