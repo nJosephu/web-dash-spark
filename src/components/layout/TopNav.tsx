@@ -107,7 +107,7 @@ const TopNav = ({ userName }: TopNavProps) => {
       </Breadcrumb>
 
       <div className="flex items-center gap-4">
-        <div className="text-right hidden md:block">
+        <div className="text-right hidden sm:block">
           <span className="block text-xs text-gray-500">Wallet</span>
           <span className="font-medium text-sm ">₦94A...R3DC</span>
         </div>
