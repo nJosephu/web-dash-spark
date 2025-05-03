@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,7 +20,6 @@ import OAuthCallback from "./pages/OAuthCallback";
 import NotFound from "./pages/NotFound";
 import { useEffect, useState } from "react";
 import { AuthProvider, useAuth } from "./context/AuthContext";
-import authService from "./services/authService";
 
 const queryClient = new QueryClient();
 
@@ -84,88 +82,90 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-// Modified AppRoutes to place ALL routes inside AuthProvider
+// Moved AppRoutes inside AuthProvider to fix the context issue
 const AppRoutes = () => {
   return (
-    <Routes>
-      {/* Public Routes */}
-      <Route path="/" element={<RoleSelection />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<SignUp />} />
-      <Route path="/role-selection" element={<RoleSelection />} />
-      <Route path="/beneficiary-signup" element={<BeneficiarySignUp />} />
-      <Route path="/sponsor-signup" element={<SponsorSignUp />} />
-      <Route path="/auth/callback" element={<OAuthCallback />} />
+    <AuthProvider>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<RoleSelection />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/role-selection" element={<RoleSelection />} />
+        <Route path="/beneficiary-signup" element={<BeneficiarySignUp />} />
+        <Route path="/sponsor-signup" element={<SponsorSignUp />} />
+        <Route path="/auth/callback" element={<OAuthCallback />} />
 
-      {/* Protected Routes */}
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/requests"
-        element={
-          <ProtectedRoute>
-            <Requests />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/requests/:bundleId"
-        element={
-          <ProtectedRoute>
-            <BundleDetails />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/sponsors"
-        element={
-          <ProtectedRoute>
-            <Sponsors />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/bill-history"
-        element={
-          <ProtectedRoute>
-            <BillHistory />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/switch"
-        element={
-          <ProtectedRoute>
-            <SwitchRole />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/settings"
-        element={
-          <ProtectedRoute>
-            <Settings />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/logout"
-        element={
-          <ProtectedRoute>
-            <Logout />
-          </ProtectedRoute>
-        }
-      />
+        {/* Protected Routes */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/requests"
+          element={
+            <ProtectedRoute>
+              <Requests />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/requests/:bundleId"
+          element={
+            <ProtectedRoute>
+              <BundleDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/sponsors"
+          element={
+            <ProtectedRoute>
+              <Sponsors />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/bill-history"
+          element={
+            <ProtectedRoute>
+              <BillHistory />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/switch"
+          element={
+            <ProtectedRoute>
+              <SwitchRole />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/logout"
+          element={
+            <ProtectedRoute>
+              <Logout />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* 404 Route */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+        {/* 404 Route */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </AuthProvider>
   );
 };
 
@@ -191,13 +191,11 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <AuthProvider>
-          <TooltipProvider>
-            <AppRoutes />
-            <Toaster />
-            <Sonner />
-          </TooltipProvider>
-        </AuthProvider>
+        <TooltipProvider>
+          <AppRoutes />
+          <Toaster />
+          <Sonner />
+        </TooltipProvider>
       </BrowserRouter>
     </QueryClientProvider>
   );
