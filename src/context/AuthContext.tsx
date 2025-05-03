@@ -67,7 +67,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     checkAuth();
   }, []);
 
-  const register = async (userData: {
+  const register = async (userInput: {
     name: string;
     email: string;
     phone: string;
@@ -76,16 +76,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }) => {
     try {
       setIsLoading(true);
-      const { token: newToken, user: userData } = await authService.register(userData);
+      const { token: newToken, user: newUserData } = await authService.register(userInput);
       
       // Save to localStorage
       localStorage.setItem('token', newToken);
-      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('user', JSON.stringify(newUserData));
       localStorage.setItem('authenticated', 'true');
       
       // Update state
       setToken(newToken);
-      setUser(userData);
+      setUser(newUserData);
       
       toast.success("Registration successful");
       
