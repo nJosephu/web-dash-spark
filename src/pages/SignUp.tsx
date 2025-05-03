@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -43,9 +42,8 @@ const SignUp = () => {
   });
 
   const handleSignUp = async (values: SignupFormValues) => {
-    // Store basic user info and redirect to role selection
-    // This is the general signup page that leads to role selection
-    localStorage.setItem("tempUser", JSON.stringify({ 
+    // Store basic user info in sessionStorage instead of localStorage and redirect to role selection
+    sessionStorage.setItem("tempUser", JSON.stringify({ 
       name: values.username,
       email: values.email,
       phone: values.phone,

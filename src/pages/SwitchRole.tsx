@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "@/components/layout/Sidebar";
@@ -14,8 +15,8 @@ const SwitchRole = () => {
   useEffect(() => {
     document.title = "Switch Role | Urgent2kay";
 
-    // Get user data from localStorage
-    const userData = JSON.parse(localStorage.getItem("user") || "{}");
+    // Get user data from sessionStorage instead of localStorage
+    const userData = JSON.parse(sessionStorage.getItem("user") || "{}");
     if (userData.email) {
       // Extract name from email (for demo purposes)
       const nameFromEmail = userData.email.split("@")[0];
@@ -26,9 +27,9 @@ const SwitchRole = () => {
   }, []);
 
   const handleSwitchRole = (role: string) => {
-    // Update user role in localStorage
-    const userData = JSON.parse(localStorage.getItem("user") || "{}");
-    localStorage.setItem(
+    // Update user role in sessionStorage instead of localStorage
+    const userData = JSON.parse(sessionStorage.getItem("user") || "{}");
+    sessionStorage.setItem(
       "user",
       JSON.stringify({
         ...userData,

@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "@/components/layout/Sidebar";
@@ -349,8 +350,8 @@ const BundleDetails = () => {
   const [bundle, setBundle] = useState<Bundle | null>(null);
 
   useEffect(() => {
-    // Get user data from localStorage
-    const userData = JSON.parse(localStorage.getItem("user") || "{}");
+    // Get user data from sessionStorage instead of localStorage
+    const userData = JSON.parse(sessionStorage.getItem("user") || "{}");
     if (userData.email) {
       // Extract name from email (for demo purposes)
       const nameFromEmail = userData.email.split("@")[0];

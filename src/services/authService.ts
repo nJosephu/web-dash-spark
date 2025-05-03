@@ -96,7 +96,9 @@ const authService = {
   
   // Helper method to get auth token
   getToken: (): string | null => {
-    return sessionStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
+    console.log("Getting token from sessionStorage:", token ? "Token exists" : "No token found");
+    return token;
   },
   
   // For future use with API requests that require authentication
@@ -112,11 +114,16 @@ const authService = {
   isAuthenticated: (): boolean => {
     const token = sessionStorage.getItem('token');
     const user = sessionStorage.getItem('user');
-    return !!token && !!user;
+    const isAuth = !!token && !!user;
+    console.log("Authentication check:", isAuth ? "Authenticated" : "Not authenticated");
+    console.log("Token exists:", !!token);
+    console.log("User exists:", !!user);
+    return isAuth;
   },
   
   // Clear authentication data
   clearAuth: (): void => {
+    console.log("Clearing authentication data from sessionStorage");
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('user');
     sessionStorage.removeItem('authenticated');

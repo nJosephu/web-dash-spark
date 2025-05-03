@@ -14,15 +14,18 @@ const Logout = () => {
 
   useEffect(() => {
     document.title = "Logout | Urgent2kay";
-  }, []);
+    console.log("Logout page - Auth status:", !!user);
+  }, [user]);
 
   const handleLogout = () => {
+    console.log("Logout requested - clearing auth data");
     logout();
   };
 
   // If we're at the logout page but not authenticated, redirect to login
   useEffect(() => {
     if (!user) {
+      console.log("No user found in Logout page, redirecting to login");
       navigate("/login", { replace: true });
     }
   }, [user, navigate]);

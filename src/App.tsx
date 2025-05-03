@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -147,7 +146,7 @@ const App = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Small timeout to ensure localStorage is checked
+    // Small timeout to ensure sessionStorage is checked
     setTimeout(() => setLoading(false), 100);
   }, []);
 

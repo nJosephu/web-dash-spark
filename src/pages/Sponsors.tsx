@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import TopNav from "@/components/layout/TopNav";
@@ -125,8 +126,8 @@ const Sponsors = () => {
   useEffect(() => {
     document.title = "Sponsors | Urgent2kay";
 
-    // Get user data from localStorage
-    const userData = JSON.parse(localStorage.getItem("user") || "{}");
+    // Get user data from sessionStorage instead of localStorage
+    const userData = JSON.parse(sessionStorage.getItem("user") || "{}");
     if (userData.email) {
       // Extract name from email (for demo purposes)
       const nameFromEmail = userData.email.split("@")[0];

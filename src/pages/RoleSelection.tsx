@@ -24,8 +24,8 @@ const RoleSelection = () => {
   const { register } = useAuth();
 
   useEffect(() => {
-    // Retrieve user data from localStorage if available
-    const storedUser = localStorage.getItem("tempUser");
+    // Retrieve user data from sessionStorage instead of localStorage
+    const storedUser = sessionStorage.getItem("tempUser");
     if (storedUser) {
       setTempUser(JSON.parse(storedUser));
     }
@@ -49,7 +49,7 @@ const RoleSelection = () => {
           role: roleForAPI.toUpperCase()
         });
         // Clear temporary user data
-        localStorage.removeItem("tempUser");
+        sessionStorage.removeItem("tempUser");
       } catch (error) {
         // Error is handled in register function
         // Just navigate to the appropriate signup page as fallback
