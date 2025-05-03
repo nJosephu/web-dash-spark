@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -27,15 +26,19 @@ const queryClient = new QueryClient();
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading } = useAuth();
-  
+
   if (isLoading) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        Loading...
+      </div>
+    );
   }
-  
+
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
-  
+
   return <>{children}</>;
 };
 
@@ -43,55 +46,80 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* Auth Routes */}
+      <Route path="/" element={<RoleSelection />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/role-selection" element={<RoleSelection />} />
       <Route path="/beneficiary-signup" element={<BeneficiarySignUp />} />
       <Route path="/sponsor-signup" element={<SponsorSignUp />} />
       <Route path="/auth/callback" element={<OAuthCallback />} />
-      
+
       {/* Protected Routes */}
-      <Route path="/" element={
-        <ProtectedRoute>
-          <Dashboard />
-        </ProtectedRoute>
-      } />
-      <Route path="/requests" element={
-        <ProtectedRoute>
-          <Requests />
-        </ProtectedRoute>
-      } />
-      <Route path="/requests/:bundleId" element={
-        <ProtectedRoute>
-          <BundleDetails />
-        </ProtectedRoute>
-      } />
-      <Route path="/sponsors" element={
-        <ProtectedRoute>
-          <Sponsors />
-        </ProtectedRoute>
-      } />
-      <Route path="/bill-history" element={
-        <ProtectedRoute>
-          <BillHistory />
-        </ProtectedRoute>
-      } />
-      <Route path="/switch" element={
-        <ProtectedRoute>
-          <SwitchRole />
-        </ProtectedRoute>
-      } />
-      <Route path="/settings" element={
-        <ProtectedRoute>
-          <Settings />
-        </ProtectedRoute>
-      } />
-      <Route path="/logout" element={
-        <ProtectedRoute>
-          <Logout />
-        </ProtectedRoute>
-      } />
-      
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/requests"
+        element={
+          <ProtectedRoute>
+            <Requests />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/requests/:bundleId"
+        element={
+          <ProtectedRoute>
+            <BundleDetails />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/sponsors"
+        element={
+          <ProtectedRoute>
+            <Sponsors />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/bill-history"
+        element={
+          <ProtectedRoute>
+            <BillHistory />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/switch"
+        element={
+          <ProtectedRoute>
+            <SwitchRole />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <Settings />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/logout"
+        element={
+          <ProtectedRoute>
+            <Logout />
+          </ProtectedRoute>
+        }
+      />
+
       {/* 404 Route */}
       <Route path="*" element={<NotFound />} />
     </Routes>

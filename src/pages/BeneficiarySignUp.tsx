@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -13,7 +12,11 @@ import googleIcon from "../images/google.png";
 import logo from "../images/logo2k.png";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signupFormSchema, SignupFormValues, mapSignupToApiFormat } from "@/schemas/auth";
+import {
+  signupFormSchema,
+  SignupFormValues,
+  mapSignupToApiFormat,
+} from "@/schemas/auth";
 import {
   Form,
   FormControl,
@@ -104,7 +107,10 @@ const BeneficiarySignUp = () => {
             </div>
 
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(handleSignUp)} className="space-y-4">
+              <form
+                onSubmit={form.handleSubmit(handleSignUp)}
+                className="space-y-4"
+              >
                 {/* Google Sign-in Button */}
                 <Button
                   type="button"
@@ -244,7 +250,9 @@ const BeneficiarySignUp = () => {
                             />
                             <div
                               className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
-                              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                              onClick={() =>
+                                setShowConfirmPassword(!showConfirmPassword)
+                              }
                             >
                               {showConfirmPassword ? (
                                 <EyeOff size={18} className="text-gray-400" />
@@ -276,11 +284,17 @@ const BeneficiarySignUp = () => {
                       <div className="space-y-1 leading-none">
                         <FormLabel className="text-sm font-normal">
                           By signing up, I agree to the{" "}
-                          <Link to="#" className="text-[#7B68EE] hover:underline">
+                          <Link
+                            to="#"
+                            className="text-[#7B68EE] hover:underline"
+                          >
                             Terms of Service
                           </Link>{" "}
                           and{" "}
-                          <Link to="#" className="text-[#7B68EE] hover:underline">
+                          <Link
+                            to="#"
+                            className="text-[#7B68EE] hover:underline"
+                          >
                             Privacy Policy
                           </Link>
                         </FormLabel>
@@ -295,7 +309,9 @@ const BeneficiarySignUp = () => {
                   className="w-full bg-[#6544E4] hover:bg-[#6A57DD] rounded-md py-6 mt-6"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "Creating Account..." : "Create Beneficiary Account"}
+                  {isSubmitting
+                    ? "Creating Account..."
+                    : "Create Beneficiary Account"}
                 </Button>
 
                 <p className="text-center text-sm text-gray-500 mt-6">
