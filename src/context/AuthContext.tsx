@@ -59,8 +59,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Check if user is logged in on initial load
   useEffect(() => {
     const checkAuth = () => {
-      const storedToken = localStorage.getItem("token");
-      const storedUser = localStorage.getItem("user");
+      const storedToken = sessionStorage.getItem("token");
+      const storedUser = sessionStorage.getItem("user");
 
       if (storedToken && storedUser) {
         setToken(storedToken);
@@ -85,10 +85,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         userInput
       );
 
-      // Save to localStorage
-      localStorage.setItem("token", newToken);
-      localStorage.setItem("user", JSON.stringify(newUserData));
-      localStorage.setItem("authenticated", "true");
+      // Save to sessionStorage
+      sessionStorage.setItem("token", newToken);
+      sessionStorage.setItem("user", JSON.stringify(newUserData));
+      sessionStorage.setItem("authenticated", "true");
 
       // Update state
       setToken(newToken);
@@ -118,10 +118,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         password
       );
 
-      // Save to localStorage
-      localStorage.setItem("token", newToken);
-      localStorage.setItem("user", JSON.stringify(userData));
-      localStorage.setItem("authenticated", "true");
+      // Save to sessionStorage
+      sessionStorage.setItem("token", newToken);
+      sessionStorage.setItem("user", JSON.stringify(userData));
+      sessionStorage.setItem("authenticated", "true");
 
       // Update state
       setToken(newToken);
@@ -143,9 +143,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = () => {
     // Clear local storage
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("authenticated");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("authenticated");
 
     // Reset state
     setToken(null);
