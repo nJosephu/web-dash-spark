@@ -13,36 +13,73 @@ const OAuthCallback = () => {
   useEffect(() => {
     const processOAuthResponse = async () => {
       try {
+        console.log("OAuth callback processing started");
+        
         // Parse query parameters from URL
         const params = new URLSearchParams(search);
         const token = params.get("token");
         const userData = params.get("user");
         const error = params.get("error");
+        
+        console.log("OAuth params received:", { 
+          hasToken: !!token, 
+          hasUserData: !!userData, 
+          error: error || "none",
+          tokenFirstChars: token ? `${token.substring(0, 5)}...` : "no token"
+        });
 
         if (error) {
+          console.error("OAuth error received:", error);
           toast.error(error || "Authentication failed");
           navigate("/login");
           return;
         }
 
         if (!token || !userData) {
+          console.error("Invalid OAuth response - missing token or user data");
           toast.error("Invalid authentication response");
           navigate("/login");
           return;
         }
 
-        // Store token and user data in sessionStorage instead of localStorage
-        sessionStorage.setItem("token", token);
-        const user = JSON.parse(userData);
-        sessionStorage.setItem("user", userData);
-        sessionStorage.setItem("authenticated", "true");
+        try {
+          const user = JSON.parse(userData);
+          console.log("OAuth user data parsed successfully:", { 
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role 
+          });
+          
+          // Store token and user data in sessionStorage
+          console.log("Storing OAuth data in sessionStorage");
+          sessionStorage.setItem("token", token);
+          sessionStorage.setItem("user", userData);
+          sessionStorage.setItem("authenticated", "true");
+          
+          // Double-check storage
+          const storedToken = sessionStorage.getItem("token");
+          const storedUser = sessionStorage.getItem("user");
+          console.log("Verification of sessionStorage data:", { 
+            tokenStored: !!storedToken, 
+            userStored: !!storedUser,
+            tokenMatches: storedToken === token,
+            userMatches: storedUser === userData 
+          });
 
-        // Update auth context
-        setToken(token);
-        setUser(user);
+          // Update auth context
+          console.log("Updating auth context with token and user data");
+          setToken(token);
+          setUser(user);
 
-        toast.success("Login successful");
-        navigate("/dashboard");
+          toast.success("Login successful");
+          console.log("Redirecting to dashboard after successful OAuth login");
+          navigate("/dashboard");
+        } catch (parseError) {
+          console.error("Error parsing user data:", parseError);
+          toast.error("Failed to process user data");
+          navigate("/login");
+        }
       } catch (error) {
         console.error("OAuth callback error:", error);
         toast.error("Failed to process authentication");

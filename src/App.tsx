@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -24,25 +25,49 @@ import authService from "./services/authService";
 
 const queryClient = new QueryClient();
 
-// Protected route component
+// Protected route component with enhanced logging
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading, logout } = useAuth();
   const navigate = useNavigate();
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
-    // Double-check authentication status using the token in sessionStorage
-    const checkAuth = () => {
-      if (!isLoading && !authService.isAuthenticated()) {
-        // If not authenticated according to sessionStorage, force logout
+    console.log("ProtectedRoute - Initial auth state:", { 
+      isAuthenticated, 
+      isLoading, 
+      location: window.location.pathname 
+    });
+    
+    // Add a small delay to ensure sessionStorage is populated
+    const timeoutId = setTimeout(() => {
+      // Double-check authentication status using the token in sessionStorage
+      const sessionToken = sessionStorage.getItem('token');
+      const sessionUser = sessionStorage.getItem('user');
+      
+      console.log("ProtectedRoute - Checking sessionStorage:", {
+        hasToken: !!sessionToken,
+        hasUser: !!sessionUser,
+        tokenFirstChars: sessionToken ? `${sessionToken.substring(0, 5)}...` : "none"
+      });
+      
+      const isSessionAuth = !!sessionToken && !!sessionUser;
+      console.log("ProtectedRoute - Session auth check result:", isSessionAuth);
+      
+      if (!isLoading && !isSessionAuth) {
+        console.log("ProtectedRoute - Not authenticated, redirecting to login");
+        // Force logout to clear any inconsistent state
         logout();
         navigate("/login", { replace: true });
       }
-    };
+      
+      setCheckingAuth(false);
+    }, 300); // Small delay to ensure sessionStorage is checked after it might be set
+    
+    return () => clearTimeout(timeoutId);
+  }, [isLoading, isAuthenticated, logout, navigate]);
 
-    checkAuth();
-  }, [isLoading, logout, navigate]);
-
-  if (isLoading) {
+  if (isLoading || checkingAuth) {
+    console.log("ProtectedRoute - Showing loading state");
     return (
       <div className="flex items-center justify-center h-screen">
         Loading...
@@ -51,9 +76,11 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }
 
   if (!isAuthenticated) {
+    console.log("ProtectedRoute - Not authenticated after checks, navigating to login");
     return <Navigate to="/login" replace />;
   }
 
+  console.log("ProtectedRoute - Authentication successful, rendering protected content");
   return <>{children}</>;
 };
 
@@ -146,8 +173,15 @@ const App = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log("App loading - checking sessionStorage");
     // Small timeout to ensure sessionStorage is checked
-    setTimeout(() => setLoading(false), 100);
+    setTimeout(() => {
+      // Check if we have auth data in sessionStorage
+      const token = sessionStorage.getItem('token');
+      const user = sessionStorage.getItem('user');
+      console.log("Initial app load auth check:", { hasToken: !!token, hasUser: !!user });
+      setLoading(false);
+    }, 100);
   }, []);
 
   if (loading) {
