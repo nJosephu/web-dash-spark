@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -40,13 +39,14 @@ const RoleSelection = () => {
     // If we have temporary user data, register directly
     if (tempUser) {
       try {
-        const roleForAPI = selectedRole === "beneficiary" ? "benefactee" : "sponsor";
+        const roleForAPI =
+          selectedRole === "beneficiary" ? "benefactee" : "sponsor";
         await register({
           name: tempUser.name,
           email: tempUser.email,
           phone: tempUser.phone,
           password: tempUser.password,
-          role: roleForAPI.toUpperCase()
+          role: roleForAPI.toUpperCase(),
         });
         // Clear temporary user data
         sessionStorage.removeItem("tempUser");
@@ -185,6 +185,15 @@ const RoleSelection = () => {
             </div>
           </CardContent>
         </Card>
+        <p className="text-center text-white mt-3">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="font-medium text-[#7B68EE] hover:underline"
+          >
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );
