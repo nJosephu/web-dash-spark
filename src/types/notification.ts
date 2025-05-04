@@ -9,4 +9,6 @@ export interface Notification {
   isRead: boolean;
   timestamp: string;
   actionUrl?: string;
+  amount?: string;
+  recipientName?: string;
 }

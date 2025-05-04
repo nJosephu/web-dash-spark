@@ -17,17 +17,20 @@ const mockNotifications: Notification[] = [
   {
     id: "1",
     type: "success",
-    title: "Request approved",
-    message: "Your bill request has been approved by WorldStar Health",
+    title: "Bill request approved",
+    message: "Your bill request has been approved by",
+    recipientName: "WorldStar Health",
     isRead: false,
     timestamp: "2025-05-04T09:30:00Z",
     actionUrl: "/requests/123",
+    amount: "₦450,000.00",
   },
   {
     id: "2",
     type: "info",
     title: "New sponsor available",
-    message: "FastTech has been added as a new sponsor",
+    message: "has been added as a new sponsor",
+    recipientName: "FastTech",
     isRead: true,
     timestamp: "2025-05-03T14:20:00Z",
     actionUrl: "/sponsors",
@@ -40,6 +43,7 @@ const mockNotifications: Notification[] = [
     isRead: false,
     timestamp: "2025-05-02T11:45:00Z",
     actionUrl: "/bill-history",
+    amount: "₦120,000.00",
   },
   {
     id: "4",
@@ -49,6 +53,7 @@ const mockNotifications: Notification[] = [
     isRead: true,
     timestamp: "2025-05-01T16:15:00Z",
     actionUrl: "/requests/789",
+    amount: "₦75,500.00",
   },
 ];
 
@@ -56,14 +61,30 @@ const mockNotifications: Notification[] = [
 const getNotificationIcon = (type: NotificationType) => {
   switch (type) {
     case "success":
-      return <div className="h-2 w-2 rounded-full bg-urgent-green"></div>;
+      return (
+        <div className="flex items-center justify-center h-6 w-6 rounded-full bg-urgent-green bg-opacity-15">
+          <Check className="h-3.5 w-3.5 text-urgent-green" />
+        </div>
+      );
     case "error":
-      return <div className="h-2 w-2 rounded-full bg-urgent-red"></div>;
+      return (
+        <div className="flex items-center justify-center h-6 w-6 rounded-full bg-urgent-red bg-opacity-15">
+          <X className="h-3.5 w-3.5 text-urgent-red" />
+        </div>
+      );
     case "warning":
-      return <div className="h-2 w-2 rounded-full bg-urgent-yellow"></div>;
+      return (
+        <div className="flex items-center justify-center h-6 w-6 rounded-full bg-urgent-yellow bg-opacity-15">
+          <div className="h-3.5 w-3.5 flex items-center justify-center text-urgent-yellow font-bold">!</div>
+        </div>
+      );
     case "info":
     default:
-      return <div className="h-2 w-2 rounded-full bg-urgent-blue"></div>;
+      return (
+        <div className="flex items-center justify-center h-6 w-6 rounded-full bg-urgent-blue bg-opacity-15">
+          <div className="h-3.5 w-3.5 flex items-center justify-center text-urgent-blue font-bold">i</div>
+        </div>
+      );
   }
 };
 
@@ -125,36 +146,11 @@ const NotificationPanel = ({ onClose }: NotificationPanelProps) => {
     <SheetContent className="w-full sm:max-w-md overflow-y-auto">
       <SheetHeader className="border-b pb-4">
         <div className="flex justify-between items-center">
-          <SheetTitle className="text-lg font-medium">Notifications</SheetTitle>
-          <div className="flex gap-2 items-center">
-            {notifications.length > 0 && (
-              <>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={handleMarkAllAsRead}
-                  className="text-xs hover:bg-gray-100"
-                >
-                  <Check className="h-3 w-3 mr-1" />
-                  Mark all read
-                </Button>
-                <Separator orientation="vertical" className="h-4" />
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={handleArchiveAll}
-                  className="text-xs hover:bg-gray-100"
-                >
-                  <Trash2 className="h-3 w-3 mr-1" />
-                  Clear all
-                </Button>
-              </>
-            )}
-          </div>
+          <SheetTitle className="text-lg font-medium">Notification</SheetTitle>
         </div>
       </SheetHeader>
 
-      <div className="pt-4">
+      <div className="pt-4 pb-20">
         {notifications.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
             <Bell className="h-12 w-12 text-gray-300 mb-4" />
@@ -174,10 +170,7 @@ const NotificationPanel = ({ onClose }: NotificationPanelProps) => {
             {notifications.map((notification, index) => (
               <div key={notification.id}>
                 <div 
-                  className={cn(
-                    "px-1 py-3 flex gap-3 cursor-pointer hover:bg-gray-50 rounded transition-colors",
-                    !notification.isRead && "bg-[#F1EDFF]"
-                  )}
+                  className="px-1 py-3 flex gap-3 cursor-pointer hover:bg-gray-50 rounded transition-colors"
                   onClick={() => handleNotificationClick(notification)}
                 >
                   <div className="pt-0.5">
@@ -195,7 +188,17 @@ const NotificationPanel = ({ onClose }: NotificationPanelProps) => {
                         {formatDate(notification.timestamp)}
                       </span>
                     </div>
-                    <p className="text-xs text-gray-600 mt-1">{notification.message}</p>
+                    <div className="text-xs text-gray-600 mt-1">
+                      <span>{notification.message} </span>
+                      {notification.recipientName && (
+                        <span className="text-[#6544E4] font-medium cursor-pointer hover:underline">
+                          {notification.recipientName}
+                        </span>
+                      )}
+                      {notification.amount && (
+                        <div className="font-medium mt-1">{notification.amount}</div>
+                      )}
+                    </div>
                   </div>
                 </div>
                 {index < notifications.length - 1 && <Separator className="my-1" />}
@@ -210,6 +213,29 @@ const NotificationPanel = ({ onClose }: NotificationPanelProps) => {
           </div>
         )}
       </div>
+      
+      {notifications.length > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 px-6 py-4 bg-white border-t flex justify-between">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={handleMarkAllAsRead}
+            className="text-xs hover:bg-gray-100"
+          >
+            <Check className="h-3 w-3 mr-1" />
+            Mark all read
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={handleArchiveAll}
+            className="text-xs hover:bg-gray-100"
+          >
+            <Trash2 className="h-3 w-3 mr-1" />
+            Clear all
+          </Button>
+        </div>
+      )}
     </SheetContent>
   );
 };
