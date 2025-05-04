@@ -27,9 +27,6 @@ const NotificationItem = ({ notification, onClick }: NotificationItemProps) => {
           >
             {notification.title}
           </h4>
-          <span className="text-xs text-gray-500 ml-2">
-            {formatRelativeDate(notification.timestamp)}
-          </span>
         </div>
         <div className="text-xs text-gray-600 mt-1">
           <span>{notification.message} </span>
@@ -42,6 +39,9 @@ const NotificationItem = ({ notification, onClick }: NotificationItemProps) => {
             <div className="font-medium mt-1">{notification.amount}</div>
           )}
         </div>
+        <span className="text-xs text-gray-500 block mt-2">
+          {formatRelativeDate(notification.timestamp)}
+        </span>
       </div>
     </div>
   );
