@@ -25,6 +25,9 @@ import {
 } from "@/components/ui/breadcrumb";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import { Sheet, SheetTrigger } from "@/components/ui/sheet";
+import { useState } from "react";
+import NotificationPanel from "./NotificationPanel";
 
 interface TopNavProps {
   userName: string;
@@ -34,6 +37,7 @@ const TopNav = ({ userName }: TopNavProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { logout } = useAuth();
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -112,14 +116,19 @@ const TopNav = ({ userName }: TopNavProps) => {
           <span className="font-medium text-sm ">₦94A...R3DC</span>
         </div>
 
-        <Button
-          variant="outline"
-          size="icon"
-          className="relative h-9 w-9 rounded-md bg-white"
-        >
-          <Bell size={18} className="text-gray-600" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-[#6544E4] rounded-full"></span>
-        </Button>
+        <Sheet open={isNotificationOpen} onOpenChange={setIsNotificationOpen}>
+          <SheetTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              className="relative h-9 w-9 rounded-md bg-white"
+            >
+              <Bell size={18} className="text-gray-600" />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-[#6544E4] rounded-full"></span>
+            </Button>
+          </SheetTrigger>
+          <NotificationPanel onClose={() => setIsNotificationOpen(false)} />
+        </Sheet>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
