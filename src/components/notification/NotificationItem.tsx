@@ -1,4 +1,3 @@
-
 import { Notification } from "@/types/notification";
 import { formatRelativeDate } from "@/utils/dateUtils";
 import { cn } from "@/lib/utils";
@@ -11,7 +10,7 @@ interface NotificationItemProps {
 
 const NotificationItem = ({ notification, onClick }: NotificationItemProps) => {
   return (
-    <div 
+    <div
       className="px-1 py-3 flex gap-3 cursor-pointer hover:bg-gray-50 rounded transition-colors"
       onClick={() => onClick(notification)}
     >
@@ -20,10 +19,12 @@ const NotificationItem = ({ notification, onClick }: NotificationItemProps) => {
       </div>
       <div className="flex-1">
         <div className="flex justify-between items-start">
-          <h4 className={cn(
-            "text-sm",
-            !notification.isRead ? "font-medium" : "font-normal"
-          )}>
+          <h4
+            className={cn(
+              "text-sm",
+              !notification.isRead ? "font-medium" : "font-normal"
+            )}
+          >
             {notification.title}
           </h4>
           <span className="text-xs text-gray-500 ml-2">
