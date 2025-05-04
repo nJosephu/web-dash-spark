@@ -128,7 +128,7 @@ const Sidebar = ({ className }: SidebarProps) => {
             <Button
               variant="ghost"
               size="icon"
-              className="fixed left-4 top-4 z-50 bg-[#F1EDFF]"
+              className="fixed left-4 top-4 z-50 bg-[#F1EDFF] p-2"
             >
               <Menu className="h-6 w-6" />
             </Button>
