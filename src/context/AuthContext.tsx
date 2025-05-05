@@ -1,4 +1,3 @@
-
 import React, {
   createContext,
   useState,
@@ -9,6 +8,7 @@ import React, {
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import authService from "../services/authService";
+import { getDashboardPathByRole } from "@/utils/roleUtils";
 
 interface User {
   id: string;
@@ -56,16 +56,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [token, setTokenState] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-
-  // Helper function to determine dashboard path based on user role
-  const getDashboardPathByRole = (role: string): string => {
-    const roleLower = role.toLowerCase();
-    if (roleLower === "sponsor") {
-      return "/dashboard/sponsor";
-    }
-    // Default to beneficiary dashboard for "beneficiary", "benefactee", or any other role
-    return "/dashboard/beneficiary";
-  };
 
   // Wrapper functions to ensure both state and sessionStorage are updated
   const setUser = (newUser: User | null) => {
@@ -241,7 +231,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         password
       );
 
-      console.log("AuthContext - Login successful, saving data");
+      console.log("AuthContext - Login successful, saving data:", {
+        userId: userData.id,
+        role: userData.role
+      });
       
       // Save to sessionStorage
       sessionStorage.setItem("token", newToken);
@@ -253,10 +246,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUserState(userData);
 
       toast.success("Login successful");
-      console.log("AuthContext - Navigating to dashboard after login");
       
-      // Navigate based on role
+      // Navigate based on role using our utility function
       const dashboardPath = getDashboardPathByRole(userData.role);
+      console.log("AuthContext - Navigating to dashboard after login:", dashboardPath);
       navigate(dashboardPath);
     } catch (error) {
       let message = "Login failed";

@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { FileText, BanknoteIcon } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import TopNav from "@/components/layout/TopNav";
+import { mapRoleName } from "@/utils/roleUtils";
 
 const SwitchRole = () => {
   const { user, setUser } = useAuth();
@@ -28,8 +29,11 @@ const SwitchRole = () => {
   }, [user]);
 
   const handleSwitchRole = (role: string) => {
+    // Determine the correct backend role name to set
+    const backendRole = role === "beneficiary" ? "BENEFACTEE" : "BENEFACTOR";
+    
     // Update user role in sessionStorage and context
-    const updatedUser = { ...user, role: role.toUpperCase() };
+    const updatedUser = { ...user, role: backendRole };
     
     // Update sessionStorage
     sessionStorage.setItem("user", JSON.stringify(updatedUser));
@@ -40,12 +44,15 @@ const SwitchRole = () => {
     toast.success(`Switched to ${role} role`);
     
     // Navigate to the appropriate dashboard
-    if (role.toLowerCase() === "beneficiary" || role.toLowerCase() === "benefactee") {
+    if (role.toLowerCase() === "beneficiary") {
       navigate("/dashboard/beneficiary");
     } else if (role.toLowerCase() === "sponsor") {
       navigate("/dashboard/sponsor");
     }
   };
+
+  // Get the current mapped role for UI display
+  const currentRole = user ? mapRoleName(user.role) : "";
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
@@ -57,6 +64,11 @@ const SwitchRole = () => {
           <p className="text-gray-500">
             Switch between beneficiary and sponsor roles
           </p>
+          {currentRole && (
+            <p className="text-sm bg-slate-100 p-2 mt-2 rounded">
+              Current role: <span className="font-bold">{currentRole}</span>
+            </p>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -102,6 +114,7 @@ const SwitchRole = () => {
                 <Button
                   onClick={() => handleSwitchRole("beneficiary")}
                   className="w-full bg-[#6544E4] hover:bg-[#5A3DD0]"
+                  disabled={currentRole === "beneficiary"}
                 >
                   Switch to Beneficiary
                 </Button>
@@ -151,6 +164,7 @@ const SwitchRole = () => {
                 <Button
                   onClick={() => handleSwitchRole("sponsor")}
                   className="w-full bg-[#6544E4] hover:bg-[#5A3DD0]"
+                  disabled={currentRole === "sponsor"}
                 >
                   Switch to Sponsor
                 </Button>

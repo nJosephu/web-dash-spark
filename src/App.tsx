@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-route
 import RoleProtectedRoute from "./components/RoleProtectedRoute";
 import BeneficiaryLayout from "./components/layout/BeneficiaryLayout";
 import SponsorLayout from "./components/layout/SponsorLayout";
+import { mapRoleName } from "./utils/roleUtils";
 
 // Pages
 import Login from "./pages/Login";
@@ -59,6 +61,18 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
         tokenFirstChars: sessionToken ? `${sessionToken.substring(0, 5)}...` : "none"
       });
       
+      if (sessionUser) {
+        try {
+          const userData = JSON.parse(sessionUser);
+          console.log("ProtectedRoute - User role:", {
+            originalRole: userData.role,
+            mappedRole: mapRoleName(userData.role)
+          });
+        } catch (e) {
+          console.error("ProtectedRoute - Error parsing user data:", e);
+        }
+      }
+      
       const isSessionAuth = !!sessionToken && !!sessionUser;
       console.log("ProtectedRoute - Session auth check result:", isSessionAuth);
       
@@ -100,8 +114,13 @@ const DashboardRedirect = () => {
   
   useEffect(() => {
     if (user) {
-      const role = user.role.toLowerCase();
-      if (role === "sponsor") {
+      const mappedRole = mapRoleName(user.role);
+      console.log("DashboardRedirect - Mapping role:", { 
+        originalRole: user.role, 
+        mappedRole 
+      });
+      
+      if (mappedRole === "sponsor") {
         navigate("/dashboard/sponsor", { replace: true });
       } else {
         navigate("/dashboard/beneficiary", { replace: true });

@@ -7,6 +7,25 @@ interface RoleProtectedRouteProps {
   allowedRole: string;
 }
 
+// Map backend roles to frontend roles for consistent handling
+const mapRoleName = (role: string): string => {
+  // Convert to lowercase for case-insensitive comparison
+  const normalizedRole = role.toLowerCase();
+  
+  // Map backend roles to frontend roles
+  if (normalizedRole === "benefactee") return "beneficiary";
+  if (normalizedRole === "benefactor") return "sponsor";
+  
+  // If already using frontend role naming convention, return as is
+  if (normalizedRole === "beneficiary" || normalizedRole === "sponsor") {
+    return normalizedRole;
+  }
+  
+  // Default fallback
+  console.warn(`Unknown role type: ${role}`);
+  return normalizedRole;
+};
+
 const RoleProtectedRoute = ({ children, allowedRole }: RoleProtectedRouteProps) => {
   const { user, isAuthenticated, isLoading } = useAuth();
   
@@ -18,9 +37,16 @@ const RoleProtectedRoute = ({ children, allowedRole }: RoleProtectedRouteProps) 
     );
   }
 
-  // Convert roles to lowercase for case-insensitive comparison
-  const userRole = user?.role?.toLowerCase() || "";
-  const requiredRole = allowedRole.toLowerCase();
+  // Get normalized role names for comparison
+  const userRole = mapRoleName(user?.role || "");
+  const requiredRole = mapRoleName(allowedRole);
+
+  console.log("RoleProtectedRoute - Checking access:", {
+    originalUserRole: user?.role,
+    mappedUserRole: userRole,
+    requiredRole: requiredRole,
+    isAuthenticated
+  });
 
   // Check if user is authenticated and has the correct role
   if (!isAuthenticated || userRole !== requiredRole) {
