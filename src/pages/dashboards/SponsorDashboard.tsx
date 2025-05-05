@@ -1,6 +1,8 @@
 
 import { useEffect } from "react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Receipt } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import StatCard from "@/components/dashboard/StatCard";
 import DonutChart from "@/components/dashboard/DonutChart";
@@ -80,7 +82,7 @@ const SponsorDashboard = () => {
               title="Average contribution"
               value="₦18,750"
               percentChange={5}
-              color="blue"
+              color="purple"
             />
             <StatCard
               title="Pending reviews"
