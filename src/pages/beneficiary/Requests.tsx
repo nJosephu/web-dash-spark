@@ -27,19 +27,7 @@ const BeneficiaryRequests = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
 
-  useEffect(() => {
-    document.title = "My Requests | Urgent2kay";
-
-    // Get user data from sessionStorage instead of localStorage
-    const userData = JSON.parse(sessionStorage.getItem("user") || "{}");
-    if (userData.email) {
-      // Extract name from email (for demo purposes)
-      const nameFromEmail = userData.email.split("@")[0];
-      setUserName(
-        nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1)
-      );
-    }
-  }, []);
+  
 
   const requestsData: Request[] = [
     {
