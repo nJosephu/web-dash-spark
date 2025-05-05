@@ -1,13 +1,12 @@
 
 import { useEffect, useState } from "react";
-import Sidebar from "@/components/layout/Sidebar";
-import TopNav from "@/components/layout/TopNav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Filter, Plus, Search } from "lucide-react";
 import { toast } from "sonner";
 import CreateBundleSheet from "@/components/dashboard/CreateBundleSheet";
 import RequestCard from "@/components/dashboard/RequestCard";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Define request type
 interface Request {
@@ -93,7 +92,7 @@ const BeneficiaryRequests = () => {
   // Filter and search functionality
   const filteredRequests = requestsData.filter((request) => {
     // Apply status filter if selected
-    if (statusFilter && request.status !== statusFilter) {
+    if (statusFilter && statusFilter !== "all" && request.status !== statusFilter) {
       return false;
     }
 
@@ -217,17 +216,26 @@ const BeneficiaryRequests = () => {
                 </div>
 
                 {/* Filter dropdown */}
-                <div className="relative">
-                  <Button
-                    variant="outline"
-                    className="flex items-center gap-2 text-sm"
-                    onClick={() =>
-                      setStatusFilter(statusFilter === null ? "pending" : null)
-                    }
+                <div className="relative w-44">
+                  <Select 
+                    value={statusFilter || "all"} 
+                    onValueChange={(value) => setStatusFilter(value === "all" ? null : value)}
                   >
-                    <Filter size={16} />
-                    {statusFilter ? `Filter: ${statusFilter}` : "Filter"}
-                  </Button>
+                    <SelectTrigger className="w-full text-sm">
+                      <div className="flex items-center gap-2">
+                        <Filter size={16} />
+                        <SelectValue placeholder="Filter by status" />
+                      </div>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="all">All Requests</SelectItem>
+                        <SelectItem value="pending">Pending</SelectItem>
+                        <SelectItem value="approved">Approved</SelectItem>
+                        <SelectItem value="rejected">Rejected</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </CardHeader>
