@@ -44,7 +44,6 @@ const TopNav = ({ userName }: TopNavProps) => {
   };
 
   const getPageInfo = () => {
-    // Extract the main section from the path (e.g., "requests", "sponsors", etc.)
     const path = location.pathname;
     
     // Check if we're on a bundle details page
@@ -55,34 +54,61 @@ const TopNav = ({ userName }: TopNavProps) => {
       };
     }
 
-    // Check for dashboard paths
-    if (path === "/dashboard/sponsor" || path === "/dashboard/beneficiary") {
+    // Check for exact dashboard paths
+    if (path === "/dashboard/sponsor") {
       return {
         title: "Dashboard",
         icon: <LayoutGrid size={18} className="text-gray-700" />,
       };
     }
     
-    // Check for requests paths
-    if (path.includes("/requests")) {
-      const isSponsor = path.includes("/sponsor/");
+    if (path === "/dashboard/beneficiary") {
       return {
-        title: isSponsor ? "Fund Requests" : "My Requests",
+        title: "Dashboard",
+        icon: <LayoutGrid size={18} className="text-gray-700" />,
+      };
+    }
+    
+    // Check for requests paths - more specific matching
+    if (path.includes("/sponsor/requests")) {
+      return {
+        title: "Fund Requests",
         icon: <FileText size={18} className="text-gray-700" />,
       };
     }
     
-    // Check for other common paths
-    if (path.includes("/sponsors") || path.includes("/beneficiaries")) {
+    if (path.includes("/beneficiary/requests")) {
       return {
-        title: path.includes("/sponsors") ? "Sponsors" : "Beneficiaries",
+        title: "My Requests",
+        icon: <FileText size={18} className="text-gray-700" />,
+      };
+    }
+    
+    // Check for other common paths - more specific matching
+    if (path.includes("/sponsors")) {
+      return {
+        title: "Sponsors",
         icon: <Users size={18} className="text-gray-700" />,
       };
     }
     
-    if (path.includes("/bill-history") || path.includes("/bills-paid")) {
+    if (path.includes("/beneficiaries")) {
       return {
-        title: path.includes("/bill-history") ? "Bill History" : "Bills Paid",
+        title: "Beneficiaries",
+        icon: <Users size={18} className="text-gray-700" />,
+      };
+    }
+    
+    if (path.includes("/bill-history")) {
+      return {
+        title: "Bill History",
+        icon: <Receipt size={18} className="text-gray-700" />,
+      };
+    }
+    
+    if (path.includes("/bills-paid")) {
+      return {
+        title: "Bills Paid",
         icon: <Receipt size={18} className="text-gray-700" />,
       };
     }

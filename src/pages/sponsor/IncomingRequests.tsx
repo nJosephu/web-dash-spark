@@ -70,8 +70,8 @@ const mockRequests = [
 const SponsorIncomingRequests = () => {
   const [activeTab, setActiveTab] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [priorityFilter, setPriorityFilter] = useState<RequestPriority | "">("");
-  const [statusFilter, setStatusFilter] = useState<RequestStatus | "">("");
+  const [priorityFilter, setPriorityFilter] = useState<RequestPriority | "all">("all");
+  const [statusFilter, setStatusFilter] = useState<RequestStatus | "all">("all");
 
   // Filter requests based on search query, tab, priority, and status
   const filteredRequests = mockRequests.filter((request) => {
@@ -89,10 +89,10 @@ const SponsorIncomingRequests = () => {
     if (activeTab === "rejected" && request.status !== "rejected") return false;
 
     // Filter by priority
-    if (priorityFilter && request.priority !== priorityFilter) return false;
+    if (priorityFilter !== "all" && request.priority !== priorityFilter) return false;
 
     // Filter by status
-    if (statusFilter && request.status !== statusFilter) return false;
+    if (statusFilter !== "all" && request.status !== statusFilter) return false;
 
     return true;
   });
@@ -134,13 +134,13 @@ const SponsorIncomingRequests = () => {
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
           <Select 
             value={priorityFilter} 
-            onValueChange={(value) => setPriorityFilter(value as RequestPriority | "")}
+            onValueChange={(value) => setPriorityFilter(value as RequestPriority | "all")}
           >
             <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue placeholder="Filter by priority" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All priorities</SelectItem>
+              <SelectItem value="all">All priorities</SelectItem>
               <SelectItem value="high">High priority</SelectItem>
               <SelectItem value="medium">Medium priority</SelectItem>
               <SelectItem value="low">Low priority</SelectItem>
@@ -149,13 +149,13 @@ const SponsorIncomingRequests = () => {
 
           <Select 
             value={statusFilter} 
-            onValueChange={(value) => setStatusFilter(value as RequestStatus | "")}
+            onValueChange={(value) => setStatusFilter(value as RequestStatus | "all")}
           >
             <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All statuses</SelectItem>
+              <SelectItem value="all">All statuses</SelectItem>
               <SelectItem value="pending">Pending</SelectItem>
               <SelectItem value="approved">Approved</SelectItem>
               <SelectItem value="rejected">Rejected</SelectItem>
@@ -167,8 +167,8 @@ const SponsorIncomingRequests = () => {
             className="w-full sm:w-auto"
             onClick={() => {
               setSearchQuery("");
-              setPriorityFilter("");
-              setStatusFilter("");
+              setPriorityFilter("all");
+              setStatusFilter("all");
             }}
           >
             Clear filters

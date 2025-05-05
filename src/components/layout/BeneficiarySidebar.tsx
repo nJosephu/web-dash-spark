@@ -65,7 +65,7 @@ const BeneficiarySidebar = ({ className }: SidebarProps) => {
     },
   ];
 
-  // Helper function to determine if an item is active
+  // Improved helper function to determine if an item is active
   const isItemActive = (path: string): boolean => {
     const currentPath = location.pathname;
     
@@ -82,6 +82,11 @@ const BeneficiarySidebar = ({ className }: SidebarProps) => {
     
     // Handle bundle details pages
     if (path === "/dashboard/beneficiary/requests" && currentPath.startsWith("/dashboard/beneficiary/requests/")) {
+      return true;
+    }
+    
+    // Handle other subpath cases (sponsors, bill-history, settings)
+    if (currentPath.startsWith(path + "/")) {
       return true;
     }
     
