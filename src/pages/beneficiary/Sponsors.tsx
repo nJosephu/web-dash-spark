@@ -1,7 +1,5 @@
 
 import { useEffect, useState } from "react";
-import Sidebar from "@/components/layout/Sidebar";
-import TopNav from "@/components/layout/TopNav";
 import {
   Card,
   CardContent,
@@ -12,8 +10,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Plus, Search, MoreHorizontal, Edit, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useApi } from "@/hooks/useApi";
-import { useToast } from "@/hooks/use-toast";
 import { toast } from "sonner";
 import {
   Sheet,
@@ -65,7 +61,6 @@ import { useForm } from "react-hook-form";
 import { Sponsor, SponsorFormValues, sponsorFormSchema } from "@/types/sponsor";
 
 const Sponsors = () => {
-  const [userName, setUserName] = useState("User");
   const [searchQuery, setSearchQuery] = useState("");
   const [sponsors, setSponsors] = useState<Sponsor[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -73,8 +68,6 @@ const Sponsors = () => {
   const [isEditSheetOpen, setIsEditSheetOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedSponsor, setSelectedSponsor] = useState<Sponsor | null>(null);
-  const { fetchWithAuth } = useApi();
-  const { toast: showToast } = useToast();
 
   // Initialize the form with react-hook-form
   const form = useForm<SponsorFormValues>({
@@ -124,24 +117,11 @@ const Sponsors = () => {
   ];
 
   useEffect(() => {
-    document.title = "Sponsors | Urgent2kay";
-
-    // Get user data from sessionStorage instead of localStorage
-    const userData = JSON.parse(sessionStorage.getItem("user") || "{}");
-    if (userData.email) {
-      // Extract name from email (for demo purposes)
-      const nameFromEmail = userData.email.split("@")[0];
-      setUserName(
-        nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1)
-      );
-    }
+    document.title = "My Sponsors | Urgent2kay";
 
     // Load sponsors (mock data for now)
     setSponsors(mockSponsors);
     setIsLoading(false);
-
-    // In a real implementation, this would be:
-    // fetchSponsors();
   }, []);
 
   // Filter sponsors based on search query
@@ -222,20 +202,6 @@ const Sponsors = () => {
     }
   };
 
-  // In a real implementation, these functions would call the API:
-  const fetchSponsors = async () => {
-    try {
-      setIsLoading(true);
-      const data = await fetchWithAuth("/api/sponsors");
-      setSponsors(data);
-    } catch (error) {
-      toast.error("Failed to load sponsors");
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const relationshipOptions = [
     "Family",
     "Friend",
@@ -245,123 +211,122 @@ const Sponsors = () => {
   ];
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <Sidebar />
+    <>
+      <div className="mb-6">
+        <h1 className="text-2xl font-medium">My Sponsors</h1>
+        <p className="text-gray-500">
+          Manage people who have sponsored your bill requests
+        </p>
+      </div>
 
-      <div className="flex-1 w-full md:ml-64">
-        <TopNav userName={userName} />
-
-        <div className="max-w-[100vw] overflow-x-hidden p-4 pt-0 md:p-6 md:pt-0">
-          <Card>
-            <CardHeader>
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <CardTitle>All Sponsors</CardTitle>{" "}
-                    <div className="inline-flex items-center px-2.5 py-0.5 text-[#6544E4] rounded-lg bg-[#F1EDFF]">
-                      4
-                    </div>
-                  </div>
-                  <CardDescription>
-                    People who have sponsored your bill requests
-                  </CardDescription>
-                </div>
-                <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto">
-                  <div className="relative w-full md:w-64">
-                    <Search
-                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                      size={16}
-                    />
-                    <Input
-                      type="text"
-                      placeholder="Search sponsors..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-9"
-                    />
-                  </div>
-                  <Button
-                    className="bg-[#6544E4] hover:bg-[#5A3DD0] gap-2"
-                    onClick={handleCreateSponsor}
-                  >
-                    <Plus size={18} />
-                    Add New Sponsor
-                  </Button>
+      <Card>
+        <CardHeader>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <CardTitle>All Sponsors</CardTitle>{" "}
+                <div className="inline-flex items-center px-2.5 py-0.5 text-[#6544E4] rounded-lg bg-[#F1EDFF]">
+                  {sponsors.length}
                 </div>
               </div>
-            </CardHeader>
-            <CardContent>
-              {isLoading ? (
-                <div className="text-center p-4">Loading sponsors...</div>
-              ) : filteredSponsors.length > 0 ? (
-                <div className="rounded-md">
-                  <Table>
-                    <TableHeader className="bg-[#F5F5F5]">
-                      <TableRow>
-                        <TableHead className="w-12">S/N</TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Relationship</TableHead>
-                        <TableHead>Email Address</TableHead>
-                        <TableHead>Phone Number</TableHead>
-                        <TableHead className="text-right">Action</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredSponsors.map((sponsor, index) => (
-                        <TableRow key={sponsor.id}>
-                          <TableCell className="font-medium py-9">
-                            {index + 1}
-                          </TableCell>
-                          <TableCell>{sponsor.name}</TableCell>
-                          <TableCell>{sponsor.relationship}</TableCell>
-                          <TableCell>{sponsor.email}</TableCell>
-                          <TableCell>{sponsor.phone}</TableCell>
-                          <TableCell className="text-right">
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="h-8 w-8 p-0"
-                                >
-                                  <span className="sr-only">Open menu</span>
-                                  <MoreHorizontal className="h-4 w-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem
-                                  onClick={() => handleEditSponsor(sponsor)}
-                                >
-                                  <Edit className="mr-2 h-4 w-4" />
-                                  <span>Edit</span>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() => handleDeleteSponsor(sponsor)}
-                                  className="text-red-600"
-                                >
-                                  <Trash2 className="mr-2 h-4 w-4" />
-                                  <span>Delete</span>
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              ) : (
-                <div className="text-center py-6">
-                  <p className="text-gray-500">
-                    No sponsors found. Try adjusting your search or add a new
-                    sponsor.
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+              <CardDescription>
+                People who have sponsored your bill requests
+              </CardDescription>
+            </div>
+            <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto">
+              <div className="relative w-full md:w-64">
+                <Search
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  size={16}
+                />
+                <Input
+                  type="text"
+                  placeholder="Search sponsors..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
+              <Button
+                className="bg-[#6544E4] hover:bg-[#5A3DD0] gap-2"
+                onClick={handleCreateSponsor}
+              >
+                <Plus size={18} />
+                Add New Sponsor
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {isLoading ? (
+            <div className="text-center p-4">Loading sponsors...</div>
+          ) : filteredSponsors.length > 0 ? (
+            <div className="rounded-md">
+              <Table>
+                <TableHeader className="bg-[#F5F5F5]">
+                  <TableRow>
+                    <TableHead className="w-12">S/N</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Relationship</TableHead>
+                    <TableHead>Email Address</TableHead>
+                    <TableHead>Phone Number</TableHead>
+                    <TableHead className="text-right">Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredSponsors.map((sponsor, index) => (
+                    <TableRow key={sponsor.id}>
+                      <TableCell className="font-medium py-9">
+                        {index + 1}
+                      </TableCell>
+                      <TableCell>{sponsor.name}</TableCell>
+                      <TableCell>{sponsor.relationship}</TableCell>
+                      <TableCell>{sponsor.email}</TableCell>
+                      <TableCell>{sponsor.phone}</TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 w-8 p-0"
+                            >
+                              <span className="sr-only">Open menu</span>
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onClick={() => handleEditSponsor(sponsor)}
+                            >
+                              <Edit className="mr-2 h-4 w-4" />
+                              <span>Edit</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => handleDeleteSponsor(sponsor)}
+                              className="text-red-600"
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              <span>Delete</span>
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          ) : (
+            <div className="text-center py-6">
+              <p className="text-gray-500">
+                No sponsors found. Try adjusting your search or add a new
+                sponsor.
+              </p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Create Sponsor Sheet */}
       <Sheet open={isCreateSheetOpen} onOpenChange={setIsCreateSheetOpen}>
@@ -377,6 +342,7 @@ const Sponsors = () => {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-6"
               >
+                {/* Form fields */}
                 <FormField
                   control={form.control}
                   name="name"
@@ -480,6 +446,7 @@ const Sponsors = () => {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-6"
               >
+                {/* Form fields same as create form */}
                 <FormField
                   control={form.control}
                   name="name"
@@ -595,7 +562,7 @@ const Sponsors = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </>
   );
 };
 

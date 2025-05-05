@@ -41,9 +41,9 @@ const SponsorSidebar = ({ className }: SidebarProps) => {
       path: "/dashboard/sponsor/beneficiaries",
     },
     {
-      title: "Payment history",
+      title: "Bills paid",
       icon: Receipt,
-      path: "/dashboard/sponsor/payment-history",
+      path: "/dashboard/sponsor/bills-paid",
     },
   ];
 

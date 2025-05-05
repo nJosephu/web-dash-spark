@@ -21,15 +21,20 @@ import SwitchRole from "./pages/SwitchRole";
 import Logout from "./pages/Logout";
 
 // Role-specific dashboard pages
-import BeneficiaryDashboard from "./pages/dashboards/BeneficiaryDashboard";
-import SponsorDashboard from "./pages/dashboards/SponsorDashboard";
+import BeneficiaryDashboard from "./pages/beneficiary/Dashboard";
+import BeneficiaryRequests from "./pages/beneficiary/Requests";
+import BeneficiarySponsors from "./pages/beneficiary/Sponsors";
+import BeneficiaryBillHistory from "./pages/beneficiary/BillHistory";
+import BeneficiarySettings from "./pages/beneficiary/Settings";
 
-// Existing pages to be used in role-specific routes
-import Requests from "./pages/Requests";
+import SponsorDashboard from "./pages/sponsor/Dashboard";
+import SponsorIncomingRequests from "./pages/sponsor/IncomingRequests";
+import SponsorBeneficiaries from "./pages/sponsor/Beneficiaries";
+import SponsorBillsPaid from "./pages/sponsor/BillsPaid";
+import SponsorSettings from "./pages/sponsor/Settings";
+
+// Shared pages
 import BundleDetails from "./pages/BundleDetails";
-import Sponsors from "./pages/Sponsors";
-import BillHistory from "./pages/BillHistory";
-import Settings from "./pages/Settings";
 
 import { useEffect, useState } from "react";
 import { AuthProvider, useAuth } from "./context/AuthContext";
@@ -175,11 +180,11 @@ const AppRoutes = () => {
           }
         >
           <Route index element={<BeneficiaryDashboard />} />
-          <Route path="requests" element={<Requests />} />
+          <Route path="requests" element={<BeneficiaryRequests />} />
           <Route path="requests/:bundleId" element={<BundleDetails />} />
-          <Route path="sponsors" element={<Sponsors />} />
-          <Route path="bill-history" element={<BillHistory />} />
-          <Route path="settings" element={<Settings />} />
+          <Route path="sponsors" element={<BeneficiarySponsors />} />
+          <Route path="bill-history" element={<BeneficiaryBillHistory />} />
+          <Route path="settings" element={<BeneficiarySettings />} />
         </Route>
 
         {/* Sponsor Routes */}
@@ -194,11 +199,11 @@ const AppRoutes = () => {
           }
         >
           <Route index element={<SponsorDashboard />} />
-          <Route path="requests" element={<Requests />} />
+          <Route path="requests" element={<SponsorIncomingRequests />} />
           <Route path="requests/:bundleId" element={<BundleDetails />} />
-          <Route path="beneficiaries" element={<Sponsors />} />
-          <Route path="payment-history" element={<BillHistory />} />
-          <Route path="settings" element={<Settings />} />
+          <Route path="beneficiaries" element={<SponsorBeneficiaries />} />
+          <Route path="bills-paid" element={<SponsorBillsPaid />} />
+          <Route path="settings" element={<SponsorSettings />} />
         </Route>
 
         {/* 404 Route */}

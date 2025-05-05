@@ -1,0 +1,252 @@
+
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Filter, Search } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import RequestCard from "@/components/dashboard/RequestCard";
+
+// Define request type
+interface Request {
+  id: string;
+  title: string;
+  amount: string;
+  date: string;
+  status: "pending" | "approved" | "rejected";
+  beneficiary: string;
+  priority?: "high" | "medium" | "low";
+  description?: string;
+  items?: { name: string; amount: string }[];
+}
+
+const IncomingRequests = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  const [priorityFilter, setPriorityFilter] = useState<string | null>(null);
+
+  useEffect(() => {
+    document.title = "Incoming Requests | Urgent2kay";
+  }, []);
+
+  const requestsData: Request[] = [
+    {
+      id: "REQ-001",
+      title: "Rent Payment",
+      amount: "₦120,000",
+      date: "2025-04-25",
+      status: "pending",
+      beneficiary: "James Wilson",
+      priority: "high",
+      description: "Monthly rent payment for apartment",
+      items: [{ name: "Rent", amount: "₦120,000" }],
+    },
+    {
+      id: "REQ-002",
+      title: "Electricity Bill",
+      amount: "₦45,000",
+      date: "2025-04-22",
+      status: "pending",
+      beneficiary: "Sarah Johnson",
+      priority: "medium",
+      description: "Monthly electricity bill payment",
+      items: [{ name: "Electricity", amount: "₦45,000" }],
+    },
+    {
+      id: "REQ-003",
+      title: "Medical Expenses",
+      amount: "₦75,000",
+      date: "2025-04-18",
+      status: "pending",
+      beneficiary: "Michael Brown",
+      priority: "high",
+      description: "Emergency medical treatment",
+      items: [
+        { name: "Hospital Bill", amount: "₦55,000" },
+        { name: "Medication", amount: "₦20,000" },
+      ],
+    },
+    {
+      id: "REQ-004",
+      title: "School Fees",
+      amount: "₦180,000",
+      date: "2025-04-15",
+      status: "approved",
+      beneficiary: "David Thompson",
+      priority: "medium",
+      description: "Semester school fees payment",
+      items: [
+        { name: "Tuition", amount: "₦150,000" },
+        { name: "Books", amount: "₦30,000" },
+      ],
+    },
+    {
+      id: "REQ-005",
+      title: "Internet Bill",
+      amount: "₦25,000",
+      date: "2025-04-10",
+      status: "rejected",
+      beneficiary: "Patricia Wilson",
+      priority: "low",
+      description: "Monthly internet subscription",
+      items: [{ name: "Internet", amount: "₦25,000" }],
+    },
+  ];
+
+  // Filter and search functionality
+  const filteredRequests = requestsData.filter((request) => {
+    // Apply status filter if selected
+    if (statusFilter && request.status !== statusFilter) {
+      return false;
+    }
+
+    // Apply priority filter if selected
+    if (priorityFilter && request.priority !== priorityFilter) {
+      return false;
+    }
+
+    // Apply search query
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      return (
+        request.title.toLowerCase().includes(query) ||
+        request.id.toLowerCase().includes(query) ||
+        request.beneficiary.toLowerCase().includes(query)
+      );
+    }
+
+    return true;
+  });
+
+  return (
+    <>
+      <div className="mb-6">
+        <h1 className="text-2xl font-medium">Incoming Requests</h1>
+        <p className="text-gray-500">
+          Browse and fund requests from beneficiaries
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-gray-500">
+              New Requests
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {requestsData.filter((req) => req.status === "pending").length}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-gray-500">
+              Funded Requests
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">
+              {requestsData.filter((req) => req.status === "approved").length}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-gray-500">
+              High Priority
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-red-600">
+              {requestsData.filter((req) => req.priority === "high").length}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card className="mb-4 overflow-hidden">
+        <CardHeader className="bg-white flex flex-col md:flex-row md:items-center md:justify-between">
+          <CardTitle className="text-lg font-medium">
+            Available Funding Requests
+          </CardTitle>
+          <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mt-4 md:mt-0">
+            {/* Search input */}
+            <div className="relative">
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={16}
+              />
+              <input
+                type="text"
+                placeholder="Search requests..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 pr-4 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-[#6544E4] focus:border-[#6544E4] text-sm"
+              />
+            </div>
+
+            {/* Filter buttons */}
+            <div className="flex space-x-2">
+              <Button
+                variant={statusFilter ? "default" : "outline"}
+                className="flex items-center gap-2 text-sm"
+                onClick={() =>
+                  setStatusFilter(statusFilter === "pending" ? null : "pending")
+                }
+              >
+                <Filter size={16} />
+                {statusFilter === "pending" ? "New Requests" : "Filter by Status"}
+              </Button>
+              
+              <Button
+                variant={priorityFilter ? "default" : "outline"}
+                className="flex items-center gap-2 text-sm"
+                onClick={() =>
+                  setPriorityFilter(priorityFilter === "high" ? null : "high")
+                }
+              >
+                <Filter size={16} />
+                {priorityFilter === "high" ? "High Priority" : "Filter by Priority"}
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        
+        {filteredRequests.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
+            {filteredRequests.map((request) => (
+              <RequestCard
+                key={request.id}
+                id={request.id}
+                title={request.title}
+                amount={request.amount}
+                date={request.date}
+                status={request.status}
+                sponsor={{
+                  name: request.beneficiary
+                }}
+                priority={request.priority}
+                showActions={true}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12 bg-white rounded-lg border">
+            <p className="text-gray-500">
+              No requests found. Try adjusting your search or filters.
+            </p>
+          </div>
+        )}
+      </Card>
+
+      {filteredRequests.length > 10 && (
+        <div className="flex justify-center mt-6">
+          <Button variant="outline">Load More</Button>
+        </div>
+      )}
+    </>
+  );
+};
+
+export default IncomingRequests;
