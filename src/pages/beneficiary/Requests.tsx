@@ -127,13 +127,13 @@ const BeneficiaryRequests = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+   
       
 
-      <div className="flex-1 w-full md:ml-64">
+    
         
 
-        <div className="max-w-[100vw] overflow-x-hidden p-4 pt-0 md:p-6 md:pt-0">
+       
           <div className="flex justify-between items-center mb-6">
             <div>
               <p className="text-gray-500">
@@ -271,9 +271,9 @@ const BeneficiaryRequests = () => {
               </div>
             )}
           </Card>
-        </div>
-      </div>
-    </div>
+     
+      
+   
   );
 };
 
