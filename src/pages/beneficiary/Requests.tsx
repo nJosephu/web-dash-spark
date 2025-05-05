@@ -277,4 +277,4 @@ const BeneficiaryRequests = () => {
   );
 };
 
-export default BeneficiaryRequests;
+export default Requests;
