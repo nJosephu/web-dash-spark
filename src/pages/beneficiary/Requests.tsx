@@ -1,255 +1,265 @@
 
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Filter, Plus, Search } from "lucide-react";
-import CreateBundleSheet from "@/components/dashboard/CreateBundleSheet";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Search, FilePlus } from "lucide-react";
 import RequestCard from "@/components/dashboard/RequestCard";
 
-// Define request type
-interface Request {
-  id: string;
-  title: string;
-  amount: string;
-  date: string;
-  status: "pending" | "approved" | "rejected";
-  sponsor: string;
-  priority?: "high" | "medium" | "low";
-  description?: string;
-  items?: { name: string; amount: string }[];
-}
+// Define the types for status and priority to match RequestCard props
+type RequestStatus = "pending" | "approved" | "rejected";
+type RequestPriority = "high" | "medium" | "low";
 
-const Requests = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string | null>(null);
+// Mock data to demonstrate functionality for beneficiary requests
+const mockRequests = [
+  {
+    id: "req-001",
+    title: "School Fees Payment",
+    amount: "₦85,000",
+    date: "May 5, 2025",
+    status: "pending" as RequestStatus,
+    sponsor: { name: "N/A" },
+    priority: "high" as RequestPriority,
+  },
+  {
+    id: "req-002",
+    title: "Electricity Bill",
+    amount: "₦12,500",
+    date: "May 3, 2025",
+    status: "approved" as RequestStatus,
+    sponsor: { name: "James Wilson" },
+    priority: "medium" as RequestPriority,
+  },
+  {
+    id: "req-003",
+    title: "Medical Expenses",
+    amount: "₦35,000",
+    date: "April 28, 2025",
+    status: "rejected" as RequestStatus,
+    sponsor: { name: "N/A" },
+    priority: "high" as RequestPriority,
+  },
+  {
+    id: "req-004",
+    title: "Internet Subscription",
+    amount: "₦10,000",
+    date: "April 22, 2025",
+    status: "approved" as RequestStatus,
+    sponsor: { name: "Mary Johnson" },
+    priority: "low" as RequestPriority,
+  },
+  {
+    id: "req-005",
+    title: "Food Supplies",
+    amount: "₦25,000",
+    date: "April 18, 2025",
+    status: "pending" as RequestStatus,
+    sponsor: { name: "N/A" },
+    priority: "medium" as RequestPriority,
+  },
+];
 
-  useEffect(() => {
-    document.title = "My Requests | Urgent2kay";
-  }, []);
+const BeneficiaryRequests = () => {
+  const [activeTab, setActiveTab] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [priorityFilter, setPriorityFilter] = useState<RequestPriority | "">("");
+  const [statusFilter, setStatusFilter] = useState<RequestStatus | "">("");
 
-  const requestsData: Request[] = [
-    {
-      id: "REQ-001",
-      title: "Rent Payment",
-      amount: "₦120,000",
-      date: "2025-04-25",
-      status: "approved",
-      sponsor: "John Doe",
-      priority: "high",
-      description: "Monthly rent payment for apartment",
-      items: [{ name: "Rent", amount: "₦120,000" }],
-    },
-    {
-      id: "REQ-002",
-      title: "Electricity Bill",
-      amount: "₦45,000",
-      date: "2025-04-22",
-      status: "pending",
-      sponsor: "--",
-      priority: "medium",
-      description: "Monthly electricity bill payment",
-      items: [{ name: "Electricity", amount: "₦45,000" }],
-    },
-    {
-      id: "REQ-003",
-      title: "Water Bill",
-      amount: "₦15,000",
-      date: "2025-04-18",
-      status: "rejected",
-      sponsor: "Jane Smith",
-      priority: "low",
-      description: "Monthly water bill payment",
-      items: [{ name: "Water", amount: "₦15,000" }],
-    },
-    {
-      id: "REQ-004",
-      title: "Internet Payment",
-      amount: "₦25,000",
-      date: "2025-04-15",
-      status: "approved",
-      sponsor: "Mike Johnson",
-      priority: "medium",
-      description: "Monthly internet subscription",
-      items: [{ name: "Internet", amount: "₦25,000" }],
-    },
-    {
-      id: "REQ-005",
-      title: "School Fees",
-      amount: "₦180,000",
-      date: "2025-04-10",
-      status: "pending",
-      sponsor: "--",
-      priority: "high",
-      description: "Semester school fees payment",
-      items: [
-        { name: "Tuition", amount: "₦150,000" },
-        { name: "Books", amount: "₦30,000" },
-      ],
-    },
-  ];
-
-  // Filter and search functionality
-  const filteredRequests = requestsData.filter((request) => {
-    // Apply status filter if selected
-    if (statusFilter && request.status !== statusFilter) {
+  // Filter requests based on search query, tab, priority, and status
+  const filteredRequests = mockRequests.filter((request) => {
+    // Filter by search query
+    if (
+      searchQuery &&
+      !request.title.toLowerCase().includes(searchQuery.toLowerCase())
+    ) {
       return false;
     }
 
-    // Apply search query
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      return (
-        request.title.toLowerCase().includes(query) ||
-        request.id.toLowerCase().includes(query) ||
-        request.sponsor.toLowerCase().includes(query)
-      );
-    }
+    // Filter by tab
+    if (activeTab === "pending" && request.status !== "pending") return false;
+    if (activeTab === "approved" && request.status !== "approved") return false;
+    if (activeTab === "rejected" && request.status !== "rejected") return false;
+
+    // Filter by priority
+    if (priorityFilter && request.priority !== priorityFilter) return false;
+
+    // Filter by status
+    if (statusFilter && request.status !== statusFilter) return false;
 
     return true;
   });
 
   return (
-    <>
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-medium">My Requests</h1>
-          <p className="text-gray-500">
-            Manage and track all your bill requests
-          </p>
+    <div>
+      <div className="mb-6">
+        <h1 className="text-2xl font-medium">My Requests</h1>
+        <p className="text-gray-500">
+          Create and manage your funding requests
+        </p>
+      </div>
+
+      <Tabs
+        defaultValue="all"
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="mb-6"
+      >
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+          <TabsList>
+            <TabsTrigger value="all">All Requests</TabsTrigger>
+            <TabsTrigger value="pending">Pending</TabsTrigger>
+            <TabsTrigger value="approved">Approved</TabsTrigger>
+            <TabsTrigger value="rejected">Rejected</TabsTrigger>
+          </TabsList>
+
+          <div className="relative w-full sm:w-auto">
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+            <Input
+              placeholder="Search requests..."
+              className="pl-9 w-full sm:w-64"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
         </div>
-        <CreateBundleSheet
-          trigger={
-            <Button className="bg-[#6544E4] hover:bg-[#5A3DD0]">
-              <Plus className="mr-2 h-4 w-4" /> Create Request
-            </Button>
-          }
-        />
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">
-              Total Requests
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{requestsData.length}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">
-              Approved Requests
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">
-              {
-                requestsData.filter((req) => req.status === "approved")
-                  .length
-              }
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">
-              Pending Requests
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">
-              {
-                requestsData.filter((req) => req.status === "pending")
-                  .length
-              }
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">
-              Rejected Requests
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">
-              {
-                requestsData.filter((req) => req.status === "rejected")
-                  .length
-              }
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+        <div className="flex flex-col sm:flex-row gap-3 mb-6">
+          <Select 
+            value={priorityFilter} 
+            onValueChange={(value) => setPriorityFilter(value as RequestPriority | "")}
+          >
+            <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectValue placeholder="Filter by priority" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">All priorities</SelectItem>
+              <SelectItem value="high">High priority</SelectItem>
+              <SelectItem value="medium">Medium priority</SelectItem>
+              <SelectItem value="low">Low priority</SelectItem>
+            </SelectContent>
+          </Select>
 
-      <Card className="mb-4 overflow-hidden">
-        <CardHeader className="bg-white flex flex-col md:flex-row md:items-center md:justify-between">
-          <CardTitle className="text-lg font-medium">
-            Sent Requests
-          </CardTitle>
-          <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mt-4 md:mt-0">
-            {/* Search input */}
-            <div className="relative">
-              <Search
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                size={16}
-              />
-              <input
-                type="text"
-                placeholder="Search requests..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 pr-4 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-[#6544E4] focus:border-[#6544E4] text-sm"
-              />
-            </div>
+          <Select 
+            value={statusFilter} 
+            onValueChange={(value) => setStatusFilter(value as RequestStatus | "")}
+          >
+            <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectValue placeholder="Filter by status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">All statuses</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="approved">Approved</SelectItem>
+              <SelectItem value="rejected">Rejected</SelectItem>
+            </SelectContent>
+          </Select>
 
-            {/* Filter dropdown */}
-            <div className="relative">
-              <Button
-                variant="outline"
-                className="flex items-center gap-2 text-sm"
-                onClick={() =>
-                  setStatusFilter(statusFilter === null ? "pending" : null)
-                }
-              >
-                <Filter size={16} />
-                {statusFilter ? `Filter: ${statusFilter}` : "Filter"}
-              </Button>
+          <Button
+            className="w-full sm:w-auto ml-auto bg-[#6544E4] hover:bg-[#5A3DD0]"
+          >
+            <FilePlus className="mr-2 h-4 w-4" />
+            New Request
+          </Button>
+        </div>
+
+        <TabsContent value="all" className="space-y-4 mt-0">
+          {filteredRequests.length > 0 ? (
+            filteredRequests.map((request) => (
+              <Card key={request.id} className="p-4">
+                <RequestCard
+                  id={request.id}
+                  title={request.title}
+                  amount={request.amount}
+                  date={request.date}
+                  status={request.status}
+                  sponsor={request.sponsor}
+                  priority={request.priority}
+                />
+              </Card>
+            ))
+          ) : (
+            <div className="text-center p-6">
+              <p className="text-gray-500">No requests match your filters</p>
             </div>
-          </div>
-        </CardHeader>
-        {filteredRequests.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
-            {filteredRequests.map((request) => (
-              <RequestCard
-                key={request.id}
-                id={request.id}
-                title={request.title}
-                amount={request.amount}
-                date={request.date}
-                status={request.status}
-                sponsor={{
-                  name:
-                    request.sponsor !== "--"
-                      ? request.sponsor
-                      : "No sponsor",
-                }}
-                priority={request.priority}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12 bg-white rounded-lg border">
-            <p className="text-gray-500">
-              No requests found. Try adjusting your search or filters.
-            </p>
-          </div>
-        )}
-      </Card>
-    </>
+          )}
+        </TabsContent>
+
+        <TabsContent value="pending" className="space-y-4 mt-0">
+          {filteredRequests.length > 0 ? (
+            filteredRequests.map((request) => (
+              <Card key={request.id} className="p-4">
+                <RequestCard
+                  id={request.id}
+                  title={request.title}
+                  amount={request.amount}
+                  date={request.date}
+                  status={request.status}
+                  sponsor={request.sponsor}
+                  priority={request.priority}
+                />
+              </Card>
+            ))
+          ) : (
+            <div className="text-center p-6">
+              <p className="text-gray-500">No pending requests</p>
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="approved" className="space-y-4 mt-0">
+          {filteredRequests.length > 0 ? (
+            filteredRequests.map((request) => (
+              <Card key={request.id} className="p-4">
+                <RequestCard
+                  id={request.id}
+                  title={request.title}
+                  amount={request.amount}
+                  date={request.date}
+                  status={request.status}
+                  sponsor={request.sponsor}
+                  priority={request.priority}
+                />
+              </Card>
+            ))
+          ) : (
+            <div className="text-center p-6">
+              <p className="text-gray-500">No approved requests</p>
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="rejected" className="space-y-4 mt-0">
+          {filteredRequests.length > 0 ? (
+            filteredRequests.map((request) => (
+              <Card key={request.id} className="p-4">
+                <RequestCard
+                  id={request.id}
+                  title={request.title}
+                  amount={request.amount}
+                  date={request.date}
+                  status={request.status}
+                  sponsor={request.sponsor}
+                  priority={request.priority}
+                />
+              </Card>
+            ))
+          ) : (
+            <div className="text-center p-6">
+              <p className="text-gray-500">No rejected requests</p>
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 };
 
-export default Requests;
+export default BeneficiaryRequests;

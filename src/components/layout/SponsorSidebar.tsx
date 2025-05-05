@@ -67,10 +67,26 @@ const SponsorSidebar = ({ className }: SidebarProps) => {
 
   // Helper function to determine if an item is active
   const isItemActive = (path: string): boolean => {
-    if (path === "/") {
-      return location.pathname === "/";
+    const currentPath = location.pathname;
+    
+    // For the dashboard, only match the exact path
+    if (path === "/dashboard/sponsor") {
+      return currentPath === "/dashboard/sponsor";
     }
-    return location.pathname.startsWith(path);
+    
+    // For other routes, check if the current path starts with the given path
+    // But make sure it's a proper match (e.g., /dashboard/sponsor/requests should match /dashboard/sponsor/requests, 
+    // but not /dashboard/sponsor/requests/123)
+    if (currentPath === path) {
+      return true;
+    }
+    
+    // Handle bundle details pages
+    if (path === "/dashboard/sponsor/requests" && currentPath.startsWith("/dashboard/sponsor/requests/")) {
+      return true;
+    }
+    
+    return false;
   };
 
   const SidebarContent = () => (

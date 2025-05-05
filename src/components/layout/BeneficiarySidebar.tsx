@@ -67,10 +67,25 @@ const BeneficiarySidebar = ({ className }: SidebarProps) => {
 
   // Helper function to determine if an item is active
   const isItemActive = (path: string): boolean => {
-    if (path === "/") {
-      return location.pathname === "/";
+    const currentPath = location.pathname;
+    
+    // For the dashboard, only match the exact path
+    if (path === "/dashboard/beneficiary") {
+      return currentPath === "/dashboard/beneficiary";
     }
-    return location.pathname.startsWith(path);
+    
+    // For other routes, check if the current path starts with the given path
+    // But make sure it's a proper match
+    if (currentPath === path) {
+      return true;
+    }
+    
+    // Handle bundle details pages
+    if (path === "/dashboard/beneficiary/requests" && currentPath.startsWith("/dashboard/beneficiary/requests/")) {
+      return true;
+    }
+    
+    return false;
   };
 
   const SidebarContent = () => (

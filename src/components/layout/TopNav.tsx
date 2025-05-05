@@ -1,3 +1,4 @@
+
 import {
   Bell,
   LayoutGrid,
@@ -43,56 +44,75 @@ const TopNav = ({ userName }: TopNavProps) => {
   };
 
   const getPageInfo = () => {
+    // Extract the main section from the path (e.g., "requests", "sponsors", etc.)
+    const path = location.pathname;
+    
     // Check if we're on a bundle details page
-    if (location.pathname.match(/^\/requests\/[^\/]+$/)) {
+    if (path.match(/\/dashboard\/(sponsor|beneficiary)\/requests\/[^\/]+$/)) {
       return {
         title: "Bundle Details",
         icon: <Package size={18} className="text-gray-700" />,
       };
     }
 
-    switch (location.pathname) {
-      case "/":
-        return {
-          title: "Dashboard",
-          icon: <LayoutGrid size={18} className="text-gray-700" />,
-        };
-      case "/requests":
-        return {
-          title: "My Requests",
-          icon: <FileText size={18} className="text-gray-700" />,
-        };
-      case "/sponsors":
-        return {
-          title: "Sponsors",
-          icon: <Users size={18} className="text-gray-700" />,
-        };
-      case "/bill-history":
-        return {
-          title: "Bill History",
-          icon: <Receipt size={18} className="text-gray-700" />,
-        };
-      case "/switch":
-        return {
-          title: "Switch Role",
-          icon: <SwitchCamera size={18} className="text-gray-700" />,
-        };
-      case "/settings":
-        return {
-          title: "Settings",
-          icon: <Settings size={18} className="text-gray-700" />,
-        };
-      case "/logout":
-        return {
-          title: "Logout",
-          icon: <LogOut size={18} className="text-gray-700" />,
-        };
-      default:
-        return {
-          title: "Dashboard",
-          icon: <LayoutGrid size={18} className="text-gray-700" />,
-        };
+    // Check for dashboard paths
+    if (path === "/dashboard/sponsor" || path === "/dashboard/beneficiary") {
+      return {
+        title: "Dashboard",
+        icon: <LayoutGrid size={18} className="text-gray-700" />,
+      };
     }
+    
+    // Check for requests paths
+    if (path.includes("/requests")) {
+      const isSponsor = path.includes("/sponsor/");
+      return {
+        title: isSponsor ? "Fund Requests" : "My Requests",
+        icon: <FileText size={18} className="text-gray-700" />,
+      };
+    }
+    
+    // Check for other common paths
+    if (path.includes("/sponsors") || path.includes("/beneficiaries")) {
+      return {
+        title: path.includes("/sponsors") ? "Sponsors" : "Beneficiaries",
+        icon: <Users size={18} className="text-gray-700" />,
+      };
+    }
+    
+    if (path.includes("/bill-history") || path.includes("/bills-paid")) {
+      return {
+        title: path.includes("/bill-history") ? "Bill History" : "Bills Paid",
+        icon: <Receipt size={18} className="text-gray-700" />,
+      };
+    }
+    
+    if (path.includes("/settings")) {
+      return {
+        title: "Settings",
+        icon: <Settings size={18} className="text-gray-700" />,
+      };
+    }
+    
+    if (path.includes("/switch")) {
+      return {
+        title: "Switch Role",
+        icon: <SwitchCamera size={18} className="text-gray-700" />,
+      };
+    }
+    
+    if (path.includes("/logout")) {
+      return {
+        title: "Logout",
+        icon: <LogOut size={18} className="text-gray-700" />,
+      };
+    }
+    
+    // Default fallback
+    return {
+      title: "Dashboard",
+      icon: <LayoutGrid size={18} className="text-gray-700" />,
+    };
   };
 
   const pageInfo = getPageInfo();
@@ -103,7 +123,6 @@ const TopNav = ({ userName }: TopNavProps) => {
         <BreadcrumbList>
           <BreadcrumbItem className="text-sm md:text-base font-medium text-gray-800 flex items-center gap-2">
             <span className="hidden md:block">{pageInfo.icon}</span>
-
             {pageInfo.title}
           </BreadcrumbItem>
         </BreadcrumbList>
