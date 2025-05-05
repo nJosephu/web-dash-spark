@@ -14,6 +14,10 @@ import {
 import { Search } from "lucide-react";
 import RequestCard from "@/components/dashboard/RequestCard";
 
+// Define the types for status and priority to match RequestCard props
+type RequestStatus = "pending" | "approved" | "rejected";
+type RequestPriority = "high" | "medium" | "low";
+
 // Mock data to demonstrate functionality
 const mockRequests = [
   {
@@ -21,53 +25,53 @@ const mockRequests = [
     title: "Electricity bill payment",
     amount: "₦15,000",
     date: "May 3, 2025",
-    status: "pending",
+    status: "pending" as RequestStatus,
     sponsor: { name: "N/A" },
-    priority: "high",
+    priority: "high" as RequestPriority,
   },
   {
     id: "req-002",
     title: "Water bill payment",
     amount: "₦8,500",
     date: "May 2, 2025",
-    status: "approved",
+    status: "approved" as RequestStatus,
     sponsor: { name: "John Doe" },
-    priority: "medium",
+    priority: "medium" as RequestPriority,
   },
   {
     id: "req-003",
     title: "Internet bill payment",
     amount: "₦12,000",
     date: "May 1, 2025",
-    status: "pending",
+    status: "pending" as RequestStatus,
     sponsor: { name: "N/A" },
-    priority: "low",
+    priority: "low" as RequestPriority,
   },
   {
     id: "req-004",
     title: "School fees payment",
     amount: "₦45,000",
     date: "April 30, 2025",
-    status: "rejected",
+    status: "rejected" as RequestStatus,
     sponsor: { name: "N/A" },
-    priority: "high",
+    priority: "high" as RequestPriority,
   },
   {
     id: "req-005",
     title: "Medical bill payment",
     amount: "₦22,500",
     date: "April 29, 2025",
-    status: "approved",
+    status: "approved" as RequestStatus,
     sponsor: { name: "Sarah Johnson" },
-    priority: "high",
+    priority: "high" as RequestPriority,
   },
 ];
 
 const SponsorIncomingRequests = () => {
-  const [activeTab, setActiveTab] = useState("all");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [priorityFilter, setPriorityFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
+  const [activeTab, setActiveTab] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [priorityFilter, setPriorityFilter] = useState<RequestPriority | "">("");
+  const [statusFilter, setStatusFilter] = useState<RequestStatus | "">("");
 
   // Filter requests based on search query, tab, priority, and status
   const filteredRequests = mockRequests.filter((request) => {
@@ -128,7 +132,10 @@ const SponsorIncomingRequests = () => {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
-          <Select value={priorityFilter} onValueChange={setPriorityFilter}>
+          <Select 
+            value={priorityFilter} 
+            onValueChange={(value) => setPriorityFilter(value as RequestPriority | "")}
+          >
             <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue placeholder="Filter by priority" />
             </SelectTrigger>
@@ -140,7 +147,10 @@ const SponsorIncomingRequests = () => {
             </SelectContent>
           </Select>
 
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <Select 
+            value={statusFilter} 
+            onValueChange={(value) => setStatusFilter(value as RequestStatus | "")}
+          >
             <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>
