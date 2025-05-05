@@ -3,14 +3,11 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
-import Requests from "./pages/Requests";
-import BundleDetails from "./pages/BundleDetails";
-import Sponsors from "./pages/Sponsors";
-import BillHistory from "./pages/BillHistory";
-import SwitchRole from "./pages/SwitchRole";
-import Settings from "./pages/Settings";
-import Logout from "./pages/Logout";
+import RoleProtectedRoute from "./components/RoleProtectedRoute";
+import BeneficiaryLayout from "./components/layout/BeneficiaryLayout";
+import SponsorLayout from "./components/layout/SponsorLayout";
+
+// Pages
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import RoleSelection from "./pages/RoleSelection";
@@ -18,6 +15,20 @@ import BeneficiarySignUp from "./pages/BeneficiarySignUp";
 import SponsorSignUp from "./pages/SponsorSignUp";
 import OAuthCallback from "./pages/OAuthCallback";
 import NotFound from "./pages/NotFound";
+import SwitchRole from "./pages/SwitchRole";
+import Logout from "./pages/Logout";
+
+// Role-specific dashboard pages
+import BeneficiaryDashboard from "./pages/dashboards/BeneficiaryDashboard";
+import SponsorDashboard from "./pages/dashboards/SponsorDashboard";
+
+// Existing pages to be used in role-specific routes
+import Requests from "./pages/Requests";
+import BundleDetails from "./pages/BundleDetails";
+import Sponsors from "./pages/Sponsors";
+import BillHistory from "./pages/BillHistory";
+import Settings from "./pages/Settings";
+
 import { useEffect, useState } from "react";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
@@ -82,6 +93,31 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+// Dashboard redirect handler
+const DashboardRedirect = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (user) {
+      const role = user.role.toLowerCase();
+      if (role === "sponsor") {
+        navigate("/dashboard/sponsor", { replace: true });
+      } else {
+        navigate("/dashboard/beneficiary", { replace: true });
+      }
+    } else {
+      navigate("/login", { replace: true });
+    }
+  }, [user, navigate]);
+  
+  return (
+    <div className="flex items-center justify-center h-screen">
+      Redirecting...
+    </div>
+  );
+};
+
 // Moved AppRoutes inside AuthProvider to fix the context issue
 const AppRoutes = () => {
   return (
@@ -95,72 +131,56 @@ const AppRoutes = () => {
         <Route path="/beneficiary-signup" element={<BeneficiarySignUp />} />
         <Route path="/sponsor-signup" element={<SponsorSignUp />} />
         <Route path="/auth/callback" element={<OAuthCallback />} />
+        <Route path="/switch" element={<SwitchRole />} />
+        <Route path="/logout" element={<Logout />} />
 
-        {/* Protected Routes */}
-        <Route
-          path="/dashboard"
+        {/* Dashboard redirect */}
+        <Route 
+          path="/dashboard" 
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <DashboardRedirect />
             </ProtectedRoute>
-          }
+          } 
         />
+
+        {/* Beneficiary Routes */}
         <Route
-          path="/requests"
+          path="/dashboard/beneficiary"
           element={
             <ProtectedRoute>
-              <Requests />
+              <RoleProtectedRoute allowedRole="beneficiary">
+                <BeneficiaryLayout />
+              </RoleProtectedRoute>
             </ProtectedRoute>
           }
-        />
+        >
+          <Route index element={<BeneficiaryDashboard />} />
+          <Route path="requests" element={<Requests />} />
+          <Route path="requests/:bundleId" element={<BundleDetails />} />
+          <Route path="sponsors" element={<Sponsors />} />
+          <Route path="bill-history" element={<BillHistory />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
+
+        {/* Sponsor Routes */}
         <Route
-          path="/requests/:bundleId"
+          path="/dashboard/sponsor"
           element={
             <ProtectedRoute>
-              <BundleDetails />
+              <RoleProtectedRoute allowedRole="sponsor">
+                <SponsorLayout />
+              </RoleProtectedRoute>
             </ProtectedRoute>
           }
-        />
-        <Route
-          path="/sponsors"
-          element={
-            <ProtectedRoute>
-              <Sponsors />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/bill-history"
-          element={
-            <ProtectedRoute>
-              <BillHistory />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/switch"
-          element={
-            <ProtectedRoute>
-              <SwitchRole />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/settings"
-          element={
-            <ProtectedRoute>
-              <Settings />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/logout"
-          element={
-            <ProtectedRoute>
-              <Logout />
-            </ProtectedRoute>
-          }
-        />
+        >
+          <Route index element={<SponsorDashboard />} />
+          <Route path="requests" element={<Requests />} />
+          <Route path="requests/:bundleId" element={<BundleDetails />} />
+          <Route path="beneficiaries" element={<Sponsors />} />
+          <Route path="payment-history" element={<BillHistory />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
 
         {/* 404 Route */}
         <Route path="*" element={<NotFound />} />

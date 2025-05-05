@@ -57,6 +57,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
+  // Helper function to determine dashboard path based on user role
+  const getDashboardPathByRole = (role: string): string => {
+    const roleLower = role.toLowerCase();
+    if (roleLower === "sponsor") {
+      return "/dashboard/sponsor";
+    }
+    // Default to beneficiary dashboard for "beneficiary", "benefactee", or any other role
+    return "/dashboard/beneficiary";
+  };
+
   // Wrapper functions to ensure both state and sessionStorage are updated
   const setUser = (newUser: User | null) => {
     console.log("AuthContext - Setting user:", newUser ? { 
@@ -207,7 +217,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log("AuthContext - Navigating to dashboard after registration");
       
       // Navigate based on role
-      navigate("/dashboard");
+      const dashboardPath = getDashboardPathByRole(newUserData.role);
+      navigate(dashboardPath);
     } catch (error) {
       let message = "Registration failed";
       if (error instanceof Error) {
@@ -243,7 +254,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       toast.success("Login successful");
       console.log("AuthContext - Navigating to dashboard after login");
-      navigate("/dashboard");
+      
+      // Navigate based on role
+      const dashboardPath = getDashboardPathByRole(userData.role);
+      navigate(dashboardPath);
     } catch (error) {
       let message = "Login failed";
       if (error instanceof Error) {
