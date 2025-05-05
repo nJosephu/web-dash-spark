@@ -133,7 +133,7 @@ const BeneficiaryRequests = () => {
 
         
 
-        <div className="max-w-[100vw] overflow-x-hidden p-4 pt-0 md:p-6 md:pt-0">
+        <div className="">
           <div className="flex justify-between items-center mb-6">
             <div>
               <p className="text-gray-500">
