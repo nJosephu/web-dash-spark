@@ -159,7 +159,7 @@ const TopNav = ({ userName }: TopNavProps) => {
         <Sheet open={isNotificationOpen} onOpenChange={setIsNotificationOpen}>
           <SheetTrigger asChild>
             <Button
-              variant="outline"
+              variant="default"
               size="icon"
               className="relative h-9 w-9 rounded-md bg-white"
             >
