@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Outlet } from "react-router-dom";
 import BeneficiarySidebar from "./BeneficiarySidebar";
@@ -10,7 +9,7 @@ const BeneficiaryLayout = () => {
   const userName = user?.name || "User";
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen  bg-[#f4f4f4]">
       <BeneficiarySidebar />
 
       <div className="flex-1 w-full md:ml-64">

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Outlet } from "react-router-dom";
 import SponsorSidebar from "./SponsorSidebar";
@@ -10,7 +9,7 @@ const SponsorLayout = () => {
   const userName = user?.name || "User";
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-[#f4f4f4]">
       <SponsorSidebar />
 
       <div className="flex-1 w-full md:ml-64">
