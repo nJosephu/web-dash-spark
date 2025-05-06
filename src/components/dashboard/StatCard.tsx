@@ -36,7 +36,7 @@ const StatCard = ({
       <div className="flex items-start gap-2">
         <div
           className={cn(
-            "w-[30px] h-[30px]flex justify-center items-center rounded-full mt-1.5",
+            "w-[30px] h-[30px] flex justify-center items-center rounded-full mt-1.5",
             getDotColor()
           )}
         >
