@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { useAuth } from "@/context/AuthContext";
@@ -56,12 +55,14 @@ const BeneficiaryDashboard = () => {
               value="₦300,480"
               percentChange={10}
               color="green"
+              colortag="black"
             />
             <StatCard
               title="Approved bill requests"
               value="₦200,480"
               percentChange={15}
               color="purple"
+              colortag="white"
             />
             <StatCard
               title="Rejected bill requests"
@@ -69,12 +70,14 @@ const BeneficiaryDashboard = () => {
               percentChange={-10}
               color="red"
               increaseIsGood={false}
+              colortag="white"
             />
             <StatCard
               title="Pending bill requests"
               value="₦70,000"
               percentChange={20}
               color="yellow"
+              colortag="black"
             />
           </div>
         </Card>

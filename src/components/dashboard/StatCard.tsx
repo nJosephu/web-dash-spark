@@ -5,6 +5,7 @@ interface StatCardProps {
   value: string;
   percentChange: number;
   color: "green" | "purple" | "red" | "yellow";
+  colortag: "white" | "black";
   increaseIsGood?: boolean;
 }
 const StatCard = ({
@@ -13,6 +14,7 @@ const StatCard = ({
   percentChange,
   color,
   increaseIsGood = true,
+  colortag,
 }: StatCardProps) => {
   const isPositive = percentChange >= 0;
   const showPositiveIndicator =
@@ -40,7 +42,7 @@ const StatCard = ({
             getDotColor()
           )}
         >
-          <Tag className="w-[16px] h-[16px] text-white"></Tag>
+          <Tag className={`w-[16px] h-[16px] text-${colortag}`}></Tag>
         </div>
         <div className="flex-1">
           <span className="text-sm text-gray-600">{title}</span>
