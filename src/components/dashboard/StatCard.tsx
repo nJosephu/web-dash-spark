@@ -22,7 +22,7 @@ const StatCard = ({
   const getDotColor = () => {
     switch (color) {
       case "green":
-        return "bg-emerald-500";
+        return "bg-[#B9E54E]";
       case "purple":
         return "bg-[#7B68EE]";
       case "red":
@@ -40,7 +40,7 @@ const StatCard = ({
             getDotColor()
           )}
         >
-          <Tag className="w-[16px] h-[16px]"></Tag>
+          <Tag className="w-[16px] h-[16px] text-white"></Tag>
         </div>
         <div className="flex-1">
           <span className="text-sm text-gray-600">{title}</span>
@@ -49,7 +49,7 @@ const StatCard = ({
             <div
               className={cn(
                 "flex items-center text-xs font-medium",
-                showPositiveIndicator ? "text-green-600" : "text-red-600"
+                showPositiveIndicator ? "text-[#B9E54E]" : "text-red-600"
               )}
             >
               {isPositive ? (
