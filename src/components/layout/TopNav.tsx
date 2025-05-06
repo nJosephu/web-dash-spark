@@ -150,11 +150,11 @@ const TopNav = ({ userName }: TopNavProps) => {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <div className="flex items-center gap-4">
-        <div className="text-right hidden sm:block">
+      <div className="flex items-center gap-2">
+        {/* <div className="text-right hidden sm:block">
           <span className="block text-xs text-gray-500">Wallet</span>
           <span className="font-medium text-sm ">₦94A...R3DC</span>
-        </div>
+        </div> */}
 
         <Sheet open={isNotificationOpen} onOpenChange={setIsNotificationOpen}>
           <SheetTrigger asChild>
