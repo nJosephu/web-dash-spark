@@ -1,3 +1,4 @@
+
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutGrid,
@@ -15,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import logo from "../../images/logo2kpurple.png";
 import LogoutConfirmation from "../auth/LogoutConfirmation";
+import { useState } from "react";
 
 interface SidebarProps {
   className?: string;
@@ -23,6 +25,7 @@ interface SidebarProps {
 const BeneficiarySidebar = ({ className }: SidebarProps) => {
   const location = useLocation();
   const isMobile = useIsMobile();
+  const [open, setOpen] = useState(false);
 
   const sidebarItems = [
     {
@@ -60,7 +63,7 @@ const BeneficiarySidebar = ({ className }: SidebarProps) => {
     },
   ];
 
-  // Improved helper function to determine if an item is active
+  // Helper function to determine if an item is active
   const isItemActive = (path: string): boolean => {
     const currentPath = location.pathname;
     
@@ -88,6 +91,13 @@ const BeneficiarySidebar = ({ className }: SidebarProps) => {
     return false;
   };
 
+  // Close sidebar on link click
+  const handleLinkClick = () => {
+    if (isMobile) {
+      setOpen(false);
+    }
+  };
+
   const SidebarContent = () => (
     <div className="flex flex-col h-full bg-[#1A1F2C] text-white">
       <div className="p-4 flex items-center gap-2">
@@ -99,6 +109,7 @@ const BeneficiarySidebar = ({ className }: SidebarProps) => {
           <Link
             key={item.title}
             to={item.path}
+            onClick={handleLinkClick}
             className={cn(
               "flex items-center gap-3 px-4 py-3 rounded-md transition-colors",
               isItemActive(item.path)
@@ -118,6 +129,7 @@ const BeneficiarySidebar = ({ className }: SidebarProps) => {
             <Link
               key={item.title}
               to={item.path}
+              onClick={handleLinkClick}
               className={cn(
                 "flex items-center gap-3 px-4 py-3 rounded-md transition-colors",
                 location.pathname === item.path
@@ -148,7 +160,7 @@ const BeneficiarySidebar = ({ className }: SidebarProps) => {
   if (isMobile) {
     return (
       <>
-        <Sheet>
+        <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <Button
               variant="ghost"
