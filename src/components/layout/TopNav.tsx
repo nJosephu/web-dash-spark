@@ -164,7 +164,7 @@ const TopNav = ({ userName }: TopNavProps) => {
               className="relative h-9 w-9 rounded-md bg-white"
             >
               <img src={Bell} alt="bell-notification" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-[#6544E4] rounded-full"></span>
+              <span className="absolute top-1 right-2 w-2 h-2 bg-[#6544E4] rounded-full border border-white"></span>
             </Button>
           </SheetTrigger>
           <NotificationPanel onClose={() => setIsNotificationOpen(false)} />
