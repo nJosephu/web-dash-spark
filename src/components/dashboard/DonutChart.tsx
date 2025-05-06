@@ -1,5 +1,4 @@
-
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
 interface DonutChartProps {
   data: {
@@ -13,7 +12,7 @@ interface DonutChartProps {
 
 const DonutChart = ({ data, title }: DonutChartProps) => {
   return (
-    <div className="p-1">
+    <div>
       <h3 className="text-lg font-medium mb-4">{title}</h3>
       <div className="flex flex-col md:flex-row gap-6">
         <div className="md:w-1/2 h-48 md:h-auto flex items-center justify-center">
@@ -35,26 +34,28 @@ const DonutChart = ({ data, title }: DonutChartProps) => {
             </PieChart>
           </ResponsiveContainer>
         </div>
-        
+
         <div className="md:w-1/2 space-y-5 py-2">
           {data.map((item, index) => (
             <div key={index} className="flex flex-col">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center">
-                  <div 
-                    className="w-3 h-3 rounded-full mr-2" 
+                  <div
+                    className="w-3 h-3 rounded-full mr-2"
                     style={{ backgroundColor: item.color }}
                   ></div>
-                  <span className="text-sm font-medium text-gray-700">{item.name}</span>
+                  <span className="text-sm font-medium text-gray-700">
+                    {item.name}
+                  </span>
                 </div>
                 <span className="text-sm font-medium">{item.percentage}%</span>
               </div>
               <div className="w-full h-2 bg-gray-100 rounded-full">
-                <div 
-                  className="h-full rounded-full" 
-                  style={{ 
+                <div
+                  className="h-full rounded-full"
+                  style={{
                     width: `${item.percentage}%`,
-                    backgroundColor: item.color 
+                    backgroundColor: item.color,
                   }}
                 ></div>
               </div>
