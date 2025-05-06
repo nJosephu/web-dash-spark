@@ -1,6 +1,4 @@
-
 import {
-  Bell,
   LayoutGrid,
   FileText,
   Users,
@@ -29,6 +27,7 @@ import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import { useState } from "react";
 import NotificationPanel from "./NotificationPanel";
 import LogoutConfirmation from "../auth/LogoutConfirmation";
+import Bell from "../../images/notification-bing.png";
 
 interface TopNavProps {
   userName: string;
@@ -42,7 +41,7 @@ const TopNav = ({ userName }: TopNavProps) => {
 
   const getPageInfo = () => {
     const path = location.pathname;
-    
+
     // Check if we're on a bundle details page
     if (path.match(/\/dashboard\/(sponsor|beneficiary)\/requests\/[^\/]+$/)) {
       return {
@@ -58,14 +57,14 @@ const TopNav = ({ userName }: TopNavProps) => {
         icon: <LayoutGrid size={18} className="text-gray-700" />,
       };
     }
-    
+
     if (path === "/dashboard/beneficiary") {
       return {
         title: "Dashboard",
         icon: <LayoutGrid size={18} className="text-gray-700" />,
       };
     }
-    
+
     // Check for requests paths - more specific matching
     if (path.includes("/sponsor/requests")) {
       return {
@@ -73,14 +72,14 @@ const TopNav = ({ userName }: TopNavProps) => {
         icon: <FileText size={18} className="text-gray-700" />,
       };
     }
-    
+
     if (path.includes("/beneficiary/requests")) {
       return {
         title: "My Requests",
         icon: <FileText size={18} className="text-gray-700" />,
       };
     }
-    
+
     // Check for other common paths - more specific matching
     if (path.includes("/sponsors")) {
       return {
@@ -88,49 +87,49 @@ const TopNav = ({ userName }: TopNavProps) => {
         icon: <Users size={18} className="text-gray-700" />,
       };
     }
-    
+
     if (path.includes("/beneficiaries")) {
       return {
         title: "Beneficiaries",
         icon: <Users size={18} className="text-gray-700" />,
       };
     }
-    
+
     if (path.includes("/bill-history")) {
       return {
         title: "Bill History",
         icon: <Receipt size={18} className="text-gray-700" />,
       };
     }
-    
+
     if (path.includes("/bills-paid")) {
       return {
         title: "Bills Paid",
         icon: <Receipt size={18} className="text-gray-700" />,
       };
     }
-    
+
     if (path.includes("/settings")) {
       return {
         title: "Settings",
         icon: <Settings size={18} className="text-gray-700" />,
       };
     }
-    
+
     if (path.includes("/switch")) {
       return {
         title: "Switch Role",
         icon: <SwitchCamera size={18} className="text-gray-700" />,
       };
     }
-    
+
     if (path.includes("/logout")) {
       return {
         title: "Logout",
         icon: <LogOut size={18} className="text-gray-700" />,
       };
     }
-    
+
     // Default fallback
     return {
       title: "Dashboard",
@@ -164,7 +163,7 @@ const TopNav = ({ userName }: TopNavProps) => {
               size="icon"
               className="relative h-9 w-9 rounded-md bg-white"
             >
-              <Bell size={18} className="text-gray-600" />
+              <img src={Bell} alt="bell-notification" />
               <span className="absolute top-1 right-1 w-2 h-2 bg-[#6544E4] rounded-full"></span>
             </Button>
           </SheetTrigger>
@@ -183,8 +182,10 @@ const TopNav = ({ userName }: TopNavProps) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/settings")}>Settings</DropdownMenuItem>
-            
+            <DropdownMenuItem onClick={() => navigate("/settings")}>
+              Settings
+            </DropdownMenuItem>
+
             {/* Replace the direct logout with the confirmation dialog */}
             <LogoutConfirmation>
               <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
