@@ -28,6 +28,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import { useState } from "react";
 import NotificationPanel from "./NotificationPanel";
+import LogoutConfirmation from "../auth/LogoutConfirmation";
 
 interface TopNavProps {
   userName: string;
@@ -38,10 +39,6 @@ const TopNav = ({ userName }: TopNavProps) => {
   const location = useLocation();
   const { logout } = useAuth();
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
-
-  const handleLogout = () => {
-    logout();
-  };
 
   const getPageInfo = () => {
     const path = location.pathname;
@@ -148,8 +145,8 @@ const TopNav = ({ userName }: TopNavProps) => {
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem className="text-sm md:text-base font-medium text-gray-800 flex items-center gap-2">
-            <span className="hidden md:block">{pageInfo.icon}</span>
-            {pageInfo.title}
+            <span className="hidden md:block">{pageInfo?.icon}</span>
+            {pageInfo?.title}
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
@@ -187,7 +184,13 @@ const TopNav = ({ userName }: TopNavProps) => {
           <DropdownMenuContent align="end">
             <DropdownMenuItem>Profile</DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate("/settings")}>Settings</DropdownMenuItem>
-            <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>
+            
+            {/* Replace the direct logout with the confirmation dialog */}
+            <LogoutConfirmation>
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                Log out
+              </DropdownMenuItem>
+            </LogoutConfirmation>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

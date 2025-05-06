@@ -6,11 +6,23 @@ import TopNav from "@/components/layout/TopNav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useState } from "react";
 
 const Logout = () => {
   const { user, logout } = useAuth();
   const userName = user?.name || "User";
   const navigate = useNavigate();
+  const [showDialog, setShowDialog] = useState(true);
 
   useEffect(() => {
     document.title = "Logout | Urgent2kay";
@@ -49,6 +61,11 @@ const Logout = () => {
     }, 100);
   };
 
+  const handleCancel = () => {
+    setShowDialog(false);
+    window.history.back();
+  };
+
   // If we're at the logout page but not authenticated, redirect to login
   useEffect(() => {
     if (!user) {
@@ -67,38 +84,46 @@ const Logout = () => {
   }, [user, navigate]);
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <Sidebar />
-      
-      <div className="flex-1 w-full md:ml-64">
-        <TopNav userName={userName} />
+    <>
+      <AlertDialog open={showDialog} onOpenChange={setShowDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure you want to log out?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You will need to sign in again to access your account.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleCancel}>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleLogout}
+              className="bg-[#6544E4] hover:bg-[#5A3DD0]"
+            >
+              Yes, log me out
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <div className="flex min-h-screen bg-gray-50">
+        <Sidebar />
         
-        <div className="max-w-[100vw] overflow-x-hidden p-4 md:p-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Logout</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p>Are you sure you want to log out?</p>
-              <div className="flex gap-4">
-                <Button 
-                  variant="destructive" 
-                  onClick={handleLogout}
-                >
-                  Yes, Log me out
-                </Button>
-                <Button 
-                  variant="outline"
-                  onClick={() => window.history.back()}
-                >
-                  Cancel
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+        <div className="flex-1 w-full md:ml-64">
+          <TopNav userName={userName} />
+          
+          <div className="max-w-[100vw] overflow-x-hidden p-4 md:p-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Logging out...</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p>Please wait while we log you out.</p>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

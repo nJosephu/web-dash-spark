@@ -1,4 +1,3 @@
-
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutGrid,
@@ -15,6 +14,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import logo from "../../images/logo2kpurple.png";
+import LogoutConfirmation from "../auth/LogoutConfirmation";
 
 interface SidebarProps {
   className?: string;
@@ -57,11 +57,6 @@ const SponsorSidebar = ({ className }: SidebarProps) => {
       title: "Settings",
       icon: Settings,
       path: "/dashboard/sponsor/settings",
-    },
-    {
-      title: "Log out",
-      icon: LogOut,
-      path: "/logout",
     },
   ];
 
@@ -130,6 +125,17 @@ const SponsorSidebar = ({ className }: SidebarProps) => {
               <span>{item.title}</span>
             </Link>
           ))}
+          
+          {/* Logout button with confirmation */}
+          <LogoutConfirmation>
+            <button
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-md transition-colors text-left
+                text-gray-300 hover:bg-sidebar-hover"
+            >
+              <LogOut size={20} />
+              <span>Log out</span>
+            </button>
+          </LogoutConfirmation>
         </nav>
       </div>
     </div>
