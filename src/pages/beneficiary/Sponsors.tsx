@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import {
   Card,
@@ -213,7 +212,6 @@ const Sponsors = () => {
   return (
     <>
       <div className="mb-6">
-        <h1 className="text-2xl font-medium">My Sponsors</h1>
         <p className="text-gray-500">
           Manage people who have sponsored your bill requests
         </p>
@@ -229,9 +227,6 @@ const Sponsors = () => {
                   {sponsors.length}
                 </div>
               </div>
-              <CardDescription>
-                People who have sponsored your bill requests
-              </CardDescription>
             </div>
             <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto">
               <div className="relative w-full md:w-64">
