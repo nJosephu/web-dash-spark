@@ -170,30 +170,13 @@ const TopNav = ({ userName }: TopNavProps) => {
           <NotificationPanel onClose={() => setIsNotificationOpen(false)} />
         </Sheet>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="p-0 h-9 w-9 rounded-full">
-              <Avatar className="h-8 w-8">
-                <AvatarFallback className="bg-gray-100 text-gray-700 border border-gray-200">
-                  {userName.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/settings")}>
-              Settings
-            </DropdownMenuItem>
-
-            {/* Replace the direct logout with the confirmation dialog */}
-            <LogoutConfirmation>
-              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                Log out
-              </DropdownMenuItem>
-            </LogoutConfirmation>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Button variant="ghost" className="p-0 h-9 w-9 rounded-full">
+          <Avatar className="h-8 w-8">
+            <AvatarFallback className="bg-gray-100 text-gray-700 border border-gray-200">
+              {userName.charAt(0)}
+            </AvatarFallback>
+          </Avatar>
+        </Button>
       </div>
     </div>
   );
