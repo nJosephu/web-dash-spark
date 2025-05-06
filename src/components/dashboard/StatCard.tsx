@@ -34,8 +34,13 @@ const StatCard = ({
   return (
     <div className="p-4 rounded-lg border border-gray-200">
       <div className="flex items-start gap-2">
-        <div className={cn("w-3 h-3 rounded-full mt-1.5", getDotColor())}>
-          <Tag></Tag>
+        <div
+          className={cn(
+            "w-[30px] h-[30px]flex justify-center items-center rounded-full mt-1.5",
+            getDotColor()
+          )}
+        >
+          <Tag className="w-[16px] h-[16px]"></Tag>
         </div>
         <div className="flex-1">
           <span className="text-sm text-gray-600">{title}</span>
