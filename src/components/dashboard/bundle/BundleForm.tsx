@@ -17,7 +17,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
@@ -90,7 +94,10 @@ export default function BundleForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-5 mt-6">
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="space-y-5 mt-6"
+      >
         <FormField
           control={form.control}
           name="billName"
@@ -169,8 +176,8 @@ export default function BundleForm({
               <FormLabel className="text-sm font-medium">
                 Sponsor <span className="text-red-500">*</span>
               </FormLabel>
-              <Select 
-                onValueChange={field.onChange} 
+              <Select
+                onValueChange={field.onChange}
                 defaultValue={field.value}
                 disabled={!!selectedSponsorId}
               >
@@ -250,9 +257,7 @@ export default function BundleForm({
                     mode="single"
                     selected={field.value}
                     onSelect={field.onChange}
-                    disabled={(date) =>
-                      date < new Date()
-                    }
+                    disabled={(date) => date < new Date()}
                     initialFocus
                     className="pointer-events-auto"
                   />
@@ -268,7 +273,9 @@ export default function BundleForm({
           name="notes"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium">Notes (Optional)</FormLabel>
+              <FormLabel className="text-sm font-medium">
+                Notes (Optional)
+              </FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Add any additional details about this bill"
@@ -297,21 +304,36 @@ export default function BundleForm({
                 >
                   <FormItem className="flex items-center space-x-2 space-y-0">
                     <FormControl>
-                      <RadioGroupItem value="high" className="border-[#6544E4]" />
+                      <RadioGroupItem
+                        value="high"
+                        className="border-[#6544E4]"
+                      />
                     </FormControl>
-                    <FormLabel className="font-normal cursor-pointer">High</FormLabel>
+                    <FormLabel className="font-normal cursor-pointer">
+                      High
+                    </FormLabel>
                   </FormItem>
                   <FormItem className="flex items-center space-x-2 space-y-0">
                     <FormControl>
-                      <RadioGroupItem value="medium" className="border-[#6544E4]" />
+                      <RadioGroupItem
+                        value="medium"
+                        className="border-[#6544E4]"
+                      />
                     </FormControl>
-                    <FormLabel className="font-normal cursor-pointer">Medium</FormLabel>
+                    <FormLabel className="font-normal cursor-pointer">
+                      Medium
+                    </FormLabel>
                   </FormItem>
                   <FormItem className="flex items-center space-x-2 space-y-0">
                     <FormControl>
-                      <RadioGroupItem value="low" className="border-[#6544E4]" />
+                      <RadioGroupItem
+                        value="low"
+                        className="border-[#6544E4]"
+                      />
                     </FormControl>
-                    <FormLabel className="font-normal cursor-pointer">Low</FormLabel>
+                    <FormLabel className="font-normal cursor-pointer">
+                      Low
+                    </FormLabel>
                   </FormItem>
                 </RadioGroup>
               </FormControl>
@@ -325,18 +347,21 @@ export default function BundleForm({
             type="button"
             variant="outline"
             onClick={form.handleSubmit(handleAddAnotherBill)}
-            className="w-full border-dashed border-gray-300 flex items-center justify-center gap-2 hover:bg-gray-50"
+            className="w-full outline outline-2 outline-[#6544e4] outline-offset-2 border-dashed border-gray-300 flex items-center justify-center gap-2 hover:bg-gray-50"
           >
             <Plus className="h-4 w-4" />
-            Add another bill
+            Add bill
           </Button>
         </div>
 
-        <div className="pt-4 mt-5 border-t">
-          <Button type="submit" className="w-full bg-[#6544E4] hover:bg-[#5A3DD0]">
-            Continue
+        {/* <div className="pt-4 mt-5 border-t">
+          <Button
+            type="submit"
+            className="w-full bg-[#6544E4] hover:bg-[#5A3DD0]"
+          >
+            Add Bill
           </Button>
-        </div>
+        </div> */}
       </form>
     </Form>
   );
