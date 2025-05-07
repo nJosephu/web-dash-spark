@@ -64,7 +64,19 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
     setCurrentStep(BundleStep.ADD_BILLS);
   }
 
-  function onSubmit(data: FormValues) {
+  function handleFormSubmit(data: FormValues) {
+    // This function handles the form submission from BundleForm
+    if (bills.length === 0) {
+      // If no bills yet, add the first one and stay on the bills step
+      handleAddAnotherBill(data);
+    } else {
+      // If there are already bills, add this one and move to summary
+      handleAddAnotherBill(data);
+      setCurrentStep(BundleStep.SUMMARY);
+    }
+  }
+
+  function handleFinalSubmit() {
     // Final submission of the bundle
     console.log("Bundle data:", {
       title: bundleTitle,
@@ -201,8 +213,9 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
             <BillsList bills={bills} onRemoveBill={handleRemoveBill} />
             
             <BundleForm 
+              sponsors={sponsors}
               selectedSponsorId={selectedSponsorId}
-              onSubmit={onSubmit}
+              onSubmit={handleFormSubmit}
               onAddAnotherBill={handleAddAnotherBill}
             />
             
@@ -260,7 +273,7 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
               </Button>
               <Button 
                 type="button" 
-                onClick={onSubmit} 
+                onClick={handleFinalSubmit} 
                 className="flex-1 bg-[#6544E4] hover:bg-[#5A3DD0]"
               >
                 Submit Bundle

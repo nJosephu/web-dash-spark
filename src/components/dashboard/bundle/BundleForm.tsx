@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,23 +33,33 @@ interface BundleFormProps {
   sponsors: Sponsor[];
   onSubmit: (data: FormValues) => void;
   onAddAnotherBill: (data: FormValues) => void;
+  selectedSponsorId?: string;
 }
 
 export default function BundleForm({
   sponsors,
   onSubmit,
   onAddAnotherBill,
+  selectedSponsorId,
 }: BundleFormProps) {
   // Default values for the form
   const defaultValues: Partial<FormValues> = {
     priority: "medium",
     notes: "",
+    ...(selectedSponsorId ? { sponsor: selectedSponsorId } : {}),
   };
 
   const form = useForm<FormValues>({
     resolver: zodResolver(FormSchema),
     defaultValues,
   });
+
+  // Update the sponsor field when selectedSponsorId changes
+  useEffect(() => {
+    if (selectedSponsorId) {
+      form.setValue("sponsor", selectedSponsorId);
+    }
+  }, [selectedSponsorId, form]);
 
   return (
     <Form {...form}>
@@ -133,7 +142,11 @@ export default function BundleForm({
               <FormLabel className="text-sm font-medium">
                 Sponsor <span className="text-red-500">*</span>
               </FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select 
+                onValueChange={field.onChange} 
+                defaultValue={field.value}
+                disabled={!!selectedSponsorId}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select sponsor" />
@@ -147,9 +160,16 @@ export default function BundleForm({
                   ))}
                 </SelectContent>
               </Select>
-              <FormDescription className="text-xs text-muted-foreground">
-                Select who will sponsor this bill
-              </FormDescription>
+              {selectedSponsorId && (
+                <FormDescription className="text-xs text-muted-foreground">
+                  Sponsor is pre-selected for this bundle
+                </FormDescription>
+              )}
+              {!selectedSponsorId && (
+                <FormDescription className="text-xs text-muted-foreground">
+                  Select who will sponsor this bill
+                </FormDescription>
+              )}
               <FormMessage className="text-red-500" />
             </FormItem>
           )}
