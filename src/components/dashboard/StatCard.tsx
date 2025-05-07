@@ -1,3 +1,4 @@
+
 import { ArrowUpRight, ArrowDownRight, Tag } from "lucide-react";
 import { cn } from "@/lib/utils";
 interface StatCardProps {
@@ -5,7 +6,7 @@ interface StatCardProps {
   value: string;
   percentChange: number;
   color: "green" | "purple" | "red" | "yellow";
-  colortag: "white" | "black";
+  colortag?: "white" | "black";  // Made optional with ?
   increaseIsGood?: boolean;
 }
 const StatCard = ({
@@ -14,7 +15,7 @@ const StatCard = ({
   percentChange,
   color,
   increaseIsGood = true,
-  colortag,
+  colortag = "white",  // Added default value
 }: StatCardProps) => {
   const isPositive = percentChange >= 0;
   const showPositiveIndicator =

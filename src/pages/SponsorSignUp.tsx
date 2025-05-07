@@ -63,7 +63,8 @@ const SponsorSignUp = () => {
   };
 
   const handleGoogleSignUp = () => {
-    authService.registerWithGoogle();
+    // Pass the sponsor role "benefactor"
+    authService.registerWithGoogle("benefactor");
   };
 
   return (
