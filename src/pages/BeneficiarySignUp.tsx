@@ -64,7 +64,7 @@ const BeneficiarySignUp = () => {
 
   const handleGoogleSignUp = () => {
     // Pass benefactee role for beneficiary signup
-    authService.registerWithGoogle("benefactee");
+    authService.registerWithGoogle("BENEFACTEE");
   };
 
   return (

@@ -64,7 +64,7 @@ const SponsorSignUp = () => {
 
   const handleGoogleSignUp = () => {
     // Pass the sponsor role "benefactor"
-    authService.registerWithGoogle("benefactor");
+    authService.registerWithGoogle("BENEFACTOR");
   };
 
   return (
