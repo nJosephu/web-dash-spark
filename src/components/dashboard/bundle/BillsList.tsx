@@ -2,6 +2,8 @@
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { FormValues } from "@/types/bundle";
+import { format } from "date-fns";
+import { Badge } from "@/components/ui/badge";
 
 interface BillsListProps {
   bills: FormValues[];
@@ -13,23 +15,52 @@ export default function BillsList({ bills, onRemoveBill }: BillsListProps) {
     return null;
   }
 
+  // Helper function to get priority color
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case "high":
+        return "bg-red-100 text-red-800";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800";
+      case "low":
+        return "bg-green-100 text-green-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
   return (
     <div className="mt-4 mb-6">
       <h3 className="text-sm font-medium mb-2">Bills added to bundle ({bills.length})</h3>
-      <div className="space-y-2">
+      <div className="space-y-3">
         {bills.map((bill, index) => (
-          <div key={index} className="flex items-center justify-between p-2 bg-muted rounded-md">
-            <div className="flex flex-col">
-              <span className="font-medium">{bill.billName}</span>
-              <span className="text-xs text-muted-foreground">₦{bill.amount}</span>
+          <div key={index} className="flex flex-col p-3 bg-[#F1EDFF] rounded-md">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <div className="flex items-center space-x-2">
+                  <span className="font-medium">{bill.billName}</span>
+                  <Badge className={`text-xs ${getPriorityColor(bill.priority)}`}>
+                    {bill.priority}
+                  </Badge>
+                </div>
+                <div className="flex flex-col mt-1">
+                  <span className="text-xs text-gray-500">{bill.billType} - {bill.serviceProvider}</span>
+                  <span className="text-sm font-medium mt-1">₦{bill.amount}</span>
+                  <span className="text-xs text-gray-500">Due: {format(bill.dueDate, 'PP')}</span>
+                </div>
+                {bill.notes && (
+                  <p className="text-xs text-gray-600 mt-1 line-clamp-1">{bill.notes}</p>
+                )}
+              </div>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => onRemoveBill(index)}
+                className="h-8 w-8 p-0 rounded-full"
+              >
+                <X className="h-4 w-4" />
+              </Button>
             </div>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => onRemoveBill(index)}
-            >
-              <X className="h-4 w-4" />
-            </Button>
           </div>
         ))}
       </div>
