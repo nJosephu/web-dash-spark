@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import {
   Sheet,
@@ -94,6 +93,7 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
   function handleAddAnotherBill(data: FormValues) {
     setBills([...bills, data]);
     toast.success("Bill added to bundle");
+    // Form reset is now handled by the BundleForm component itself
   }
 
   function handleRemoveBill(index: number) {

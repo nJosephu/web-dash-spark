@@ -33,3 +33,28 @@ export interface Bundle {
   items: BundleItem[];
   activityLog: ActivityLog[];
 }
+
+export interface Sponsor {
+  id: number | string;
+  name: string;
+  avatar?: string;
+}
+
+export interface FormValues {
+  billName?: string;
+  billType?: string;
+  serviceProvider?: string;
+  sponsor?: string;
+  amount?: string;
+  dueDate?: Date;
+  notes?: string;
+  priority?: "high" | "medium" | "low";
+}
+
+export interface CreateBundleSheetProps {
+  trigger?: React.ReactNode;
+}
+
+export interface FormSchema {
+  // Schema definition if needed
+}

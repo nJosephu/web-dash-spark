@@ -61,9 +61,36 @@ export default function BundleForm({
     }
   }, [selectedSponsorId, form]);
 
+  // Handle form submission and reset form
+  const handleSubmit = (data: FormValues) => {
+    onSubmit(data);
+    resetForm();
+  };
+
+  // Handle adding another bill and reset form
+  const handleAddAnotherBill = (data: FormValues) => {
+    onAddAnotherBill(data);
+    resetForm();
+  };
+
+  // Reset form to initial state, keeping only the sponsor if it's preselected
+  const resetForm = () => {
+    form.reset({
+      ...defaultValues,
+      billName: "",
+      billType: undefined,
+      serviceProvider: undefined,
+      amount: "",
+      dueDate: undefined,
+      notes: "",
+      priority: "medium",
+      ...(selectedSponsorId ? { sponsor: selectedSponsorId } : {}),
+    });
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 mt-6">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-5 mt-6">
         <FormField
           control={form.control}
           name="billName"
@@ -297,7 +324,7 @@ export default function BundleForm({
           <Button
             type="button"
             variant="outline"
-            onClick={form.handleSubmit(onAddAnotherBill)}
+            onClick={form.handleSubmit(handleAddAnotherBill)}
             className="w-full border-dashed border-gray-300 flex items-center justify-center gap-2 hover:bg-gray-50"
           >
             <Plus className="h-4 w-4" />
