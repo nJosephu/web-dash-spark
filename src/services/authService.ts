@@ -1,4 +1,3 @@
-
 interface LoginResponse {
   message: string;
   token: string;
@@ -96,16 +95,16 @@ const authService = {
     }
   },
   
-  // Google OAuth registration/login - redirects user to Google auth page
+  // Google OAuth registration/login with role parameter
   loginWithGoogle: () => {
     console.log("Redirecting to Google OAuth login");
     window.location.href = `${API_URL}/auth/google`;
   },
 
-  // Use the same Google auth endpoint for signup
-  registerWithGoogle: () => {
-    console.log("Redirecting to Google OAuth signup");
-    window.location.href = `${API_URL}/auth/google`;
+  // Updated to pass role parameter for signup
+  registerWithGoogle: (role: string) => {
+    console.log(`Redirecting to Google OAuth signup with role: ${role}`);
+    window.location.href = `${API_URL}/auth/google?role=${role}`;
   },
   
   // Helper method to get auth token
@@ -162,12 +161,26 @@ const authService = {
     return isAuth;
   },
   
-  // Clear authentication data
+  // Enhanced clear authentication data with browser history manipulation
   clearAuth: (): void => {
     console.log("Clearing all authentication data from sessionStorage");
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('user');
     sessionStorage.removeItem('authenticated');
+    
+    // Add cache control meta tag to prevent caching
+    const metaTag = document.createElement('meta');
+    metaTag.setAttribute('http-equiv', 'Cache-Control');
+    metaTag.setAttribute('content', 'no-cache, no-store, must-revalidate');
+    document.head.appendChild(metaTag);
+    
+    // Prevent going back to protected pages after logout
+    if (window.history && window.history.pushState) {
+      // Add a dummy history entry so going back doesn't take you to the protected page
+      window.history.pushState(null, document.title, window.location.href);
+      // Replace current state so we can't go forward to it again
+      window.history.replaceState(null, document.title, window.location.href);
+    }
   }
 }
 

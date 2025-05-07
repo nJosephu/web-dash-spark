@@ -36,6 +36,17 @@ const Logout = () => {
       hasUser: !!sessionUser,
       contextHasUser: !!user
     });
+    
+    // Add cache control meta tag to prevent caching
+    const metaTag = document.createElement('meta');
+    metaTag.setAttribute('http-equiv', 'Cache-Control');
+    metaTag.setAttribute('content', 'no-cache, no-store, must-revalidate');
+    document.head.appendChild(metaTag);
+    
+    // Clean up function to remove meta tag
+    return () => {
+      document.head.removeChild(metaTag);
+    };
   }, [user]);
 
   const handleLogout = () => {
@@ -48,6 +59,12 @@ const Logout = () => {
       hasUser: !!beforeUser
     });
     
+    // Prevent browser back button from restoring dashboard after logout
+    if (window.history && window.history.pushState) {
+      window.history.pushState(null, document.title, window.location.href);
+      window.history.replaceState(null, document.title, window.location.href);
+    }
+    
     logout();
     
     // Verify sessionStorage after logout
@@ -58,6 +75,15 @@ const Logout = () => {
         hasToken: !!afterToken,
         hasUser: !!afterUser
       });
+      
+      // Double-check and force navigate if needed
+      if (afterToken || afterUser) {
+        console.warn("Logout incomplete - forcing cleanup and redirect");
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('user');
+        sessionStorage.removeItem('authenticated');
+        window.location.href = '/login'; // Hard redirect as fallback
+      }
     }, 100);
   };
 

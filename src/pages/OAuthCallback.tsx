@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
+import { getDashboardPathByRole } from "@/utils/roleUtils";
 
 const OAuthCallback = () => {
   const [isProcessing, setIsProcessing] = useState(true);
@@ -20,11 +21,14 @@ const OAuthCallback = () => {
         const token = params.get("token");
         const userData = params.get("user");
         const error = params.get("error");
+        // Get role from URL if it exists (for backend to use)
+        const role = params.get("role");
         
         console.log("OAuth params received:", { 
           hasToken: !!token, 
           hasUserData: !!userData, 
           error: error || "none",
+          role: role || "not specified",
           tokenFirstChars: token ? `${token.substring(0, 5)}...` : "no token"
         });
 
@@ -71,10 +75,13 @@ const OAuthCallback = () => {
           console.log("Updating auth context with token and user data");
           setToken(token);
           setUser(user);
+          
+          // Navigate based on role
+          const dashboardPath = getDashboardPathByRole(user.role);
+          console.log("Redirecting to dashboard after successful OAuth login:", dashboardPath);
 
           toast.success("Login successful");
-          console.log("Redirecting to dashboard after successful OAuth login");
-          navigate("/dashboard");
+          navigate(dashboardPath);
         } catch (parseError) {
           console.error("Error parsing user data:", parseError);
           toast.error("Failed to process user data");
