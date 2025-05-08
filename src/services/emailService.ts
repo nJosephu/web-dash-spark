@@ -153,10 +153,13 @@ export const sendBundleSummaryEmail = async (
   
   // Send email to the sponsor if available
   if (sponsorEmail) {
+    console.log(`Sending email to sponsor: ${sponsorEmail}`);
     await sendEmail({
       email: sponsorEmail,
       subject: `URGENT 2KAY: New Payment Request from ${requestorName}`,
       text: emailHTML,
     });
+  } else {
+    console.warn("No sponsor email provided, skipping sponsor notification");
   }
 };

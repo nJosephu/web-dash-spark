@@ -39,6 +39,7 @@ export interface Sponsor {
   joinedDate: string;
   verified: boolean;
   rating: number;
+  email: string; // Added email field
 }
 
 // Props for the CreateBundleSheet component

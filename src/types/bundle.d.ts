@@ -27,6 +27,7 @@ export interface Bundle {
   sponsor: {
     name: string;
     avatar?: string;
+    email?: string; // Added email field
   };
   priority?: "high" | "medium" | "low";
   description?: string;
@@ -38,6 +39,7 @@ export interface Sponsor {
   id: number | string;
   name: string;
   avatar?: string;
+  email?: string; // Added email field
 }
 
 export interface FormValues {

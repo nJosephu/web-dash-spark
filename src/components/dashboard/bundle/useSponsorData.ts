@@ -18,6 +18,7 @@ export function useSponsorData() {
         joinedDate: "Jan 2025",
         verified: true,
         rating: 4.8,
+        email: "thismanthisman619@gmail.com", // Real email address
       },
       {
         id: 2,
@@ -28,6 +29,7 @@ export function useSponsorData() {
         joinedDate: "Feb 2025",
         verified: true,
         rating: 4.9,
+        email: "sponsor2@example.com", // Dummy email
       },
       {
         id: 3,
@@ -38,6 +40,7 @@ export function useSponsorData() {
         joinedDate: "Dec 2024",
         verified: true,
         rating: 4.7,
+        email: "sponsor3@example.com", // Dummy email
       },
       {
         id: 4,
@@ -48,6 +51,7 @@ export function useSponsorData() {
         joinedDate: "Mar 2025",
         verified: false,
         rating: 4.6,
+        email: "sponsor4@example.com", // Dummy email
       },
     ];
     

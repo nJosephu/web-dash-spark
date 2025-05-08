@@ -219,13 +219,20 @@ export default function BundleForm({
         <FormField
           control={form.control}
           name="amount"
-          render={({ field }) => (
+          render={({ field: { onChange, value, ...restField } }) => (
             <FormItem>
               <FormLabel className="text-sm font-medium">
                 Bill Amount (₦) <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
-                <Input placeholder="0.00" {...field} />
+                <Input 
+                  type="number" 
+                  inputMode="numeric" 
+                  placeholder="0.00" 
+                  onChange={(e) => onChange(e.target.value)}
+                  value={value || ""} 
+                  {...restField} 
+                />
               </FormControl>
               <FormMessage className="text-red-500" />
             </FormItem>

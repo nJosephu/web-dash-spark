@@ -30,6 +30,7 @@ export interface Bundle {
   sponsor: {
     name: string;
     avatar?: string;
+    email?: string; // Added email field
   };
   priority?: "high" | "medium" | "low";
   description?: string;
@@ -75,6 +76,7 @@ export interface Sponsor {
   joinedDate: string;
   verified: boolean;
   rating: number;
+  email: string; // Added email field
 }
 
 // Props for the CreateBundleSheet component

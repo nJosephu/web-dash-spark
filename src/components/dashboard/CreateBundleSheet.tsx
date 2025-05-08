@@ -109,8 +109,8 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
       const userEmail = user?.email || "";
       const userName = user?.name || "User";
       
-      // Mock sponsor email (in a real app, this would come from the sponsor data)
-      const sponsorEmail = "sponsor@example.com"; // This is a placeholder
+      // Get sponsor email from the sponsor data
+      const sponsorEmail = selectedSponsor.email || "";
 
       await sendBundleSummaryEmail(
         userEmail,
