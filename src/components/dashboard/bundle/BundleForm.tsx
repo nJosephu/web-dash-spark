@@ -82,19 +82,17 @@ export default function BundleForm({
     // Reset all fields to their initial values
     form.reset({
       ...defaultValues,
-      serviceProvider: undefined, // Ensure serviceProvider is reset
-      billType: undefined, // Ensure billType is reset
     });
-
+    
     // Explicitly clear specific fields to ensure they reset properly
     form.setValue("billName", "");
-    form.setValue("billType", undefined); // Explicit reset
-    form.setValue("serviceProvider", undefined); // Explicit reset
+    form.setValue("billType", undefined);
+    form.setValue("serviceProvider", undefined);
     form.setValue("amount", "");
     form.setValue("dueDate", undefined);
     form.setValue("notes", "");
     form.setValue("priority", "medium");
-
+    
     // Re-set the sponsor if there's a selected one
     if (selectedSponsorId) {
       form.setValue("sponsor", selectedSponsorId);
@@ -131,10 +129,7 @@ export default function BundleForm({
               <FormLabel className="text-sm font-medium">
                 Bill Type <span className="text-red-500">*</span>
               </FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                value={field.value || undefined}
-              >
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select type" />
@@ -161,10 +156,7 @@ export default function BundleForm({
               <FormLabel className="text-sm font-medium">
                 Service Provider <span className="text-red-500">*</span>
               </FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                value={field.value || undefined}
-              >
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select provider" />
@@ -182,6 +174,47 @@ export default function BundleForm({
             </FormItem>
           )}
         />
+
+        {/* <FormField
+          control={form.control}
+          name="sponsor"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-sm font-medium">
+                Sponsor <span className="text-red-500">*</span>
+              </FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                disabled={!!selectedSponsorId}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select sponsor" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {sponsors.map((sponsor) => (
+                    <SelectItem key={sponsor.id} value={sponsor.id.toString()}>
+                      {sponsor.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {selectedSponsorId && (
+                <FormDescription className="text-xs text-muted-foreground">
+                  Sponsor is pre-selected for this bundle
+                </FormDescription>
+              )}
+              {!selectedSponsorId && (
+                <FormDescription className="text-xs text-muted-foreground">
+                  Select who will sponsor this bill
+                </FormDescription>
+              )}
+              <FormMessage className="text-red-500" />
+            </FormItem>
+          )}
+        /> */}
 
         <FormField
           control={form.control}
@@ -327,6 +360,15 @@ export default function BundleForm({
             Add bill
           </Button>
         </div>
+
+        {/* <div className="pt-4 mt-5 border-t">
+          <Button
+            type="submit"
+            className="w-full bg-[#6544E4] hover:bg-[#5A3DD0]"
+          >
+            Add Bill
+          </Button>
+        </div> */}
       </form>
     </Form>
   );
