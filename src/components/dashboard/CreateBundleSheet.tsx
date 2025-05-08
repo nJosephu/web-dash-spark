@@ -24,7 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/AuthContext";
 import { sendBundleSummaryEmail } from "@/services/emailService";
-import { loader } from "lucide-react";
+import { Loader } from "lucide-react";
 
 // Step enum to track the bundle creation process
 enum BundleStep {
@@ -380,7 +380,7 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
               >
                 {isSendingEmail ? (
                   <>
-                    <loader className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader className="mr-2 h-4 w-4 animate-spin" />
                     Submitting...
                   </>
                 ) : (
