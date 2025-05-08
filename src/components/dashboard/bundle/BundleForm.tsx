@@ -83,7 +83,7 @@ export default function BundleForm({
     form.reset({
       ...defaultValues,
     });
-
+    
     // Explicitly clear specific fields to ensure they reset properly
     form.setValue("billName", "");
     form.setValue("billType", undefined);
@@ -92,7 +92,7 @@ export default function BundleForm({
     form.setValue("dueDate", undefined);
     form.setValue("notes", "");
     form.setValue("priority", "medium");
-
+    
     // Re-set the sponsor if there's a selected one
     if (selectedSponsorId) {
       form.setValue("sponsor", selectedSponsorId);
