@@ -125,6 +125,7 @@ export const generateBundleSummaryHTML = (
 
 /**
  * Send bundle summary email to both the requestor and sponsor
+ * Primary recipient is the sponsor as they need to approve the payment
  */
 export const sendBundleSummaryEmail = async (
   requestorEmail: string,
@@ -144,16 +145,9 @@ export const sendBundleSummaryEmail = async (
     bills
   );
   
-  // Send email to the requestor
-  await sendEmail({
-    email: requestorEmail,
-    subject: `URGENT 2KAY: Your Bundle Request "${bundleTitle}" has been created`,
-    text: emailHTML,
-  });
-  
-  // Send email to the sponsor if available
+  // Send email to the sponsor if available (PRIMARY RECIPIENT)
   if (sponsorEmail) {
-    console.log(`Sending email to sponsor: ${sponsorEmail}`);
+    console.log(`Sending payment request email to sponsor: ${sponsorEmail}`);
     await sendEmail({
       email: sponsorEmail,
       subject: `URGENT 2KAY: New Payment Request from ${requestorName}`,
@@ -162,4 +156,12 @@ export const sendBundleSummaryEmail = async (
   } else {
     console.warn("No sponsor email provided, skipping sponsor notification");
   }
+  
+  // Also send a confirmation email to the requestor
+  console.log(`Sending confirmation email to requestor: ${requestorEmail}`);
+  await sendEmail({
+    email: requestorEmail,
+    subject: `URGENT 2KAY: Your Bundle Request "${bundleTitle}" has been created`,
+    text: emailHTML,
+  });
 };

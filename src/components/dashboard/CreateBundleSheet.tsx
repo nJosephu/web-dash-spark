@@ -109,8 +109,10 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
       const userEmail = user?.email || "";
       const userName = user?.name || "User";
       
-      // Get sponsor email from the sponsor data
+      // Get sponsor email from the sponsor data - this is the PRIMARY recipient
       const sponsorEmail = selectedSponsor.email || "";
+      
+      console.log(`Selected sponsor: ${selectedSponsor.name}, email: ${sponsorEmail}`);
 
       await sendBundleSummaryEmail(
         userEmail,
