@@ -168,7 +168,7 @@ export default function BundleForm({
           )}
         />
 
-        <FormField
+        {/* <FormField
           control={form.control}
           name="sponsor"
           render={({ field }) => (
@@ -207,7 +207,7 @@ export default function BundleForm({
               <FormMessage className="text-red-500" />
             </FormItem>
           )}
-        />
+        /> */}
 
         <FormField
           control={form.control}
