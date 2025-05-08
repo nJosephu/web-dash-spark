@@ -35,23 +35,26 @@ const authService = {
     role: string;
   }): Promise<RegisterResponse> => {
     try {
-      console.log("Registering new user:", { email: userData.email, role: userData.role });
-      
+      console.log("Registering new user:", {
+        email: userData.email,
+        role: userData.role,
+      });
+
       const response = await fetch(`${API_URL}/auth/register`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(userData),
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
         console.error("Registration failed:", data.error);
-        throw new Error(data.error || 'Registration failed');
+        throw new Error(data.error || "Registration failed");
       }
-      
+
       console.log("Registration successful:", { userId: data.user?.id });
       return data;
     } catch (error) {
@@ -60,29 +63,29 @@ const authService = {
         throw error;
       }
       console.error("Unknown registration error");
-      throw new Error('Registration request failed');
+      throw new Error("Registration request failed");
     }
   },
 
   login: async (email: string, password: string): Promise<LoginResponse> => {
     try {
       console.log("Attempting login for:", email);
-      
+
       const response = await fetch(`${API_URL}/auth/login`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
         console.error("Login failed:", data.error);
-        throw new Error(data.error || 'Login failed');
+        throw new Error(data.error || "Login failed");
       }
-      
+
       console.log("Login successful:", { userId: data.user?.id });
       return data;
     } catch (error) {
@@ -91,10 +94,10 @@ const authService = {
         throw error;
       }
       console.error("Unknown login error");
-      throw new Error('Login request failed');
+      throw new Error("Login request failed");
     }
   },
-  
+
   // Google OAuth registration/login with role parameter
   loginWithGoogle: () => {
     console.log("Redirecting to Google OAuth login");
@@ -104,20 +107,24 @@ const authService = {
   // Updated to pass role parameter for signup
   registerWithGoogle: (role: string) => {
     console.log(`Redirecting to Google OAuth signup with role: ${role}`);
-    window.location.href = `${API_URL}/auth/google?role=${role}`;
+    const state = encodeURIComponent(JSON.stringify({ role }));
+    window.location.href = `${API_URL}/auth/google?state=${state}`;
   },
-  
+
   // Helper method to get auth token
   getToken: (): string | null => {
-    const token = sessionStorage.getItem('token');
+    const token = sessionStorage.getItem("token");
     if (token) {
-      console.log("Token retrieved from sessionStorage:", token.substring(0, 5) + "...");
+      console.log(
+        "Token retrieved from sessionStorage:",
+        token.substring(0, 5) + "..."
+      );
     } else {
       console.log("No token found in sessionStorage");
     }
     return token;
   },
-  
+
   // For future use with API requests that require authentication
   getAuthHeader: (): Record<string, string> | undefined => {
     const token = authService.getToken();
@@ -131,16 +138,16 @@ const authService = {
 
   // Check if token is valid
   isAuthenticated: (): boolean => {
-    const token = sessionStorage.getItem('token');
-    const user = sessionStorage.getItem('user');
-    
-    console.log("Authentication check details:", { 
+    const token = sessionStorage.getItem("token");
+    const user = sessionStorage.getItem("user");
+
+    console.log("Authentication check details:", {
       hasToken: !!token,
       hasUser: !!user,
       tokenLength: token ? token.length : 0,
-      userDataExists: user ? "yes" : "no"
+      userDataExists: user ? "yes" : "no",
     });
-    
+
     // If we have the user data, try parsing it to make sure it's valid
     if (user) {
       try {
@@ -148,32 +155,35 @@ const authService = {
         console.log("User data parsed successfully:", {
           id: parsedUser.id,
           name: parsedUser.name,
-          role: parsedUser.role
+          role: parsedUser.role,
         });
       } catch (e) {
         console.error("Error parsing user data from sessionStorage:", e);
         return false;
       }
     }
-    
+
     const isAuth = !!token && !!user;
-    console.log("Authentication result:", isAuth ? "Authenticated" : "Not authenticated");
+    console.log(
+      "Authentication result:",
+      isAuth ? "Authenticated" : "Not authenticated"
+    );
     return isAuth;
   },
-  
+
   // Enhanced clear authentication data with browser history manipulation
   clearAuth: (): void => {
     console.log("Clearing all authentication data from sessionStorage");
-    sessionStorage.removeItem('token');
-    sessionStorage.removeItem('user');
-    sessionStorage.removeItem('authenticated');
-    
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("authenticated");
+
     // Add cache control meta tag to prevent caching
-    const metaTag = document.createElement('meta');
-    metaTag.setAttribute('http-equiv', 'Cache-Control');
-    metaTag.setAttribute('content', 'no-cache, no-store, must-revalidate');
+    const metaTag = document.createElement("meta");
+    metaTag.setAttribute("http-equiv", "Cache-Control");
+    metaTag.setAttribute("content", "no-cache, no-store, must-revalidate");
     document.head.appendChild(metaTag);
-    
+
     // Prevent going back to protected pages after logout
     if (window.history && window.history.pushState) {
       // Add a dummy history entry so going back doesn't take you to the protected page
@@ -181,7 +191,7 @@ const authService = {
       // Replace current state so we can't go forward to it again
       window.history.replaceState(null, document.title, window.location.href);
     }
-  }
-}
+  },
+};
 
 export default authService;
