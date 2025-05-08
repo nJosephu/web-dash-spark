@@ -79,17 +79,24 @@ export default function BundleForm({
 
   // Reset form to initial state, keeping only the sponsor if it's preselected
   const resetForm = () => {
+    // Reset all fields to their initial values
     form.reset({
       ...defaultValues,
-      billName: "",
-      billType: undefined,
-      serviceProvider: undefined,
-      amount: "",
-      dueDate: undefined,
-      notes: "",
-      priority: "medium",
-      ...(selectedSponsorId ? { sponsor: selectedSponsorId } : {}),
     });
+    
+    // Explicitly clear specific fields to ensure they reset properly
+    form.setValue("billName", "");
+    form.setValue("billType", undefined);
+    form.setValue("serviceProvider", undefined);
+    form.setValue("amount", "");
+    form.setValue("dueDate", undefined);
+    form.setValue("notes", "");
+    form.setValue("priority", "medium");
+    
+    // Re-set the sponsor if there's a selected one
+    if (selectedSponsorId) {
+      form.setValue("sponsor", selectedSponsorId);
+    }
   };
 
   return (
@@ -122,7 +129,7 @@ export default function BundleForm({
               <FormLabel className="text-sm font-medium">
                 Bill Type <span className="text-red-500">*</span>
               </FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select type" />
@@ -149,7 +156,7 @@ export default function BundleForm({
               <FormLabel className="text-sm font-medium">
                 Service Provider <span className="text-red-500">*</span>
               </FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select provider" />
@@ -299,7 +306,7 @@ export default function BundleForm({
               <FormControl>
                 <RadioGroup
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  value={field.value}
                   className="flex space-x-4"
                 >
                   <FormItem className="flex items-center space-x-2 space-y-0">
