@@ -22,6 +22,9 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@/context/AuthContext";
+import { sendBundleSummaryEmail } from "@/services/emailService";
+import { loader } from "lucide-react";
 
 // Step enum to track the bundle creation process
 enum BundleStep {
@@ -39,7 +42,9 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
   const [selectedSponsorId, setSelectedSponsorId] = useState<string>("");
   const [bundleTitle, setBundleTitle] = useState("");
   const [bundleDescription, setBundleDescription] = useState("");
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
   const sponsors = useSponsorData();
+  const { user } = useAuth();
 
   // Get the selected sponsor object
   const selectedSponsor = sponsors.find(
@@ -79,19 +84,55 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
     }
   }
 
-  function handleFinalSubmit() {
-    // Final submission of the bundle
-    console.log("Bundle data:", {
+  async function handleFinalSubmit() {
+    if (!selectedSponsor) {
+      toast.error("No sponsor selected. Please select a sponsor first.");
+      return;
+    }
+
+    // Show loading state
+    setIsSendingEmail(true);
+
+    // Bundle data for saving and email
+    const bundleData = {
       title: bundleTitle,
       description: bundleDescription,
       sponsor: selectedSponsor,
       bills,
-      totalAmount: `₦${totalAmount}`,
-    });
+      totalAmount: `${totalAmount}`,
+    };
 
-    toast.success("Bundle created successfully!");
-    setOpen(false);
-    resetForm();
+    console.log("Bundle data:", bundleData);
+
+    try {
+      // Send email notifications
+      const userEmail = user?.email || "";
+      const userName = user?.name || "User";
+      
+      // Mock sponsor email (in a real app, this would come from the sponsor data)
+      const sponsorEmail = "sponsor@example.com"; // This is a placeholder
+
+      await sendBundleSummaryEmail(
+        userEmail,
+        userName,
+        sponsorEmail,
+        selectedSponsor.name,
+        bundleTitle,
+        bundleDescription,
+        totalAmount,
+        bills
+      );
+
+      toast.success("Bundle created and email notifications sent");
+      setOpen(false);
+      resetForm();
+    } catch (error) {
+      console.error("Error during bundle submission:", error);
+      const errorMessage = error instanceof Error ? error.message : "An error occurred";
+      toast.error(`Failed to create bundle: ${errorMessage}`);
+    } finally {
+      setIsSendingEmail(false);
+    }
   }
 
   function handleAddAnotherBill(data: FormValues) {
@@ -327,6 +368,7 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
                 variant="outline"
                 onClick={handleBackToAddBills}
                 className="flex-1"
+                disabled={isSendingEmail}
               >
                 Back
               </Button>
@@ -334,8 +376,16 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
                 type="button"
                 onClick={handleFinalSubmit}
                 className="flex-1 bg-[#6544E4] hover:bg-[#5A3DD0]"
+                disabled={isSendingEmail}
               >
-                Submit Bundle
+                {isSendingEmail ? (
+                  <>
+                    <loader className="mr-2 h-4 w-4 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  "Submit Bundle"
+                )}
               </Button>
             </div>
           </div>

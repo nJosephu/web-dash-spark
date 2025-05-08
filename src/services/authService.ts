@@ -125,6 +125,29 @@ const authService = {
     return token;
   },
 
+  // Helper method to get user data
+  getUser: () => {
+    const userStr = sessionStorage.getItem("user");
+    if (!userStr) {
+      console.log("No user found in sessionStorage");
+      return null;
+    }
+    
+    try {
+      const user = JSON.parse(userStr);
+      console.log("User retrieved from sessionStorage:", { 
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role 
+      });
+      return user;
+    } catch (error) {
+      console.error("Error parsing user from sessionStorage:", error);
+      return null;
+    }
+  },
+
   // For future use with API requests that require authentication
   getAuthHeader: (): Record<string, string> | undefined => {
     const token = authService.getToken();
