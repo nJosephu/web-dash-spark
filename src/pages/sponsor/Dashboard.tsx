@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,6 +5,7 @@ import { Receipt } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import StatCard from "@/components/dashboard/StatCard";
 import DonutChart from "@/components/dashboard/DonutChart";
+import { Link } from "react-router-dom";
 
 const SponsorDashboard = () => {
   const { user } = useAuth();
@@ -52,12 +52,13 @@ const SponsorDashboard = () => {
               Make a difference today
             </h2>
             <p className="text-gray-700 max-w-xl">
-              Browse open requests and help someone in need by funding their bills directly.
-              Your contribution goes directly to service providers.
+              Browse open requests and help someone in need by funding their
+              bills directly. Your contribution goes directly to service
+              providers.
             </p>
           </div>
           <Button className="mt-4 md:mt-0 bg-[#6544E4] hover:bg-[#5A3DD0]">
-            Browse Requests
+            <Link to={"dashboard/sponsor/requests"}></Link>
           </Button>
         </div>
       </div>
@@ -103,18 +104,23 @@ const SponsorDashboard = () => {
           <h3 className="font-medium mb-3 px-1">Recent Funding Activity</h3>
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-center justify-between border-b pb-3 last:border-0">
+              <div
+                key={i}
+                className="flex items-center justify-between border-b pb-3 last:border-0"
+              >
                 <div className="flex items-center gap-3">
                   <div className="bg-[#F1EDFF] p-2 rounded-full">
                     <Receipt className="h-5 w-5 text-[#6544E4]" />
                   </div>
                   <div>
                     <h4 className="font-medium">Medical Bill Payment</h4>
-                    <p className="text-sm text-gray-500">Funded {i} day{i > 1 ? 's' : ''} ago</p>
+                    <p className="text-sm text-gray-500">
+                      Funded {i} day{i > 1 ? "s" : ""} ago
+                    </p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-medium">₦{25000 + (i * 5000)}</p>
+                  <p className="font-medium">₦{25000 + i * 5000}</p>
                   <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">
                     Completed
                   </span>

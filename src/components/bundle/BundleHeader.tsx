@@ -62,7 +62,7 @@ const BundleHeader: React.FC<BundleHeaderProps> = ({
       <Button
         variant="ghost"
         className="mb-6 -ml-3 text-gray-600 hover:text-gray-800"
-        onClick={() => navigate("/requests")}
+        onClick={() => navigate("dashboard/beneficiary/requests")}
       >
         <ArrowLeft className="mr-2 h-4 w-4" />
         Back to Requests
