@@ -2,9 +2,9 @@
 import { FormValues } from "@/types/bundle";
 
 interface SendEmailPayload {
-  email: string;
+  to: string;       // Changed from 'email' to 'to'
   subject: string;
-  text: string;
+  message: string;  // Changed from 'text' to 'message'
 }
 
 interface SendEmailResponse {
@@ -19,7 +19,7 @@ const API_URL = "https://urgent-2kay-directed-bill-payment-system-rss6.onrender.
  */
 export const sendEmail = async (payload: SendEmailPayload): Promise<SendEmailResponse> => {
   try {
-    console.log(`Sending email to ${payload.email} with subject: ${payload.subject}`);
+    console.log(`Sending email to ${payload.to} with subject: ${payload.subject}`);
     
     const response = await fetch(`${API_URL}/api/email/send-email`, {
       method: "POST",
@@ -149,9 +149,9 @@ export const sendBundleSummaryEmail = async (
   if (sponsorEmail) {
     console.log(`Sending payment request email to sponsor: ${sponsorEmail}`);
     await sendEmail({
-      email: sponsorEmail,
+      to: sponsorEmail,     // Changed from 'email' to 'to'
       subject: `URGENT 2KAY: New Payment Request from ${requestorName}`,
-      text: emailHTML,
+      message: emailHTML,   // Changed from 'text' to 'message'
     });
   } else {
     console.warn("No sponsor email provided, skipping sponsor notification");
@@ -160,8 +160,8 @@ export const sendBundleSummaryEmail = async (
   // Also send a confirmation email to the requestor
   console.log(`Sending confirmation email to requestor: ${requestorEmail}`);
   await sendEmail({
-    email: requestorEmail,
+    to: requestorEmail,     // Changed from 'email' to 'to'
     subject: `URGENT 2KAY: Your Bundle Request "${bundleTitle}" has been created`,
-    text: emailHTML,
+    message: emailHTML,     // Changed from 'text' to 'message'
   });
 };

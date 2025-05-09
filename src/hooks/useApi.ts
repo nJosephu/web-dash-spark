@@ -9,7 +9,7 @@ export const useApi = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  const API_URL = "https://urgent-2kay-directed-bill-payment-system.onrender.com";
+  const API_URL = "https://urgent-2kay-directed-bill-payment-system-rss6.onrender.com";
 
   // Ensure we're using the most up-to-date token from sessionStorage
   useEffect(() => {
