@@ -105,27 +105,18 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
     console.log("Bundle data:", bundleData);
 
     try {
-      // Send email notifications
-      const userEmail = user?.email || "";
-      const userName = user?.name || "User";
-      
-      // Get sponsor email from the sponsor data - this is the PRIMARY recipient
+      // Get sponsor email from the sponsor data - this is the only recipient now
       const sponsorEmail = selectedSponsor.email || "";
       
       console.log(`Selected sponsor: ${selectedSponsor.name}, email: ${sponsorEmail}`);
 
       await sendBundleSummaryEmail(
-        userEmail,
-        userName,
         sponsorEmail,
         selectedSponsor.name,
-        bundleTitle,
-        bundleDescription,
-        totalAmount,
-        bills
+        bundleTitle
       );
 
-      toast.success("Bundle created and email notifications sent");
+      toast.success("Bundle created and notification sent to sponsor");
       setOpen(false);
       resetForm();
     } catch (error) {

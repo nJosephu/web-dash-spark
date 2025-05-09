@@ -1,9 +1,10 @@
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Calendar, Clock, Copy, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 interface RequestCardProps {
   id: string;
@@ -27,6 +28,14 @@ const RequestCard = ({
   sponsor,
   priority,
 }: RequestCardProps) => {
+  const location = useLocation();
+  const isSponsor = location.pathname.includes("/dashboard/sponsor");
+  
+  // Determine correct link based on role (sponsor or beneficiary)
+  const detailsLink = isSponsor 
+    ? `/dashboard/sponsor/requests/${id}` 
+    : `/dashboard/beneficiary/requests/${id}`;
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "approved":
@@ -135,7 +144,7 @@ const RequestCard = ({
             asChild
             className="w-full bg-[#6544E4] hover:bg-[#5A3DD0] rounded-md h-9 text-xs"
           >
-            <Link to={`/requests/${id}`}>
+            <Link to={detailsLink}>
               View details
               <ArrowRight className="h-3.5 w-3.5 ml-1" />
             </Link>
