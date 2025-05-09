@@ -23,7 +23,7 @@ export interface Bundle {
   title: string;
   amount: string;
   date: string;
-  status: "pending" | "approved" | "rejected";
+  status: "pending" | "approved" | "rejected" | "cancelled";
   sponsor: {
     name: string;
     avatar?: string;

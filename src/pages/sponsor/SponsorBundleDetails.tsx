@@ -371,10 +371,10 @@ const SponsorBundleDetails = () => {
     
     // Simulate API call with timeout
     setTimeout(() => {
-      // Update bundle status
-      const updatedBundle = {
+      // Update bundle status - use a literal type that matches the Bundle interface
+      const updatedBundle: Bundle = {
         ...bundle,
-        status: "approved",
+        status: "approved" as const, // Explicitly set as a literal type
         activityLog: [
           ...bundle.activityLog,
           {
@@ -402,10 +402,10 @@ const SponsorBundleDetails = () => {
     
     // Simulate API call with timeout
     setTimeout(() => {
-      // Update bundle status
-      const updatedBundle = {
+      // Update bundle status - use a literal type that matches the Bundle interface
+      const updatedBundle: Bundle = {
         ...bundle,
-        status: "rejected",
+        status: "rejected" as const, // Explicitly set as a literal type
         activityLog: [
           ...bundle.activityLog,
           {
