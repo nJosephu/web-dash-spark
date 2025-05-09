@@ -15,13 +15,13 @@ import { Search } from "lucide-react";
 import RequestCard from "@/components/dashboard/RequestCard";
 
 // Define the types for status and priority to match RequestCard props
-type RequestStatus = "pending" | "approved" | "rejected";
+type RequestStatus = "pending" | "approved" | "rejected" | "cancelled";
 type RequestPriority = "high" | "medium" | "low";
 
 // Mock data to demonstrate functionality
 const mockRequests = [
   {
-    id: "req-001",
+    id: "REQ-001",
     title: "Electricity bill payment",
     amount: "₦15,000",
     date: "May 3, 2025",
@@ -30,7 +30,7 @@ const mockRequests = [
     priority: "high" as RequestPriority,
   },
   {
-    id: "req-002",
+    id: "REQ-002",
     title: "Water bill payment",
     amount: "₦8,500",
     date: "May 2, 2025",
@@ -39,7 +39,7 @@ const mockRequests = [
     priority: "medium" as RequestPriority,
   },
   {
-    id: "req-003",
+    id: "REQ-003",
     title: "Internet bill payment",
     amount: "₦12,000",
     date: "May 1, 2025",
@@ -48,7 +48,7 @@ const mockRequests = [
     priority: "low" as RequestPriority,
   },
   {
-    id: "req-004",
+    id: "REQ-004",
     title: "School fees payment",
     amount: "₦45,000",
     date: "April 30, 2025",
@@ -57,7 +57,7 @@ const mockRequests = [
     priority: "high" as RequestPriority,
   },
   {
-    id: "req-005",
+    id: "REQ-005",
     title: "Medical bill payment",
     amount: "₦22,500",
     date: "April 29, 2025",

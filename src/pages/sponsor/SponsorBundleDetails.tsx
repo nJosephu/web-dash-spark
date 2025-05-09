@@ -354,11 +354,16 @@ const SponsorBundleDetails = () => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
-    // Get bundle data
+    // Get bundle data and add debug logging
+    console.log("SponsorBundleDetails - Bundle ID:", bundleId);
+    
     if (bundleId && mockBundles[bundleId]) {
+      console.log("SponsorBundleDetails - Found bundle data for ID:", bundleId);
       setBundle(mockBundles[bundleId]);
       document.title = `${mockBundles[bundleId].title} | Sponsor View | Urgent2kay`;
     } else {
+      console.log("SponsorBundleDetails - No bundle found for ID:", bundleId);
+      console.log("Available bundle IDs:", Object.keys(mockBundles));
       navigate("/dashboard/sponsor/requests");
     }
   }, [bundleId, navigate]);
