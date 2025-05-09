@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -25,15 +26,14 @@ import BeneficiaryRequests from "./pages/beneficiary/Requests";
 import BeneficiarySponsors from "./pages/beneficiary/Sponsors";
 import BeneficiaryBillHistory from "./pages/beneficiary/BillHistory";
 import BeneficiarySettings from "./pages/beneficiary/Settings";
+import BeneficiaryBundleDetails from "./pages/beneficiary/BeneficiaryBundleDetails";
 
 import SponsorDashboard from "./pages/sponsor/Dashboard";
 import SponsorIncomingRequests from "./pages/sponsor/IncomingRequests";
 import SponsorBeneficiaries from "./pages/sponsor/Beneficiaries";
 import SponsorBillsPaid from "./pages/sponsor/BillsPaid";
 import SponsorSettings from "./pages/sponsor/Settings";
-
-// Shared pages
-import BundleDetails from "./pages/BundleDetails";
+import SponsorBundleDetails from "./pages/sponsor/SponsorBundleDetails";
 
 import { useEffect, useState } from "react";
 import { AuthProvider, useAuth } from "./context/AuthContext";
@@ -180,7 +180,7 @@ const AppRoutes = () => {
         >
           <Route index element={<BeneficiaryDashboard />} />
           <Route path="requests" element={<BeneficiaryRequests />} />
-          <Route path="requests/:bundleId" element={<BundleDetails />} />
+          <Route path="requests/:bundleId" element={<BeneficiaryBundleDetails />} />
           <Route path="sponsors" element={<BeneficiarySponsors />} />
           <Route path="bill-history" element={<BeneficiaryBillHistory />} />
           <Route path="settings" element={<BeneficiarySettings />} />
@@ -199,7 +199,7 @@ const AppRoutes = () => {
         >
           <Route index element={<SponsorDashboard />} />
           <Route path="requests" element={<SponsorIncomingRequests />} />
-          <Route path="requests/:bundleId" element={<BundleDetails />} />
+          <Route path="requests/:bundleId" element={<SponsorBundleDetails />} />
           <Route path="beneficiaries" element={<SponsorBeneficiaries />} />
           <Route path="bills-paid" element={<SponsorBillsPaid />} />
           <Route path="settings" element={<SponsorSettings />} />

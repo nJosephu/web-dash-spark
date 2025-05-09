@@ -1,6 +1,4 @@
 
-import { FormValues } from "@/types/bundle";
-
 interface SendEmailPayload {
   to: string;
   subject: string;

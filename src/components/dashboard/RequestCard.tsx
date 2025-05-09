@@ -3,8 +3,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Calendar, Clock, Copy, X } from "lucide-react";
+import { ArrowRight, Calendar, Copy, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { toast } from "sonner";
 
 interface RequestCardProps {
   id: string;
@@ -78,6 +79,14 @@ const RequestCard = ({
       year: "numeric",
     });
   };
+  
+  const handleCancel = () => {
+    toast.success(`Request ${id} has been cancelled`);
+  };
+  
+  const handleRemind = () => {
+    toast.success(`Reminder sent to ${sponsor.name}`);
+  };
 
   return (
     <Card className="overflow-hidden border border-gray-200 rounded-lg ">
@@ -150,10 +159,11 @@ const RequestCard = ({
             </Link>
           </Button>
 
-          {/* Cancel and Remind - shown only if not approved */}
-          {status !== "approved" && (
+          {/* Cancel and Remind - shown only if not approved and only for beneficiaries */}
+          {!isSponsor && status === "pending" && (
             <div className="flex gap-2">
               <Button
+                onClick={handleCancel}
                 variant="outline"
                 className="flex-1 text-red-600 border-red-200 hover:bg-red-50 h-9 text-xs rounded-md"
               >
@@ -161,6 +171,7 @@ const RequestCard = ({
                 Cancel
               </Button>
               <Button
+                onClick={handleRemind}
                 variant="outline"
                 className="flex-1 text-[#6544E4] border-[#6544E4] hover:bg-[#6544E4]/10 h-9 text-xs rounded-md"
               >
