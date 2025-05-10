@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import {
   Sheet,
@@ -25,6 +26,7 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/AuthContext";
 import { sendBundleSummaryEmail } from "@/services/emailService";
 import { Loader } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 
 // Step enum to track the bundle creation process
 enum BundleStep {
@@ -69,7 +71,7 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
 
   function handleSponsorSelect(sponsorId: string) {
     setSelectedSponsorId(sponsorId);
-    setCurrentStep(BundleStep.ADD_BILLS);
+    // Removed auto-progress to next step
   }
 
   function handleFormSubmit(data: FormValues) {
@@ -139,6 +141,21 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
     toast.success("Bill removed from bundle");
   }
 
+  function handleContinueToAddBills() {
+    // Add validation for bundle title
+    if (!bundleTitle.trim()) {
+      toast.error("Please enter a bundle title");
+      return;
+    }
+    
+    if (!selectedSponsorId) {
+      toast.error("Please select a sponsor");
+      return;
+    }
+    
+    setCurrentStep(BundleStep.ADD_BILLS);
+  }
+
   function handleContinueToSummary() {
     if (bills.length === 0) {
       toast.error("Please add at least one bill to continue");
@@ -154,6 +171,9 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
   function handleBackToSponsorSelection() {
     setCurrentStep(BundleStep.SPONSOR_SELECTION);
   }
+
+  // Calculate progress percentage
+  const progressPercentage = ((currentStep + 1) / 3) * 100;
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -171,61 +191,64 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
           </SheetTitle>
         </SheetHeader>
 
-        {/* Step indicator */}
-        <div className="flex justify-between my-4 text-sm">
-          <div
-            className={`flex flex-col items-center ${
-              currentStep >= BundleStep.SPONSOR_SELECTION
-                ? "text-[#6544E4] font-medium"
-                : "text-gray-400"
-            }`}
-          >
+        {/* Step indicator with progress bar */}
+        <div className="my-6">
+          <Progress value={progressPercentage} className="h-1 mb-4" />
+          <div className="flex justify-between text-sm">
             <div
-              className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${
+              className={`flex flex-col items-center ${
                 currentStep >= BundleStep.SPONSOR_SELECTION
-                  ? "bg-[#6544E4] text-white"
-                  : "bg-gray-200"
+                  ? "text-[#6544E4] font-medium"
+                  : "text-gray-400"
               }`}
             >
-              1
+              <div
+                className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${
+                  currentStep >= BundleStep.SPONSOR_SELECTION
+                    ? "bg-[#6544E4] text-white"
+                    : "bg-gray-200"
+                }`}
+              >
+                1
+              </div>
+              <span>Select Sponsor</span>
             </div>
-            <span>Select Sponsor</span>
-          </div>
-          <div
-            className={`flex flex-col items-center ${
-              currentStep >= BundleStep.ADD_BILLS
-                ? "text-[#6544E4] font-medium"
-                : "text-gray-400"
-            }`}
-          >
             <div
-              className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${
+              className={`flex flex-col items-center ${
                 currentStep >= BundleStep.ADD_BILLS
-                  ? "bg-[#6544E4] text-white"
-                  : "bg-gray-200"
+                  ? "text-[#6544E4] font-medium"
+                  : "text-gray-400"
               }`}
             >
-              2
+              <div
+                className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${
+                  currentStep >= BundleStep.ADD_BILLS
+                    ? "bg-[#6544E4] text-white"
+                    : "bg-gray-200"
+                }`}
+              >
+                2
+              </div>
+              <span>Add Bills</span>
             </div>
-            <span>Add Bills</span>
-          </div>
-          <div
-            className={`flex flex-col items-center ${
-              currentStep >= BundleStep.SUMMARY
-                ? "text-[#6544E4] font-medium"
-                : "text-gray-400"
-            }`}
-          >
             <div
-              className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${
+              className={`flex flex-col items-center ${
                 currentStep >= BundleStep.SUMMARY
-                  ? "bg-[#6544E4] text-white"
-                  : "bg-gray-200"
+                  ? "text-[#6544E4] font-medium"
+                  : "text-gray-400"
               }`}
             >
-              3
+              <div
+                className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${
+                  currentStep >= BundleStep.SUMMARY
+                    ? "bg-[#6544E4] text-white"
+                    : "bg-gray-200"
+                }`}
+              >
+                3
+              </div>
+              <span>Summary</span>
             </div>
-            <span>Summary</span>
           </div>
         </div>
 
@@ -281,8 +304,8 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
             </div>
 
             <Button
-              onClick={() => handleSponsorSelect(selectedSponsorId)}
-              disabled={!selectedSponsorId || !bundleTitle}
+              onClick={handleContinueToAddBills}
+              disabled={!selectedSponsorId || !bundleTitle.trim()}
               className="w-full bg-[#6544E4] hover:bg-[#5A3DD0]"
             >
               Continue
