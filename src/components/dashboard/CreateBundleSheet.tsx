@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import {
   Sheet,
@@ -108,8 +107,10 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
     try {
       // Get sponsor email from the sponsor data - this is the only recipient now
       const sponsorEmail = selectedSponsor.email || "";
-      
-      console.log(`Selected sponsor: ${selectedSponsor.name}, email: ${sponsorEmail}`);
+
+      console.log(
+        `Selected sponsor: ${selectedSponsor.name}, email: ${sponsorEmail}`
+      );
 
       await sendBundleSummaryEmail(
         sponsorEmail,
@@ -122,7 +123,8 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
       resetForm();
     } catch (error) {
       console.error("Error during bundle submission:", error);
-      const errorMessage = error instanceof Error ? error.message : "An error occurred";
+      const errorMessage =
+        error instanceof Error ? error.message : "An error occurred";
       toast.error(`Failed to create bundle: ${errorMessage}`);
     } finally {
       setIsSendingEmail(false);
@@ -146,12 +148,12 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
       toast.error("Please enter a bundle title");
       return;
     }
-    
+
     if (!selectedSponsorId) {
       toast.error("Please select a sponsor");
       return;
     }
-    
+
     setCurrentStep(BundleStep.ADD_BILLS);
   }
 
@@ -196,20 +198,23 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
 
         {/* Enhanced progress indicator with connecting lines */}
         <div className="my-6">
-          <div className="relative flex justify-between items-center mb-4">
+          <div className="relative flex justify-between items-center">
             {/* Connecting lines */}
-            <div className="absolute h-1 bg-gray-200 top-1/2 left-[10%] right-[10%] -translate-y-1/2 z-0"></div>
-            
+            <div className="absolute h-1 bg-gray-200 top-[35%] left-[10%] right-[6%] -translate-y-[35%] z-0"></div>
+
             {/* Steps with circles */}
             {steps.map((step, index) => (
-              <div key={step.id} className="flex flex-col items-center z-10 relative">
-                <div 
-                  className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 transition-all ${
-                    currentStep > step.id 
-                      ? "bg-green-500 text-white" 
-                      : currentStep === step.id 
-                        ? "bg-[#6544E4] text-white border-4 border-[#F1EDFF]" 
-                        : "bg-gray-200 text-gray-500"
+              <div
+                key={step.id}
+                className="flex flex-col gap-1 items-center z-10 relative"
+              >
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                    currentStep > step.id
+                      ? "bg-[#6544E4] text-white"
+                      : currentStep === step.id
+                      ? "bg-[#6544E4] text-white border-4 border-[#F1EDFF]"
+                      : "bg-gray-200 text-gray-500"
                   }`}
                 >
                   {currentStep > step.id ? (
@@ -218,10 +223,10 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
                     <span>{index + 1}</span>
                   )}
                 </div>
-                <span 
+                <span
                   className={`text-xs ${
-                    currentStep >= step.id 
-                      ? "text-[#6544E4] font-medium" 
+                    currentStep >= step.id
+                      ? "text-[#6544E4] font-medium"
                       : "text-gray-500"
                   }`}
                 >
