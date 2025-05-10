@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   Sheet,
   SheetContent,
@@ -45,6 +45,18 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const sponsors = useSponsorData();
   const { user } = useAuth();
+  // Add a ref for the sheet content to scroll to top
+  const sheetContentRef = useRef<HTMLDivElement>(null);
+
+  // Function to scroll to the top of the sheet content
+  const scrollToTop = () => {
+    if (sheetContentRef.current) {
+      sheetContentRef.current.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  };
 
   // Get the selected sponsor object
   const selectedSponsor = sponsors.find(
@@ -81,6 +93,8 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
       // If there are already bills, add this one and move to summary
       handleAddAnotherBill(data);
       setCurrentStep(BundleStep.SUMMARY);
+      // Scroll to the top when moving to summary
+      scrollToTop();
     }
   }
 
@@ -134,6 +148,8 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
   function handleAddAnotherBill(data: FormValues) {
     setBills([...bills, data]);
     toast.success("Bill added to bundle");
+    // Scroll to the top after adding a bill
+    scrollToTop();
     // Form reset is now handled by the BundleForm component itself
   }
 
@@ -155,6 +171,8 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
     }
 
     setCurrentStep(BundleStep.ADD_BILLS);
+    // Scroll to the top when moving to add bills
+    scrollToTop();
   }
 
   function handleContinueToSummary() {
@@ -163,14 +181,20 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
       return;
     }
     setCurrentStep(BundleStep.SUMMARY);
+    // Scroll to the top when moving to summary
+    scrollToTop();
   }
 
   function handleBackToAddBills() {
     setCurrentStep(BundleStep.ADD_BILLS);
+    // Scroll to the top when going back to add bills
+    scrollToTop();
   }
 
   function handleBackToSponsorSelection() {
     setCurrentStep(BundleStep.SPONSOR_SELECTION);
+    // Scroll to the top when going back to sponsor selection
+    scrollToTop();
   }
 
   // Define the steps of the bundle creation process
@@ -189,7 +213,7 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
           </Button>
         )}
       </SheetTrigger>
-      <SheetContent className="sm:max-w-[600px] overflow-y-auto">
+      <SheetContent className="sm:max-w-[600px] overflow-y-auto" ref={sheetContentRef}>
         <SheetHeader>
           <SheetTitle className="text-xl font-bold">
             Create New Bundle
