@@ -25,8 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/AuthContext";
 import { sendBundleSummaryEmail } from "@/services/emailService";
-import { Loader } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
+import { Loader, Check } from "lucide-react";
 
 // Step enum to track the bundle creation process
 enum BundleStep {
@@ -71,7 +70,7 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
 
   function handleSponsorSelect(sponsorId: string) {
     setSelectedSponsorId(sponsorId);
-    // Removed auto-progress to next step
+    // No longer auto-progressing to next step
   }
 
   function handleFormSubmit(data: FormValues) {
@@ -172,8 +171,12 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
     setCurrentStep(BundleStep.SPONSOR_SELECTION);
   }
 
-  // Calculate progress percentage
-  const progressPercentage = ((currentStep + 1) / 3) * 100;
+  // Define the steps of the bundle creation process
+  const steps = [
+    { id: 0, name: "Select Sponsor" },
+    { id: 1, name: "Add Bills" },
+    { id: 2, name: "Summary" },
+  ];
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -191,64 +194,41 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
           </SheetTitle>
         </SheetHeader>
 
-        {/* Step indicator with progress bar */}
+        {/* Enhanced progress indicator with connecting lines */}
         <div className="my-6">
-          <Progress value={progressPercentage} className="h-1 mb-4" />
-          <div className="flex justify-between text-sm">
-            <div
-              className={`flex flex-col items-center ${
-                currentStep >= BundleStep.SPONSOR_SELECTION
-                  ? "text-[#6544E4] font-medium"
-                  : "text-gray-400"
-              }`}
-            >
-              <div
-                className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${
-                  currentStep >= BundleStep.SPONSOR_SELECTION
-                    ? "bg-[#6544E4] text-white"
-                    : "bg-gray-200"
-                }`}
-              >
-                1
+          <div className="relative flex justify-between items-center mb-4">
+            {/* Connecting lines */}
+            <div className="absolute h-1 bg-gray-200 top-1/2 left-[10%] right-[10%] -translate-y-1/2 z-0"></div>
+            
+            {/* Steps with circles */}
+            {steps.map((step, index) => (
+              <div key={step.id} className="flex flex-col items-center z-10 relative">
+                <div 
+                  className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 transition-all ${
+                    currentStep > step.id 
+                      ? "bg-green-500 text-white" 
+                      : currentStep === step.id 
+                        ? "bg-[#6544E4] text-white border-4 border-[#F1EDFF]" 
+                        : "bg-gray-200 text-gray-500"
+                  }`}
+                >
+                  {currentStep > step.id ? (
+                    <Check className="h-5 w-5" />
+                  ) : (
+                    <span>{index + 1}</span>
+                  )}
+                </div>
+                <span 
+                  className={`text-xs ${
+                    currentStep >= step.id 
+                      ? "text-[#6544E4] font-medium" 
+                      : "text-gray-500"
+                  }`}
+                >
+                  {step.name}
+                </span>
               </div>
-              <span>Select Sponsor</span>
-            </div>
-            <div
-              className={`flex flex-col items-center ${
-                currentStep >= BundleStep.ADD_BILLS
-                  ? "text-[#6544E4] font-medium"
-                  : "text-gray-400"
-              }`}
-            >
-              <div
-                className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${
-                  currentStep >= BundleStep.ADD_BILLS
-                    ? "bg-[#6544E4] text-white"
-                    : "bg-gray-200"
-                }`}
-              >
-                2
-              </div>
-              <span>Add Bills</span>
-            </div>
-            <div
-              className={`flex flex-col items-center ${
-                currentStep >= BundleStep.SUMMARY
-                  ? "text-[#6544E4] font-medium"
-                  : "text-gray-400"
-              }`}
-            >
-              <div
-                className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${
-                  currentStep >= BundleStep.SUMMARY
-                    ? "bg-[#6544E4] text-white"
-                    : "bg-gray-200"
-                }`}
-              >
-                3
-              </div>
-              <span>Summary</span>
-            </div>
+            ))}
           </div>
         </div>
 
