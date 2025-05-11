@@ -58,7 +58,7 @@ const SponsorDashboard = () => {
             </p>
           </div>
           <Button className="mt-4 md:mt-0 bg-[#6544E4] hover:bg-[#5A3DD0]">
-            <Link to={"dashboard/sponsor/requests"}></Link>
+            <Link to={"dashboard/sponsor/requests"}>Browse Request</Link>
           </Button>
         </div>
       </div>
