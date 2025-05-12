@@ -42,6 +42,12 @@ export const fetchProviders = async (): Promise<Provider[]> => {
   }
 };
 
+// Helper function to get provider name by ID
+export const getProviderNameById = (providers: Provider[], id: string): string => {
+  const provider = providers.find(provider => provider.id === id);
+  return provider ? provider.name : id; // Return ID as fallback if provider not found
+};
+
 // Hook to use providers data
 export const useProviders = () => {
   const [providers, setProviders] = useState<Provider[]>([]);

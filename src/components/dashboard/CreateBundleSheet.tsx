@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import {
   Sheet,
@@ -40,6 +39,7 @@ enum BundleStep {
 interface BillWithId {
   formData: FormValues;
   billId: string;
+  providerName?: string;
 }
 
 export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
@@ -177,7 +177,19 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
   }
 
   function handleAddAnotherBill(data: FormValues, billId: string) {
-    setBillsWithIds([...billsWithIds, { formData: data, billId }]);
+    // Find the provider name based on the selected provider ID
+    const providerName = providers?.find(p => p.id === data.serviceProvider)?.name || data.serviceProvider;
+    
+    setBillsWithIds([...billsWithIds, { 
+      formData: {
+        ...data,
+        // Ensure we store the provider name in the form data
+        serviceProvider: providerName
+      }, 
+      billId,
+      providerName 
+    }]);
+    
     toast.success("Bill added to bundle");
     // Scroll to the top after adding a bill
     scrollToTop();

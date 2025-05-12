@@ -25,6 +25,7 @@ export interface Bill {
   requestId: string | null;
   createdAt: string;
   updatedAt: string;
+  providerName?: string; // Add provider name for display purposes
 }
 
 export interface BillResponse {
@@ -35,7 +36,7 @@ export interface BillResponse {
 const API_URL = "https://urgent-2kay-directed-bill-payment-system.onrender.com";
 
 // Create a new bill
-export const createBill = async (billData: CreateBillRequest): Promise<BillResponse> => {
+export const createBill = async (billData: CreateBillRequest, providerName?: string): Promise<BillResponse> => {
   try {
     console.log("Creating bill with data:", billData);
     const token = authService.getToken();
@@ -58,6 +59,11 @@ export const createBill = async (billData: CreateBillRequest): Promise<BillRespo
     if (!response.ok) {
       console.error("Bill creation failed:", data);
       throw new Error(data.message || "Failed to create bill");
+    }
+
+    // Add provider name to the returned bill data for display purposes
+    if (providerName) {
+      data.bill.providerName = providerName;
     }
 
     console.log("Bill created successfully:", data);
