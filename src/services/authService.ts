@@ -24,7 +24,8 @@ interface RegisterResponse {
   };
 }
 
-const API_URL = "https://urgent-2kay-directed-bill-payment-system.onrender.com";
+const API_URL =
+  "https://urgent-2kay-directed-bill-payment-system.onrender.com/api";
 
 const authService = {
   register: async (userData: {
@@ -132,14 +133,14 @@ const authService = {
       console.log("No user found in sessionStorage");
       return null;
     }
-    
+
     try {
       const user = JSON.parse(userStr);
-      console.log("User retrieved from sessionStorage:", { 
+      console.log("User retrieved from sessionStorage:", {
         id: user.id,
         name: user.name,
         email: user.email,
-        role: user.role 
+        role: user.role,
       });
       return user;
     } catch (error) {
