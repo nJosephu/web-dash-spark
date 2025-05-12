@@ -102,7 +102,7 @@ const authService = {
   // Google OAuth registration/login with role parameter
   loginWithGoogle: () => {
     console.log("Redirecting to Google OAuth login");
-    window.location.href = `https://urgent-2kay-directed-bill-payment-system.onrender.com/api/auth/login`;
+    window.location.href = `${API_URL}/auth/google`;
   },
 
   // Updated to pass role parameter for signup
