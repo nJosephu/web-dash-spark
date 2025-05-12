@@ -24,8 +24,7 @@ interface RegisterResponse {
   };
 }
 
-const API_URL =
-  "https://urgent-2kay-directed-bill-payment-system.onrender.com/api";
+const API_URL = "https://urgent-2kay-directed-bill-payment-system.onrender.com";
 
 const authService = {
   register: async (userData: {
