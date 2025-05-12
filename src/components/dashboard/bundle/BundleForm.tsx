@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { CalendarIcon, Plus } from "lucide-react";
+import { CalendarIcon, Plus, Loader2 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -32,16 +32,23 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { FormSchema, FormValues, Sponsor } from "@/types/bundle";
+import { toast } from "@/components/ui/sonner";
+import { Provider } from "@/services/providersService";
+import { createBill } from "@/services/billService";
 
 interface BundleFormProps {
   sponsors: Sponsor[];
+  providers: Provider[];
+  providersLoading: boolean;
   onSubmit: (data: FormValues) => void;
-  onAddAnotherBill: (data: FormValues) => void;
+  onAddAnotherBill: (data: FormValues, billId: string) => void;
   selectedSponsorId?: string;
 }
 
 export default function BundleForm({
   sponsors,
+  providers,
+  providersLoading,
   onSubmit,
   onAddAnotherBill,
   selectedSponsorId,
@@ -58,6 +65,8 @@ export default function BundleForm({
     defaultValues,
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // Update the sponsor field when selectedSponsorId changes
   useEffect(() => {
     if (selectedSponsorId) {
@@ -66,15 +75,67 @@ export default function BundleForm({
   }, [selectedSponsorId, form]);
 
   // Handle form submission and reset form
-  const handleSubmit = (data: FormValues) => {
-    onSubmit(data);
-    resetForm();
+  const handleSubmit = async (data: FormValues) => {
+    try {
+      setIsSubmitting(true);
+      // Create the bill using the API
+      const billData = {
+        billName: data.billName,
+        type: data.billType,
+        amount: parseFloat(data.amount),
+        note: data.notes || undefined,
+        dueDate: data.dueDate.toISOString(),
+        priority: data.priority.toUpperCase() as "HIGH" | "MEDIUM" | "LOW",
+        providerId: data.serviceProvider,
+      };
+
+      const response = await createBill(billData);
+      
+      // Call the onSubmit callback with the form data and bill ID
+      onSubmit(data);
+      
+      // Reset form
+      resetForm();
+      
+      toast.success("Bill created successfully");
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to create bill";
+      toast.error(`Error: ${errorMessage}`);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Handle adding another bill and reset form
-  const handleAddAnotherBill = (data: FormValues) => {
-    onAddAnotherBill(data);
-    resetForm();
+  const handleAddAnotherBill = async (data: FormValues) => {
+    try {
+      setIsSubmitting(true);
+      // Create the bill using the API
+      const billData = {
+        billName: data.billName,
+        type: data.billType,
+        amount: parseFloat(data.amount),
+        note: data.notes || undefined,
+        dueDate: data.dueDate.toISOString(),
+        priority: data.priority.toUpperCase() as "HIGH" | "MEDIUM" | "LOW",
+        providerId: data.serviceProvider,
+      };
+
+      const response = await createBill(billData);
+      
+      // Call the onAddAnotherBill callback with the form data and bill ID
+      onAddAnotherBill(data, response.bill.id);
+      
+      // Reset form
+      resetForm();
+      
+      toast.success("Bill added to bundle");
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to create bill";
+      toast.error(`Error: ${errorMessage}`);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Reset form to initial state, keeping only the sponsor if it's preselected
@@ -136,11 +197,11 @@ export default function BundleForm({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="utility">Utility</SelectItem>
-                  <SelectItem value="rent">Rent</SelectItem>
-                  <SelectItem value="subscription">Subscription</SelectItem>
-                  <SelectItem value="debt">Debt</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="Utility">Utility</SelectItem>
+                  <SelectItem value="Rent">Rent</SelectItem>
+                  <SelectItem value="Subscription">Subscription</SelectItem>
+                  <SelectItem value="Debt">Debt</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage className="text-red-500" />
@@ -156,18 +217,24 @@ export default function BundleForm({
               <FormLabel className="text-sm font-medium">
                 Service Provider <span className="text-red-500">*</span>
               </FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+              <Select onValueChange={field.onChange} value={field.value} disabled={providersLoading}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select provider" />
+                    <SelectValue placeholder={providersLoading ? "Loading providers..." : "Select provider"} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="dstv">DSTV</SelectItem>
-                  <SelectItem value="nepa">NEPA</SelectItem>
-                  <SelectItem value="mtn">MTN</SelectItem>
-                  <SelectItem value="gotv">GOTV</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  {providersLoading ? (
+                    <SelectItem value="loading" disabled>Loading providers...</SelectItem>
+                  ) : providers.length > 0 ? (
+                    providers.map((provider) => (
+                      <SelectItem key={provider.id} value={provider.id}>
+                        {provider.name}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="none" disabled>No providers available</SelectItem>
+                  )}
                 </SelectContent>
               </Select>
               <FormMessage className="text-red-500" />
@@ -362,8 +429,13 @@ export default function BundleForm({
             variant="outline"
             onClick={form.handleSubmit(handleAddAnotherBill)}
             className="w-full outline outline-2 outline-[#6544e4] outline-offset-2 border-dashed border-gray-300 flex items-center justify-center gap-2 hover:bg-gray-50"
+            disabled={isSubmitting}
           >
-            <Plus className="h-4 w-4" />
+            {isSubmitting ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Plus className="h-4 w-4" />
+            )}
             Add bill
           </Button>
         </div>

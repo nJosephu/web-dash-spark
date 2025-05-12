@@ -1,3 +1,4 @@
+
 import { useState, useRef } from "react";
 import {
   Sheet,
@@ -25,6 +26,8 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/AuthContext";
 import { sendBundleSummaryEmail } from "@/services/emailService";
 import { Loader, Check } from "lucide-react";
+import { useProviders } from "@/services/providersService";
+import { createBundle } from "@/services/bundleService";
 
 // Step enum to track the bundle creation process
 enum BundleStep {
@@ -33,9 +36,15 @@ enum BundleStep {
   SUMMARY = 2,
 }
 
+// Interface to store bill with its API ID
+interface BillWithId {
+  formData: FormValues;
+  billId: string;
+}
+
 export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
   const [open, setOpen] = useState(false);
-  const [bills, setBills] = useState<FormValues[]>([]);
+  const [billsWithIds, setBillsWithIds] = useState<BillWithId[]>([]);
   const [currentStep, setCurrentStep] = useState<BundleStep>(
     BundleStep.SPONSOR_SELECTION
   );
@@ -43,7 +52,9 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
   const [bundleTitle, setBundleTitle] = useState("");
   const [bundleDescription, setBundleDescription] = useState("");
   const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [isCreatingBundle, setIsCreatingBundle] = useState(false);
   const sponsors = useSponsorData();
+  const { providers, isLoading: providersLoading } = useProviders();
   const { user } = useAuth();
   // Add a ref for the sheet content to scroll to top
   const sheetContentRef = useRef<HTMLDivElement>(null);
@@ -57,6 +68,9 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
       });
     }
   };
+
+  // Get bills for display (without IDs)
+  const bills = billsWithIds.map(item => item.formData);
 
   // Get the selected sponsor object
   const selectedSponsor = sponsors.find(
@@ -72,7 +86,7 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
     .toFixed(2);
 
   function resetForm() {
-    setBills([]);
+    setBillsWithIds([]);
     setCurrentStep(BundleStep.SPONSOR_SELECTION);
     setSelectedSponsorId("");
     setBundleTitle("");
@@ -88,10 +102,10 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
     // This function handles the form submission from BundleForm
     if (bills.length === 0) {
       // If no bills yet, add the first one and stay on the bills step
-      handleAddAnotherBill(data);
+      handleAddAnotherBill(data, "");
     } else {
       // If there are already bills, add this one and move to summary
-      handleAddAnotherBill(data);
+      handleAddAnotherBill(data, "");
       setCurrentStep(BundleStep.SUMMARY);
       // Scroll to the top when moving to summary
       scrollToTop();
@@ -104,33 +118,49 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
       return;
     }
 
+    if (billsWithIds.length === 0) {
+      toast.error("No bills added to bundle. Please add at least one bill.");
+      return;
+    }
+
     // Show loading state
+    setIsCreatingBundle(true);
     setIsSendingEmail(true);
 
-    // Bundle data for saving and email
-    const bundleData = {
-      title: bundleTitle,
-      description: bundleDescription,
-      sponsor: selectedSponsor,
-      bills,
-      totalAmount: `${totalAmount}`,
-    };
-
-    console.log("Bundle data:", bundleData);
-
     try {
-      // Get sponsor email from the sponsor data - this is the only recipient now
+      // Extract bill IDs for bundle creation
+      const billIds = billsWithIds.map(item => item.billId).filter(id => id !== "");
+      
+      if (billIds.length === 0) {
+        toast.error("No valid bill IDs found. Please try adding bills again.");
+        setIsCreatingBundle(false);
+        setIsSendingEmail(false);
+        return;
+      }
+
+      // Create the bundle using the API
+      const bundleData = {
+        name: bundleTitle,
+        notes: bundleDescription || undefined,
+        supporterId: selectedSponsorId,
+        billIds: billIds,
+      };
+
+      console.log("Creating bundle with data:", bundleData);
+      const response = await createBundle(bundleData);
+
+      // Get sponsor email from the sponsor data
       const sponsorEmail = selectedSponsor.email || "";
+      console.log(`Selected sponsor: ${selectedSponsor.name}, email: ${sponsorEmail}`);
 
-      console.log(
-        `Selected sponsor: ${selectedSponsor.name}, email: ${sponsorEmail}`
-      );
-
-      await sendBundleSummaryEmail(
-        sponsorEmail,
-        selectedSponsor.name,
-        bundleTitle
-      );
+      // Send email notification (if needed)
+      if (sponsorEmail) {
+        await sendBundleSummaryEmail(
+          sponsorEmail,
+          selectedSponsor.name,
+          bundleTitle
+        );
+      }
 
       toast.success("Bundle created and notification sent to sponsor");
       setOpen(false);
@@ -141,12 +171,13 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
         error instanceof Error ? error.message : "An error occurred";
       toast.error(`Failed to create bundle: ${errorMessage}`);
     } finally {
+      setIsCreatingBundle(false);
       setIsSendingEmail(false);
     }
   }
 
-  function handleAddAnotherBill(data: FormValues) {
-    setBills([...bills, data]);
+  function handleAddAnotherBill(data: FormValues, billId: string) {
+    setBillsWithIds([...billsWithIds, { formData: data, billId }]);
     toast.success("Bill added to bundle");
     // Scroll to the top after adding a bill
     scrollToTop();
@@ -154,7 +185,7 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
   }
 
   function handleRemoveBill(index: number) {
-    setBills(bills.filter((_, i) => i !== index));
+    setBillsWithIds(billsWithIds.filter((_, i) => i !== index));
     toast.success("Bill removed from bundle");
   }
 
@@ -337,6 +368,8 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
 
             <BundleForm
               sponsors={sponsors}
+              providers={providers}
+              providersLoading={providersLoading}
               selectedSponsorId={selectedSponsorId}
               onSubmit={handleFormSubmit}
               onAddAnotherBill={handleAddAnotherBill}
@@ -393,7 +426,7 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
                 variant="outline"
                 onClick={handleBackToAddBills}
                 className="flex-1"
-                disabled={isSendingEmail}
+                disabled={isCreatingBundle || isSendingEmail}
               >
                 Back
               </Button>
@@ -401,12 +434,17 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
                 type="button"
                 onClick={handleFinalSubmit}
                 className="flex-1 bg-[#6544E4] hover:bg-[#5A3DD0]"
-                disabled={isSendingEmail}
+                disabled={isCreatingBundle || isSendingEmail}
               >
-                {isSendingEmail ? (
+                {isCreatingBundle ? (
                   <>
                     <Loader className="mr-2 h-4 w-4 animate-spin" />
-                    Submitting...
+                    Creating Bundle...
+                  </>
+                ) : isSendingEmail ? (
+                  <>
+                    <Loader className="mr-2 h-4 w-4 animate-spin" />
+                    Sending Notification...
                   </>
                 ) : (
                   "Submit Bundle"

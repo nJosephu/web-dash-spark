@@ -46,3 +46,37 @@ export interface Sponsor {
 export interface CreateBundleSheetProps {
   trigger?: React.ReactNode;
 }
+
+// API Response Types
+export interface BillResponse {
+  message: string;
+  bill: {
+    id: string;
+    billName: string;
+    type: string;
+    note?: string;
+    amount: number;
+    priority: string;
+    status: string;
+    dueDate: string;
+    userId: string;
+    providerId: string;
+    requestId: string | null;
+    createdAt: string;
+    updatedAt: string;
+  };
+}
+
+export interface BundleResponse {
+  message: string;
+  request: {
+    id: string;
+    name: string;
+    notes?: string;
+    status: string;
+    userId: string;
+    supporterId: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+}
