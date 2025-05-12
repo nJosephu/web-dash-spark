@@ -97,7 +97,7 @@ export default function BundleForm({
       // Reset form
       resetForm();
       
-      toast.success("Bill created successfully");
+      // Remove toast notification from here as it's already in the parent component
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Failed to create bill";
       toast.error(`Error: ${errorMessage}`);
@@ -129,7 +129,7 @@ export default function BundleForm({
       // Reset form
       resetForm();
       
-      toast.success("Bill added to bundle");
+      // Remove toast notification from here as it's already in the parent component
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Failed to create bill";
       toast.error(`Error: ${errorMessage}`);
