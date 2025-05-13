@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { useAuth } from "@/context/AuthContext";
@@ -89,7 +88,7 @@ const BeneficiaryDashboard = () => {
       </div>
 
       <div className="overflow-x-auto">
-        <RequestsTable limit={4} showViewAll={true} showPagination={true} />
+        <RequestsTable />
       </div>
     </>
   );

@@ -4,9 +4,6 @@ import { X } from "lucide-react";
 import { FormValues } from "@/types/bundle";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
-import { deleteBill } from "@/services/billService";
-import { toast } from "sonner";
-import { useState } from "react";
 
 interface BillsListProps {
   bills: FormValues[];
@@ -14,8 +11,6 @@ interface BillsListProps {
 }
 
 export default function BillsList({ bills, onRemoveBill }: BillsListProps) {
-  const [deletingIndex, setDeletingIndex] = useState<number | null>(null);
-
   if (bills.length === 0) {
     return null;
   }
@@ -31,28 +26,6 @@ export default function BillsList({ bills, onRemoveBill }: BillsListProps) {
         return "bg-green-100 text-green-800";
       default:
         return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  const handleRemoveBill = async (index: number) => {
-    const bill = bills[index];
-    
-    // If bill has an ID, it exists on the server and needs to be deleted
-    if (bill.id) {
-      try {
-        setDeletingIndex(index);
-        await deleteBill(bill.id);
-        toast.success("Bill deleted successfully");
-        onRemoveBill(index);
-      } catch (err) {
-        console.error("Error deleting bill:", err);
-        toast.error("Failed to delete bill. Please try again.");
-      } finally {
-        setDeletingIndex(null);
-      }
-    } else {
-      // If no ID, it's not saved on the server yet, just remove locally
-      onRemoveBill(index);
     }
   };
 
@@ -82,9 +55,8 @@ export default function BillsList({ bills, onRemoveBill }: BillsListProps) {
               <Button 
                 variant="ghost" 
                 size="sm" 
-                onClick={() => handleRemoveBill(index)}
+                onClick={() => onRemoveBill(index)}
                 className="h-8 w-8 p-0 rounded-full"
-                disabled={deletingIndex === index}
               >
                 <X className="h-4 w-4" />
               </Button>

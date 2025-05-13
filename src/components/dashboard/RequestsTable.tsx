@@ -1,6 +1,6 @@
 
-import { useState, useEffect } from "react";
-import { Search, Eye, Link as LinkIcon } from "lucide-react";
+import { useState } from "react";
+import { Search, Eye } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,186 +17,97 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { fetchBills, Bill } from "@/services/billService";
-import { Skeleton } from "@/components/ui/skeleton";
-import { format } from "date-fns";
-import { toast } from "sonner";
-import { Link } from "react-router-dom";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 
-interface RequestsTableProps {
-  limit?: number;
-  showViewAll?: boolean;
-  showPagination?: boolean;
+interface Request {
+  id: number;
+  title: string;
+  sponsor: string;
+  status: 'Completed' | 'Pending' | 'Rejected';
+  priority: 'High' | 'Medium' | 'Low';
+  created: string;
+  dueDate: string;
+  description?: string;
+  amount?: string;
 }
 
-const RequestsTable = ({ 
-  limit = 4, 
-  showViewAll = true, 
-  showPagination = true 
-}: RequestsTableProps) => {
-  const [bills, setBills] = useState<Bill[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+const mockRequests: Request[] = [
+  {
+    id: 1,
+    title: "DSTV Power bill",
+    sponsor: "Father",
+    status: "Completed",
+    priority: "High",
+    created: "Mar 21, 2025",
+    dueDate: "Apr 13, 2025",
+    description: "Monthly subscription for DSTV Premium package",
+    amount: "₦18,000"
+  },
+  {
+    id: 2,
+    title: "Cloth, shoes and accessories",
+    sponsor: "Friend",
+    status: "Completed",
+    priority: "Medium",
+    created: "Mar 21, 2025",
+    dueDate: "Apr 13, 2025",
+    description: "Purchase of new clothing items for upcoming interview",
+    amount: "₦25,000"
+  },
+  {
+    id: 3,
+    title: "Airtime & Data",
+    sponsor: "Mother",
+    status: "Pending",
+    priority: "High",
+    created: "Mar 21, 2025",
+    dueDate: "Apr 13, 2025",
+    description: "Monthly data subscription for work and personal use",
+    amount: "₦12,000"
+  },
+  {
+    id: 4,
+    title: "DSTV Power bill",
+    sponsor: "Father",
+    status: "Rejected",
+    priority: "High",
+    created: "Mar 21, 2025",
+    dueDate: "Apr 13, 2025",
+    description: "Electricity bill payment for apartment",
+    amount: "₦22,000"
+  }
+];
+
+const RequestsTable = () => {
+  const [requests] = useState<Request[]>(mockRequests);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [selectedBill, setSelectedBill] = useState<Bill | null>(null);
+  const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
   
-  useEffect(() => {
-    const loadBills = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await fetchBills();
-        setBills(response.bills);
-      } catch (err) {
-        console.error("Error loading bills:", err);
-        setError("Failed to load bills. Please try again later.");
-        toast.error("Failed to load bills. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadBills();
-  }, []);
-
-  // Filter bills based on search query and status
-  const filteredBills = bills.filter((bill) => {
+  // Filter requests based on search query and status
+  const filteredRequests = requests.filter((request) => {
     // Search filter
     const matchesSearch = !searchQuery.trim() || 
-      bill.billName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (bill.provider?.name || "").toLowerCase().includes(searchQuery.toLowerCase());
+      request.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      request.sponsor.toLowerCase().includes(searchQuery.toLowerCase());
     
     // Status filter
     const matchesStatus = 
       statusFilter === "all" || 
-      bill.status.toLowerCase() === statusFilter.toLowerCase();
+      request.status.toLowerCase() === statusFilter.toLowerCase();
     
     return matchesSearch && matchesStatus;
   });
 
-  // Pagination logic
-  const totalPages = Math.ceil(filteredBills.length / limit);
-  const startIndex = (currentPage - 1) * limit;
-  const endIndex = startIndex + limit;
-  
-  // Get bills for current page
-  const currentBills = showPagination 
-    ? filteredBills.slice(startIndex, endIndex) 
-    : filteredBills;
-
-  const handleViewDetails = (bill: Bill) => {
-    setSelectedBill(bill);
+  const handleViewDetails = (request: Request) => {
+    setSelectedRequest(request);
     setIsModalOpen(true);
   };
-  
-  // Format date from ISO string to readable format
-  const formatDate = (dateString: string) => {
-    try {
-      return format(new Date(dateString), "MMM dd, yyyy");
-    } catch (err) {
-      return dateString;
-    }
-  };
-
-  // Helper function to get priority color class
-  const getPriorityClass = (priority: string) => {
-    switch(priority.toUpperCase()) {
-      case 'HIGH':
-        return 'bg-red-50 text-red-700';
-      case 'MEDIUM':
-        return 'bg-yellow-50 text-yellow-700';
-      case 'LOW':
-        return 'bg-blue-50 text-blue-700';
-      default:
-        return 'bg-gray-50 text-gray-700';
-    }
-  };
-
-  // Helper function to get status color class
-  const getStatusClass = (status: string) => {
-    switch(status.toUpperCase()) {
-      case 'PAID':
-      case 'COMPLETED':
-        return 'bg-green-50 text-green-700';
-      case 'PENDING':
-        return 'bg-yellow-50 text-yellow-700';
-      case 'REJECTED':
-      case 'FAILED':
-        return 'bg-red-50 text-red-700';
-      default:
-        return 'bg-gray-50 text-gray-700';
-    }
-  };
-
-  // Render loading state
-  if (loading) {
-    return (
-      <div className="bg-white rounded-lg shadow">
-        <div className="p-4 flex flex-col md:flex-row justify-between items-start md:items-center border-b gap-3">
-          <h3 className="font-medium">Bill request history</h3>
-          <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
-            <Skeleton className="h-9 w-[180px]" />
-            <Skeleton className="h-9 w-[200px]" />
-          </div>
-        </div>
-        
-        <div className="p-6">
-          <div className="space-y-4">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="flex flex-col space-y-2">
-                <Skeleton className="h-12 w-full" />
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Render error state
-  if (error) {
-    return (
-      <div className="bg-white rounded-lg shadow p-8 text-center">
-        <p className="text-red-500 mb-4">{error}</p>
-        <Button 
-          onClick={() => window.location.reload()} 
-          className="bg-[#6544E4] hover:bg-[#5a3dd0]"
-        >
-          Try Again
-        </Button>
-      </div>
-    );
-  }
   
   return (
     <div className="bg-white rounded-lg shadow">
       <div className="p-4 flex flex-col md:flex-row justify-between items-start md:items-center border-b gap-3">
-        <div className="flex justify-between items-center w-full">
-          <h3 className="font-medium">Bill request history</h3>
-          {showViewAll && (
-            <Link to="/dashboard/beneficiary/bill-history">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="text-[#6544E4] flex items-center gap-1"
-              >
-                <LinkIcon size={16} />
-                <span>View All</span>
-              </Button>
-            </Link>
-          )}
-        </div>
+        <h3 className="font-medium">Bill request history</h3>
         <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-full md:w-[180px]">
@@ -205,7 +116,7 @@ const RequestsTable = ({
             <SelectContent>
               <SelectItem value="all">All Statuses</SelectItem>
               <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="paid">Paid</SelectItem>
+              <SelectItem value="completed">Completed</SelectItem>
               <SelectItem value="rejected">Rejected</SelectItem>
             </SelectContent>
           </Select>
@@ -214,7 +125,7 @@ const RequestsTable = ({
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
             <input
               type="text"
-              placeholder="Search bills..."
+              placeholder="Search requests..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-9 pr-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-[#6544E4] focus:border-[#6544E4] h-9 w-full md:w-auto"
@@ -224,42 +135,52 @@ const RequestsTable = ({
       </div>
       
       <div className="overflow-x-auto">
-        {currentBills.length > 0 ? (
+        {filteredRequests.length > 0 ? (
           <Table>
             <TableHeader className="bg-gray-50">
               <TableRow>
-                <TableHead className="text-xs uppercase">Bill Name</TableHead>
-                <TableHead className="text-xs uppercase">Provider</TableHead>
-                <TableHead className="text-xs uppercase">Bill Status</TableHead>
+                <TableHead className="text-xs uppercase">S/N</TableHead>
+                <TableHead className="text-xs uppercase">Request</TableHead>
+                <TableHead className="text-xs uppercase">Sponsor</TableHead>
+                <TableHead className="text-xs uppercase">Request status</TableHead>
                 <TableHead className="text-xs uppercase">Priority</TableHead>
-                <TableHead className="text-xs uppercase">Amount</TableHead>
-                <TableHead className="text-xs uppercase">Due Date</TableHead>
+                <TableHead className="text-xs uppercase">Created</TableHead>
+                <TableHead className="text-xs uppercase">Due date</TableHead>
                 <TableHead className="text-xs uppercase">Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {currentBills.map((bill) => (
-                <TableRow key={bill.id} className="hover:bg-gray-50">
-                  <TableCell>{bill.billName}</TableCell>
-                  <TableCell>{bill.provider?.name || bill.providerName || "N/A"}</TableCell>
+              {filteredRequests.map((request) => (
+                <TableRow key={request.id} className="hover:bg-gray-50">
+                  <TableCell>{request.id}</TableCell>
+                  <TableCell>{request.title}</TableCell>
+                  <TableCell>{request.sponsor}</TableCell>
                   <TableCell>
-                    <span className={`px-2 py-1 rounded text-xs ${getStatusClass(bill.status)}`}>
-                      {bill.status}
+                    <span className={`px-2 py-1 rounded text-xs ${
+                      request.status === 'Completed' ? 'bg-green-50 text-green-700' :
+                      request.status === 'Pending' ? 'bg-yellow-50 text-yellow-700' :
+                      'bg-red-50 text-red-700'
+                    }`}>
+                      {request.status}
                     </span>
                   </TableCell>
                   <TableCell>
-                    <span className={`px-2 py-1 rounded text-xs ${getPriorityClass(bill.priority)}`}>
-                      {bill.priority}
+                    <span className={`px-2 py-1 rounded text-xs ${
+                      request.priority === 'High' ? 'bg-red-50 text-red-700' :
+                      request.priority === 'Medium' ? 'bg-yellow-50 text-yellow-700' :
+                      'bg-blue-50 text-blue-700'
+                    }`}>
+                      {request.priority}
                     </span>
                   </TableCell>
-                  <TableCell>₦{bill.amount.toLocaleString()}</TableCell>
-                  <TableCell>{formatDate(bill.dueDate)}</TableCell>
+                  <TableCell>{request.created}</TableCell>
+                  <TableCell>{request.dueDate}</TableCell>
                   <TableCell>
                     <Button 
                       variant="ghost" 
                       size="sm" 
                       className="text-[#6544E4] flex items-center gap-1"
-                      onClick={() => handleViewDetails(bill)}
+                      onClick={() => handleViewDetails(request)}
                     >
                       <Eye size={16} />
                       <span>View details</span>
@@ -271,105 +192,69 @@ const RequestsTable = ({
           </Table>
         ) : (
           <div className="p-8 text-center text-gray-500">
-            No bills found matching your filters.
+            No requests found matching your filters.
           </div>
         )}
       </div>
 
-      {showPagination && totalPages > 1 && (
-        <div className="p-4 border-t">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious 
-                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                  className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                />
-              </PaginationItem>
-              
-              {[...Array(totalPages)].map((_, i) => (
-                <PaginationItem key={i}>
-                  <PaginationLink 
-                    isActive={currentPage === i + 1}
-                    onClick={() => setCurrentPage(i + 1)}
-                  >
-                    {i + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-              
-              <PaginationItem>
-                <PaginationNext 
-                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                  className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div>
-      )}
-
-      {/* Bill details modal */}
+      {/* Request details modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Bill Details</DialogTitle>
+            <DialogTitle>Request Details</DialogTitle>
             <DialogDescription>
-              Detailed information about this bill
+              Detailed information about this request
             </DialogDescription>
           </DialogHeader>
           
-          {selectedBill && (
+          {selectedRequest && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-gray-500">Bill Name</p>
-                  <p className="font-medium">{selectedBill.billName}</p>
+                  <p className="text-sm text-gray-500">Request Title</p>
+                  <p className="font-medium">{selectedRequest.title}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Provider</p>
-                  <p className="font-medium">{selectedBill.provider?.name || selectedBill.providerName || "N/A"}</p>
+                  <p className="text-sm text-gray-500">Sponsor</p>
+                  <p className="font-medium">{selectedRequest.sponsor}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Status</p>
-                  <span className={`px-2 py-1 rounded text-xs inline-block mt-1 ${getStatusClass(selectedBill.status)}`}>
-                    {selectedBill.status}
+                  <span className={`px-2 py-1 rounded text-xs inline-block mt-1 ${
+                    selectedRequest.status === 'Completed' ? 'bg-green-50 text-green-700' :
+                    selectedRequest.status === 'Pending' ? 'bg-yellow-50 text-yellow-700' :
+                    'bg-red-50 text-red-700'
+                  }`}>
+                    {selectedRequest.status}
                   </span>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Priority</p>
-                  <span className={`px-2 py-1 rounded text-xs inline-block mt-1 ${getPriorityClass(selectedBill.priority)}`}>
-                    {selectedBill.priority}
+                  <span className={`px-2 py-1 rounded text-xs inline-block mt-1 ${
+                    selectedRequest.priority === 'High' ? 'bg-red-50 text-red-700' :
+                    selectedRequest.priority === 'Medium' ? 'bg-yellow-50 text-yellow-700' :
+                    'bg-blue-50 text-blue-700'
+                  }`}>
+                    {selectedRequest.priority}
                   </span>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Amount</p>
-                  <p className="font-medium text-[#6544E4]">₦{selectedBill.amount.toLocaleString()}</p>
+                  <p className="text-sm text-gray-500">Created</p>
+                  <p className="font-medium">{selectedRequest.created}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Due Date</p>
-                  <p className="font-medium">{formatDate(selectedBill.dueDate)}</p>
+                  <p className="font-medium">{selectedRequest.dueDate}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Type</p>
-                  <p className="font-medium">{selectedBill.type || "N/A"}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Bill ID</p>
-                  <p className="font-medium text-xs text-gray-700">{selectedBill.id}</p>
+                  <p className="text-sm text-gray-500">Amount</p>
+                  <p className="font-medium text-[#6544E4]">{selectedRequest.amount}</p>
                 </div>
               </div>
               
-              {selectedBill.note && (
-                <div>
-                  <p className="text-sm text-gray-500">Note</p>
-                  <p className="mt-1">{selectedBill.note}</p>
-                </div>
-              )}
-
               <div>
-                <p className="text-sm text-gray-500">Created At</p>
-                <p className="mt-1">{formatDate(selectedBill.createdAt || new Date().toISOString())}</p>
+                <p className="text-sm text-gray-500">Description</p>
+                <p className="mt-1">{selectedRequest.description}</p>
               </div>
 
               <div className="flex justify-end mt-6">
@@ -379,6 +264,9 @@ const RequestsTable = ({
                   className="mr-2"
                 >
                   Close
+                </Button>
+                <Button className="bg-[#6544E4] hover:bg-[#5a3dd0]">
+                  View Full Details
                 </Button>
               </div>
             </div>
