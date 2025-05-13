@@ -1,8 +1,10 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useApi } from "@/hooks/useApi";
+import { Sponsor } from "@/types/sponsor"; // Updated import path
 
-export interface Sponsor {
+// Define a specialized service Sponsor interface that matches the API response format
+export interface SponsorApiResponse {
   id: string;
   name: string;
   email: string;
@@ -10,8 +12,6 @@ export interface Sponsor {
   createdAt: string;
   updatedAt: string;
 }
-
-const API_URL = "https://urgent-2kay-directed-bill-payment-system.onrender.com";
 
 export const useSponsors = () => {
   const { fetchWithAuth, loading, error } = useApi();
@@ -23,7 +23,7 @@ export const useSponsors = () => {
         console.log("Fetching sponsors data...");
         const response = await fetchWithAuth('/api/users/benefactors');
         console.log("Sponsors data:", response);
-        return response as Sponsor[];
+        return response as SponsorApiResponse[];
       } catch (err) {
         console.error("Error fetching sponsors:", err);
         throw err;

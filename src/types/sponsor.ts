@@ -3,12 +3,19 @@ import * as z from "zod";
 
 // Define sponsor related types
 export interface Sponsor {
-  id: number;
+  id: string; // Changed from number to string to match API response
   name: string;
-  relationship: string;
+  relationship?: string; // Made optional since it may not be present in all contexts
   email: string;
-  phone: string;
-  joinedDate: string;
+  phone?: string | null; // Made optional to match API response
+  joinedDate?: string; // Made optional since it's derived in some places
+  avatar?: string; // Added for UI display
+  sponsoredAmount?: string; // Added for UI display
+  activeRequests?: number; // Added for UI display
+  verified?: boolean; // Added for UI display
+  rating?: number; // Added for UI display
+  createdAt?: string; // Added to match API response
+  updatedAt?: string; // Added to match API response
 }
 
 // Form schema for sponsor creation/editing

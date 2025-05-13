@@ -1,5 +1,6 @@
+
 import { useState, useEffect } from "react";
-import { Sponsor } from "@/types/bundle";
+import { Sponsor } from "@/types/sponsor"; // Updated import path
 import { useSponsors } from "@/services/sponsorsService";
 
 export function useSponsorData() {
@@ -10,7 +11,7 @@ export function useSponsorData() {
   useEffect(() => {
     if (apiSponsors && apiSponsors.length > 0) {
       // Map API response to the format expected by the app
-      const formattedSponsors = apiSponsors.map(sponsor => ({
+      const formattedSponsors: Sponsor[] = apiSponsors.map(sponsor => ({
         id: sponsor.id,
         name: sponsor.name,
         avatar: sponsor.name.split(' ').map(name => name[0]).join(''),
@@ -26,7 +27,7 @@ export function useSponsorData() {
       setSponsors(formattedSponsors);
     } else if (!isLoading) {
       // If API returns empty and not loading, use fallback data
-      const sponsorsData = [
+      const sponsorsData: Sponsor[] = [
         {
           id: "1",
           name: "John Doe",
