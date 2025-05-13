@@ -1,5 +1,6 @@
 
 import { z } from "zod";
+import { Sponsor } from "@/types/sponsor"; // Import the common Sponsor type
 
 // Form schema for bundle creation
 export const FormSchema = z.object({
@@ -29,18 +30,9 @@ export const FormSchema = z.object({
 
 export type FormValues = z.infer<typeof FormSchema>;
 
-// Sponsor data type
-export interface Sponsor {
-  id: number;
-  name: string;
-  avatar: string;
-  sponsoredAmount: string;
-  activeRequests: number;
-  joinedDate: string;
-  verified: boolean;
-  rating: number;
-  email: string; // Added email field
-}
+// Remove the duplicate Sponsor type - use the one from @/types/sponsor instead
+// We re-export the type from sponsor.ts to maintain compatibility
+export type { Sponsor };
 
 // Props for the CreateBundleSheet component
 export interface CreateBundleSheetProps {

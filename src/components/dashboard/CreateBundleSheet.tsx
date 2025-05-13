@@ -7,7 +7,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { FormValues, CreateBundleSheetProps, Sponsor } from "@/types/bundle";
+import { FormValues, CreateBundleSheetProps } from "@/types/bundle";
+import { Sponsor } from "@/types/sponsor"; // Updated to use the common sponsor type
 import BillsList from "./bundle/BillsList";
 import BundleForm from "./bundle/BundleForm";
 import { useSponsorData } from "./bundle/useSponsorData";
@@ -74,7 +75,7 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
 
   // Get the selected sponsor object
   const selectedSponsor = sponsors.find(
-    (sponsor) => sponsor.id.toString() === selectedSponsorId
+    (sponsor) => sponsor.id === selectedSponsorId
   );
 
   // Calculate the total amount of all bills

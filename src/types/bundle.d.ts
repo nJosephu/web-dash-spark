@@ -35,12 +35,8 @@ export interface Bundle {
   activityLog: ActivityLog[];
 }
 
-export interface Sponsor {
-  id: number | string;
-  name: string;
-  avatar?: string;
-  email?: string; // Added email field
-}
+// Use the common Sponsor type from @/types/sponsor instead of redefining
+export { Sponsor } from "@/types/sponsor";
 
 export interface FormValues {
   billName?: string;

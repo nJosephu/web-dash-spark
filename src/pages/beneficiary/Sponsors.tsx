@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import {
   Card,
@@ -82,7 +83,7 @@ const Sponsors = () => {
   // Mock data for now - would come from API in real implementation
   const mockSponsors: Sponsor[] = [
     {
-      id: 1,
+      id: "1", // Changed from number to string
       name: "John Doe",
       relationship: "Family",
       email: "john.doe@example.com",
@@ -90,7 +91,7 @@ const Sponsors = () => {
       joinedDate: "Jan 2025",
     },
     {
-      id: 2,
+      id: "2", // Changed from number to string
       name: "Sarah Williams",
       relationship: "Friend",
       email: "sarah.williams@example.com",
@@ -98,7 +99,7 @@ const Sponsors = () => {
       joinedDate: "Feb 2025",
     },
     {
-      id: 3,
+      id: "3", // Changed from number to string
       name: "Michael Brown",
       relationship: "Colleague",
       email: "michael.brown@example.com",
@@ -106,7 +107,7 @@ const Sponsors = () => {
       joinedDate: "Dec 2024",
     },
     {
-      id: 4,
+      id: "4", // Changed from number to string
       name: "Lisa Johnson",
       relationship: "Other",
       email: "lisa.johnson@example.com",
@@ -172,8 +173,11 @@ const Sponsors = () => {
       setIsEditSheetOpen(false);
     } else {
       // Create new sponsor
+      // Generate a unique string ID instead of a number
+      const newId = String(Math.max(0, ...sponsors.map((s) => Number(s.id))) + 1);
+      
       const newSponsor: Sponsor = {
-        id: Math.max(0, ...sponsors.map((s) => s.id)) + 1,
+        id: newId, // Use string ID
         name: data.name,
         relationship: data.relationship,
         email: data.email,
