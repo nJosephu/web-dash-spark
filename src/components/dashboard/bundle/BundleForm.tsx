@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,7 +32,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { FormSchema, FormValues, Sponsor } from "@/types/bundle";
+import { FormSchema, FormValues } from "@/types/bundle";
+import { Sponsor } from "@/types/sponsor";
 import { toast } from "@/components/ui/sonner";
 import { Provider } from "@/services/providersService";
 import { createBill } from "@/services/billService";
