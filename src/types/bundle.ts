@@ -28,7 +28,10 @@ export const FormSchema = z.object({
   }),
 });
 
-export type FormValues = z.infer<typeof FormSchema>;
+// Extend the form values type to include the id field
+export interface FormValues extends z.infer<typeof FormSchema> {
+  id?: string;  // Added id field to fix the TypeScript error
+}
 
 // Remove the duplicate Sponsor type - use the one from @/types/sponsor instead
 // We re-export the type from sponsor.ts to maintain compatibility

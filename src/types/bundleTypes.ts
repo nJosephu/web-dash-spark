@@ -64,7 +64,10 @@ export const FormSchema = z.object({
   }),
 });
 
-export type FormValues = z.infer<typeof FormSchema>;
+// Update FormValues to include id
+export interface FormValues extends z.infer<typeof FormSchema> {
+  id?: string;  // Added id field to fix the TypeScript error
+}
 
 // Sponsor data type
 export interface Sponsor {

@@ -39,6 +39,7 @@ export interface Bundle {
 export { Sponsor } from "@/types/sponsor";
 
 export interface FormValues {
+  id?: string;  // Added id field to fix the TypeScript error
   billName?: string;
   billType?: string;
   serviceProvider?: string;
