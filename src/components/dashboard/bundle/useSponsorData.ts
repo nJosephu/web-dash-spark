@@ -1,11 +1,12 @@
 
 import { useState, useEffect } from "react";
-import { Sponsor } from "@/types/sponsor"; // Updated import path
+import { Sponsor } from "@/types/sponsor";
 import { useSponsors } from "@/services/sponsorsService";
+import { toast } from "@/components/ui/sonner";
 
 export function useSponsorData() {
   const [sponsors, setSponsors] = useState<Sponsor[]>([]);
-  const { sponsors: apiSponsors, isLoading } = useSponsors();
+  const { sponsors: apiSponsors, isLoading, error } = useSponsors();
 
   // Fetch sponsor data from the API
   useEffect(() => {
@@ -26,6 +27,12 @@ export function useSponsorData() {
       console.log("Formatted sponsors:", formattedSponsors);
       setSponsors(formattedSponsors);
     } else if (!isLoading) {
+      // If there was an error, show toast message
+      if (error) {
+        console.warn("Error loading sponsors from API, using fallback data:", error);
+        toast.error("Could not load sponsors from server. Using local data instead.");
+      }
+      
       // If API returns empty and not loading, use fallback data
       const sponsorsData: Sponsor[] = [
         {
@@ -76,7 +83,7 @@ export function useSponsorData() {
       
       setSponsors(sponsorsData);
     }
-  }, [apiSponsors, isLoading]);
+  }, [apiSponsors, isLoading, error]);
 
   return sponsors;
 }

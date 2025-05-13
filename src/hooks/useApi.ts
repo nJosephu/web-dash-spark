@@ -9,7 +9,8 @@ export const useApi = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  const API_URL = "https://urgent-2kay-directed-bill-payment-system-rss6.onrender.com";
+  // Update the API URL to use the consistent URL without -rss6
+  const API_URL = "https://urgent-2kay-directed-bill-payment-system.onrender.com";
 
   // Ensure we're using the most up-to-date token from sessionStorage
   useEffect(() => {
@@ -48,14 +49,14 @@ export const useApi = () => {
         headers,
       });
       
-      const data = await response.json();
-      
+      // Check if response is OK before trying to parse JSON
       if (!response.ok) {
-        const errorMsg = data.error || 'An error occurred';
+        const errorMsg = await response.text();
         console.error(`useApi - Request failed: ${errorMsg}`);
-        throw new Error(errorMsg);
+        throw new Error(errorMsg || 'An error occurred');
       }
       
+      const data = await response.json();
       console.log(`useApi - Request to ${endpoint} successful`);
       return data;
     } catch (err) {
