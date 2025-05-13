@@ -9,7 +9,7 @@ interface SendEmailResponse {
 }
 
 const API_URL =
-  "'https://urgent-2kay-directed-bill-payment-system-rss6.onrender.com";
+  "https://urgent-2kay-directed-bill-payment-system-rss6.onrender.com";
 
 /**
  * Send an email notification using the API
