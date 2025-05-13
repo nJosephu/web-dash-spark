@@ -8,8 +8,7 @@ interface SendEmailResponse {
   message: string;
 }
 
-const API_URL =
-  "https://urgent-2kay-directed-bill-payment-system-rss6.onrender.com";
+const API_URL = "https://urgent-2kay-directed-bill-payment-system.onrender.com";
 
 /**
  * Send an email notification using the API
@@ -22,13 +21,16 @@ export const sendEmail = async (
       `Sending email to ${payload.to} with subject: ${payload.subject}`
     );
 
-    const response = await fetch(`${API_URL}/api/email/send-email`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+    const response = await fetch(
+      `https://urgent-2kay-directed-bill-payment-system-rss6.onrender.com/api/email/send-email`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
 
     const data = await response.json();
 
