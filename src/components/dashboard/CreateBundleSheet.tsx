@@ -149,17 +149,20 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
       console.log("Creating bundle with data:", bundleData);
       const response = await createBundle(bundleData);
 
-      // Get sponsor email from the sponsor data
+      // Get sponsor email directly from the selectedSponsor object
       const sponsorEmail = selectedSponsor.email || "";
       console.log(`Selected sponsor: ${selectedSponsor.name}, email: ${sponsorEmail}`);
 
-      // Send email notification (if needed)
+      // Send email notification
       if (sponsorEmail) {
         await sendBundleSummaryEmail(
           sponsorEmail,
           selectedSponsor.name,
           bundleTitle
         );
+        console.log(`Email notification sent to ${sponsorEmail}`);
+      } else {
+        console.warn("No sponsor email available, skipping notification");
       }
 
       toast.success("Bundle created and notification sent to sponsor");
