@@ -1,4 +1,3 @@
-
 interface SendEmailPayload {
   to: string;
   subject: string;
@@ -9,15 +8,20 @@ interface SendEmailResponse {
   message: string;
 }
 
-const API_URL = "https://urgent-2kay-directed-bill-payment-system.onrender.com";
+const API_URL =
+  "'https://urgent-2kay-directed-bill-payment-system-rss6.onrender.com";
 
 /**
  * Send an email notification using the API
  */
-export const sendEmail = async (payload: SendEmailPayload): Promise<SendEmailResponse> => {
+export const sendEmail = async (
+  payload: SendEmailPayload
+): Promise<SendEmailResponse> => {
   try {
-    console.log(`Sending email to ${payload.to} with subject: ${payload.subject}`);
-    
+    console.log(
+      `Sending email to ${payload.to} with subject: ${payload.subject}`
+    );
+
     const response = await fetch(`${API_URL}/api/email/send-email`, {
       method: "POST",
       headers: {
@@ -25,18 +29,19 @@ export const sendEmail = async (payload: SendEmailPayload): Promise<SendEmailRes
       },
       body: JSON.stringify(payload),
     });
-    
+
     const data = await response.json();
-    
+
     if (!response.ok) {
       console.error("Email sending failed:", data.message || "Unknown error");
       throw new Error(data.message || "Failed to send email");
     }
-    
+
     console.log("Email sent successfully");
     return data;
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "Email sending failed";
+    const errorMessage =
+      error instanceof Error ? error.message : "Email sending failed";
     console.error("Email service error:", errorMessage);
     throw error;
   }
@@ -56,7 +61,7 @@ export const sendBundleSummaryEmail = async (
     console.log(`Sending payment request email to sponsor: ${sponsorEmail}`);
     await sendEmail({
       to: sponsorEmail,
-      subject: `URGENT 2KAY: New Payment Request - "${bundleTitle}"`
+      subject: `URGENT 2KAY: New Payment Request - "${bundleTitle}"`,
     });
   } else {
     console.warn("No sponsor email provided, skipping notification");
