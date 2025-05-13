@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -365,9 +364,9 @@ const BeneficiaryBundleDetails = () => {
   // Handle cancel request
   const handleCancelRequest = () => {
     if (!bundle) return;
-    
+
     setIsCanceling(true);
-    
+
     // Simulate API call with timeout
     setTimeout(() => {
       // Only pending requests can be canceled
@@ -376,7 +375,7 @@ const BeneficiaryBundleDetails = () => {
         setIsCanceling(false);
         return;
       }
-      
+
       // Update bundle status - use a literal type that matches the Bundle interface
       const updatedBundle: Bundle = {
         ...bundle,
@@ -391,10 +390,10 @@ const BeneficiaryBundleDetails = () => {
               name: user?.name || "You",
             },
             completed: true,
-          }
-        ]
+          },
+        ],
       };
-      
+
       setBundle(updatedBundle);
       toast.success("Request cancelled successfully");
       setIsCanceling(false);
@@ -416,7 +415,7 @@ const BeneficiaryBundleDetails = () => {
       />
 
       {/* Bundle content */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
         {/* Left section - Bundle information */}
         <div className="md:col-span-2 space-y-6">
           {/* Stats cards */}
@@ -435,14 +434,14 @@ const BeneficiaryBundleDetails = () => {
             sponsor={bundle.sponsor}
             amount={bundle.amount}
           />
-          
+
           {/* Beneficiary-specific action buttons */}
           {bundle.status === "pending" && (
             <div className="flex gap-4 mt-6">
-              <Button 
+              <Button
                 onClick={handleCancelRequest}
                 disabled={isCanceling}
-                variant="outline" 
+                variant="outline"
                 className="w-full border-red-200 text-red-600 hover:bg-red-50"
               >
                 <X className="mr-2 h-4 w-4" />

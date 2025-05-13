@@ -37,7 +37,7 @@ const StatCards: React.FC<StatCardsProps> = ({ amount, date, priority }) => {
       <Card className="border">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-gray-500">
-            Total Amount
+            Total bills in bundle
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -56,6 +56,24 @@ const StatCards: React.FC<StatCardsProps> = ({ amount, date, priority }) => {
             <Calendar className="h-4 w-4 mr-2 text-gray-400" />
             <span>{formatDate(date)}</span>
           </div>
+        </CardContent>
+      </Card>
+
+      <Card className="border">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium text-gray-500">
+            Priority
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {priority && (
+            <Badge
+              className={`${getPriorityColor(priority)} capitalize`}
+              variant="outline"
+            >
+              {priority}
+            </Badge>
+          )}
         </CardContent>
       </Card>
 
