@@ -38,7 +38,7 @@ interface RequestsTableProps {
 }
 
 const RequestsTable = ({ 
-  limit = 4, 
+  limit = 5, 
   showViewAll = true, 
   showPagination = true 
 }: RequestsTableProps) => {
@@ -93,7 +93,7 @@ const RequestsTable = ({
   // Get bills for current page
   const currentBills = showPagination 
     ? filteredBills.slice(startIndex, endIndex) 
-    : filteredBills;
+    : filteredBills.slice(0, limit);
 
   const handleViewDetails = (bill: Bill) => {
     setSelectedBill(bill);

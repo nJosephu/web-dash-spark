@@ -27,7 +27,7 @@ const BillHistory = () => {
           <CardTitle className="text-xl">Complete Bill History</CardTitle>
         </CardHeader>
         <CardContent>
-          <RequestsTable limit={10} showViewAll={false} showPagination={true} />
+          <RequestsTable limit={5} showViewAll={false} showPagination={true} />
         </CardContent>
       </Card>
     </>

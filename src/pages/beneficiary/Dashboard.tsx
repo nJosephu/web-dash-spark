@@ -89,7 +89,7 @@ const BeneficiaryDashboard = () => {
       </div>
 
       <div className="overflow-x-auto">
-        <RequestsTable limit={4} showViewAll={true} showPagination={true} />
+        <RequestsTable limit={5} showViewAll={true} showPagination={false} />
       </div>
     </>
   );
