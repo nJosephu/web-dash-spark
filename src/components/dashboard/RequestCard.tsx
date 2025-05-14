@@ -40,10 +40,10 @@ const RequestCard = ({
 }: RequestCardProps) => {
   const location = useLocation();
   const isSponsor = location.pathname.includes("/dashboard/sponsor");
-  
+
   // Determine correct link based on role (sponsor or beneficiary)
-  const detailsLink = isSponsor 
-    ? `/dashboard/sponsor/requests/${id}` 
+  const detailsLink = isSponsor
+    ? `/dashboard/sponsor/requests/${id}`
     : `/dashboard/beneficiary/requests/${id}`;
 
   const getStatusColor = (status: string) => {
@@ -87,13 +87,13 @@ const RequestCard = ({
       return "Invalid date";
     }
   };
-  
+
   const handleCancel = () => {
     if (onCancel) {
       onCancel(id);
     }
   };
-  
+
   const handleRemind = () => {
     if (onRemind) {
       onRemind(id);
@@ -101,10 +101,10 @@ const RequestCard = ({
   };
 
   // Format the amount as currency in Naira
-  const formattedAmount = new Intl.NumberFormat('en-NG', {
-    style: 'currency',
-    currency: 'NGN',
-    currencyDisplay: 'symbol',
+  const formattedAmount = new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    currencyDisplay: "symbol",
     minimumFractionDigits: 0,
   }).format(amount);
 
@@ -115,7 +115,9 @@ const RequestCard = ({
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5">
             <Copy className="h-3.5 w-3.5 text-gray-400" />
-            <span className="text-xs font-medium text-gray-500">{displayId}</span>
+            <span className="text-xs font-medium text-gray-500">
+              {displayId}
+            </span>
           </div>
           <Badge
             className={`${getStatusColor(
@@ -180,7 +182,7 @@ const RequestCard = ({
           </Button>
 
           {/* Cancel and Remind - shown only if not approved and only for beneficiaries */}
-          {!isSponsor && status === "PENDING" && (
+          {/* {!isSponsor && status === "PENDING" && (
             <div className="flex gap-2">
               <Button
                 onClick={handleCancel}
@@ -198,7 +200,7 @@ const RequestCard = ({
                 Remind
               </Button>
             </div>
-          )}
+          )} */}
         </div>
       </CardContent>
     </Card>
