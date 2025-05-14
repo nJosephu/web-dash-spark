@@ -40,8 +40,6 @@ const BeneficiaryBundleDetails = () => {
     } else {
       document.title = "Request Details | Urgent2kay";
     }
-    // Smooth scroll to top on mount
-    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [request]);
 
   // Handle cancel request
