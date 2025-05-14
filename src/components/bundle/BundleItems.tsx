@@ -47,9 +47,6 @@ const BundleItems: React.FC<BundleItemsProps> = ({ items }) => {
         <div className="space-y-6">
           {Object.entries(groupedItems).map(([category, items]) => (
             <div key={category}>
-              <h3 className="font-medium text-sm text-gray-500 mb-3">
-                {category}
-              </h3>
               <div className="space-y-3">
                 {items.map((item, index) => (
                   <div
