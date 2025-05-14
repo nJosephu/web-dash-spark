@@ -1,7 +1,6 @@
 
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
 // Import components
 import BundleHeader from "@/components/bundle/BundleHeader";
@@ -145,19 +144,6 @@ const BeneficiaryBundleDetails = () => {
 
   return (
     <div className="max-w-[100vw] overflow-x-hidden p-4 pt-0 md:p-6 md:pt-0">
-      {/* Breadcrumb navigation */}
-      <Breadcrumb className="mb-4">
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/dashboard/beneficiary/requests">Bundle Details</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/dashboard/beneficiary/requests">Back to Requests</BreadcrumbLink>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-
       {/* Bundle header with navigation and action buttons */}
       <BundleHeader
         id={request.formattedId || `UZK-${request.id.substring(0, 6)}`}
