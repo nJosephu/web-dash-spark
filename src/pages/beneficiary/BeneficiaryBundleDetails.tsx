@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -169,57 +170,56 @@ const BeneficiaryBundleDetails = () => {
         </CardContent>
       </Card>
 
-      {/* Bundle content */}
-      <div className="md:col-span-2 space-y-6">
-        {/* Bundle items */}
-        <BundleItems items={formattedBills} />
+      {/* Bundle items */}
+      <BundleItems items={formattedBills} />
 
+      {/* Grid layout for Bundle Summary and Activity Log side by side */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
         {/* Bundle summary */}
-        <BundleSummary
-          description={request.notes}
-          sponsor={{
-            name: request.supporter?.name || "No sponsor assigned",
-            email: request.supporter?.email,
-          }}
-          amount={
-            request.formattedAmount ||
-            new Intl.NumberFormat("en-NG", {
-              style: "currency",
-              currency: "NGN",
-              currencyDisplay: "symbol",
-              minimumFractionDigits: 0,
-            }).format(request.totalAmount || 0)
-          }
-          createdAt={request.createdAt}
-          dueDate={request.earliestDueDate}
-        />
+        <div>
+          <BundleSummary
+            description={request.notes}
+            sponsor={{
+              name: request.supporter?.name || "No sponsor assigned",
+              email: request.supporter?.email,
+            }}
+            amount={
+              request.formattedAmount ||
+              new Intl.NumberFormat("en-NG", {
+                style: "currency",
+                currency: "NGN",
+                currencyDisplay: "symbol",
+                minimumFractionDigits: 0,
+              }).format(request.totalAmount || 0)
+            }
+            createdAt={request.createdAt}
+            dueDate={request.earliestDueDate}
+          />
 
-        {/* Beneficiary-specific action buttons */}
-        {componentStatus === "pending" && (
-          <div className="flex gap-4 mt-6">
-            <Button
-              onClick={handleCancelRequest}
-              variant="outline"
-              className="w-full border-red-200 text-red-600 hover:bg-red-50"
-            >
-              <X className="mr-2 h-4 w-4" />
-              Cancel Request
-            </Button>
-            <Button
-              onClick={handleSendReminder}
-              className="w-full bg-[#6544E4] hover:bg-[#5A3DD0]"
-            >
-              <Bell className="mr-2 h-4 w-4" />
-              Send Reminder
-            </Button>
-          </div>
-        )}
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
-        {/* Left section - Bundle information */}
+          {/* Beneficiary-specific action buttons */}
+          {componentStatus === "pending" && (
+            <div className="flex gap-4 mt-6">
+              <Button
+                onClick={handleCancelRequest}
+                variant="outline"
+                className="w-full border-red-200 text-red-600 hover:bg-red-50"
+              >
+                <X className="mr-2 h-4 w-4" />
+                Cancel Request
+              </Button>
+              <Button
+                onClick={handleSendReminder}
+                className="w-full bg-[#6544E4] hover:bg-[#5A3DD0]"
+              >
+                <Bell className="mr-2 h-4 w-4" />
+                Send Reminder
+              </Button>
+            </div>
+          )}
+        </div>
 
-        {/* Right section - Activity log */}
-        <div className="md:col-span-4">
+        {/* Activity log */}
+        <div>
           <ActivityLog activities={request.activityLog || []} />
         </div>
       </div>
