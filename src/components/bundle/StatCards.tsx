@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +12,7 @@ interface StatCardsProps {
   rejectedBills?: number;
   amount?: string;
   date?: string;
+  priority?: "high" | "medium" | "low";
 }
 
 const StatCards: React.FC<StatCardsProps> = ({
@@ -20,6 +22,7 @@ const StatCards: React.FC<StatCardsProps> = ({
   rejectedBills = 0,
   amount,
   date,
+  priority,
 }) => {
   const formatDate = (dateString: string) => {
     try {
@@ -43,6 +46,54 @@ const StatCards: React.FC<StatCardsProps> = ({
     }
   };
 
+  // For sponsor view (with amount, date and priority)
+  if (amount && date) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <Card className="border">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-gray-500">
+              Amount
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-xl font-bold">{amount}</div>
+          </CardContent>
+        </Card>
+
+        <Card className="border">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-gray-500">
+              Due Date
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center">
+              <Calendar className="h-4 w-4 mr-2 text-gray-500" />
+              <span>{formatDate(date)}</span>
+            </div>
+          </CardContent>
+        </Card>
+
+        {priority && (
+          <Card className="border">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-500">
+                Priority
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Badge className={`${getPriorityColor(priority)} capitalize`}>
+                {priority}
+              </Badge>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    );
+  }
+
+  // For beneficiary view (with bills count)
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
       <Card className="border">
