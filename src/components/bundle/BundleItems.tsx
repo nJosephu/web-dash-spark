@@ -45,7 +45,7 @@ const BundleItems: React.FC<BundleItemsProps> = ({ items }) => {
                   <Package className="h-5 w-5 text-[#6544E4]" />
                 </div>
                 <div>
-                  <p className="tracking-[0.225rem] text-xs font-regular text-gray-500 uppercase">
+                  <p className="tracking-wide text-xs font-regular text-gray-500 uppercase">
                     {item.category}
                   </p>
                   <p className="font-medium">{item.name}</p>
