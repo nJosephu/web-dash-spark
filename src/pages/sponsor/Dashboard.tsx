@@ -82,25 +82,21 @@ const SponsorDashboard = () => {
               <StatCard
                 title="Total funded"
                 value="₦450,000"
-                percentChange={15}
                 color="green"
               />
               <StatCard
                 title="People helped"
                 value="24"
-                percentChange={8}
                 color="purple"
               />
               <StatCard
                 title="Average contribution"
                 value="₦18,750"
-                percentChange={5}
                 color="purple"
               />
               <StatCard
                 title="Pending reviews"
                 value="3"
-                percentChange={0}
                 color="yellow"
               />
             </div>
