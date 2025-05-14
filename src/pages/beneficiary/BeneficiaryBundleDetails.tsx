@@ -232,6 +232,13 @@ const BeneficiaryBundleDetails = () => {
         {componentStatus === "pending" && (
           <div className="flex flex-col sm:flex-row gap-4 mt-6">
             <Button
+              onClick={handleSendReminder}
+              className="w-full bg-[#6544E4] hover:bg-[#5A3DD0]"
+            >
+              <Bell className="mr-2 h-4 w-4" />
+              Send Reminder
+            </Button>
+            <Button
               onClick={handleDeleteRequest}
               variant="outline"
               className="w-full border-red-200 text-red-600 hover:bg-red-50"
@@ -243,13 +250,6 @@ const BeneficiaryBundleDetails = () => {
                 <X className="mr-2 h-4 w-4" />
               )}
               {isDeleting ? "Deleting..." : "Delete Request"}
-            </Button>
-            <Button
-              onClick={handleSendReminder}
-              className="w-full bg-[#6544E4] hover:bg-[#5A3DD0]"
-            >
-              <Bell className="mr-2 h-4 w-4" />
-              Send Reminder
             </Button>
           </div>
         )}
