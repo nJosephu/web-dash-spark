@@ -1,7 +1,13 @@
-
 import { useState, useEffect } from "react";
 import { Search, Eye, Link as LinkIcon } from "lucide-react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -37,10 +43,10 @@ interface RequestsTableProps {
   showPagination?: boolean;
 }
 
-const RequestsTable = ({ 
-  limit = 5, 
-  showViewAll = true, 
-  showPagination = true 
+const RequestsTable = ({
+  limit = 5,
+  showViewAll = true,
+  showPagination = true,
 }: RequestsTableProps) => {
   const [bills, setBills] = useState<Bill[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,7 +56,7 @@ const RequestsTable = ({
   const [selectedBill, setSelectedBill] = useState<Bill | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  
+
   useEffect(() => {
     const loadBills = async () => {
       try {
@@ -73,15 +79,18 @@ const RequestsTable = ({
   // Filter bills based on search query and status
   const filteredBills = bills.filter((bill) => {
     // Search filter
-    const matchesSearch = !searchQuery.trim() || 
+    const matchesSearch =
+      !searchQuery.trim() ||
       bill.billName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (bill.provider?.name || "").toLowerCase().includes(searchQuery.toLowerCase());
-    
+      (bill.provider?.name || "")
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+
     // Status filter
-    const matchesStatus = 
-      statusFilter === "all" || 
+    const matchesStatus =
+      statusFilter === "all" ||
       bill.status.toLowerCase() === statusFilter.toLowerCase();
-    
+
     return matchesSearch && matchesStatus;
   });
 
@@ -89,17 +98,17 @@ const RequestsTable = ({
   const totalPages = Math.ceil(filteredBills.length / limit);
   const startIndex = (currentPage - 1) * limit;
   const endIndex = startIndex + limit;
-  
+
   // Get bills for current page
-  const currentBills = showPagination 
-    ? filteredBills.slice(startIndex, endIndex) 
+  const currentBills = showPagination
+    ? filteredBills.slice(startIndex, endIndex)
     : filteredBills.slice(0, limit);
 
   const handleViewDetails = (bill: Bill) => {
     setSelectedBill(bill);
     setIsModalOpen(true);
   };
-  
+
   // Format date from ISO string to readable format
   const formatDate = (dateString: string) => {
     try {
@@ -111,31 +120,31 @@ const RequestsTable = ({
 
   // Helper function to get priority color class
   const getPriorityClass = (priority: string) => {
-    switch(priority.toUpperCase()) {
-      case 'HIGH':
-        return 'bg-red-50 text-red-700';
-      case 'MEDIUM':
-        return 'bg-yellow-50 text-yellow-700';
-      case 'LOW':
-        return 'bg-blue-50 text-blue-700';
+    switch (priority.toUpperCase()) {
+      case "HIGH":
+        return "bg-red-50 text-red-700";
+      case "MEDIUM":
+        return "bg-yellow-50 text-yellow-700";
+      case "LOW":
+        return "bg-blue-50 text-blue-700";
       default:
-        return 'bg-gray-50 text-gray-700';
+        return "bg-gray-50 text-gray-700";
     }
   };
 
   // Helper function to get status color class
   const getStatusClass = (status: string) => {
-    switch(status.toUpperCase()) {
-      case 'PAID':
-      case 'COMPLETED':
-        return 'bg-green-50 text-green-700';
-      case 'PENDING':
-        return 'bg-yellow-50 text-yellow-700';
-      case 'REJECTED':
-      case 'FAILED':
-        return 'bg-red-50 text-red-700';
+    switch (status.toUpperCase()) {
+      case "PAID":
+      case "COMPLETED":
+        return "bg-green-50 text-green-700";
+      case "PENDING":
+        return "bg-yellow-50 text-yellow-700";
+      case "REJECTED":
+      case "FAILED":
+        return "bg-red-50 text-red-700";
       default:
-        return 'bg-gray-50 text-gray-700';
+        return "bg-gray-50 text-gray-700";
     }
   };
 
@@ -150,7 +159,7 @@ const RequestsTable = ({
             <Skeleton className="h-9 w-[200px]" />
           </div>
         </div>
-        
+
         <div className="p-6">
           <div className="space-y-4">
             {[...Array(3)].map((_, i) => (
@@ -169,8 +178,8 @@ const RequestsTable = ({
     return (
       <div className="bg-white rounded-lg shadow p-8 text-center">
         <p className="text-red-500 mb-4">{error}</p>
-        <Button 
-          onClick={() => window.location.reload()} 
+        <Button
+          onClick={() => window.location.reload()}
           className="bg-[#6544E4] hover:bg-[#5a3dd0]"
         >
           Try Again
@@ -178,17 +187,17 @@ const RequestsTable = ({
       </div>
     );
   }
-  
+
   return (
-    <div className="bg-white rounded-lg shadow">
+    <div className="bg-white rounded-lg">
       <div className="p-4 flex flex-col md:flex-row justify-between items-start md:items-center border-b gap-3">
         <div className="flex justify-between items-center w-full">
           <h3 className="font-medium">Bill request history</h3>
           {showViewAll && (
             <Link to="/dashboard/beneficiary/bill-history">
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 className="text-[#6544E4] flex items-center gap-1"
               >
                 <LinkIcon size={16} />
@@ -209,9 +218,12 @@ const RequestsTable = ({
               <SelectItem value="rejected">Rejected</SelectItem>
             </SelectContent>
           </Select>
-          
+
           <div className="relative w-full md:w-auto">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+            <Search
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              size={16}
+            />
             <input
               type="text"
               placeholder="Search bills..."
@@ -222,11 +234,11 @@ const RequestsTable = ({
           </div>
         </div>
       </div>
-      
+
       <div className="overflow-x-auto">
         {currentBills.length > 0 ? (
           <Table>
-            <TableHeader className="bg-gray-50">
+            <TableHeader className="bg-[#F3F1F1]">
               <TableRow>
                 <TableHead className="text-xs uppercase">Bill Name</TableHead>
                 <TableHead className="text-xs uppercase">Provider</TableHead>
@@ -241,24 +253,34 @@ const RequestsTable = ({
               {currentBills.map((bill) => (
                 <TableRow key={bill.id} className="hover:bg-gray-50">
                   <TableCell>{bill.billName}</TableCell>
-                  <TableCell>{bill.provider?.name || bill.providerName || "N/A"}</TableCell>
                   <TableCell>
-                    <span className={`px-2 py-1 rounded text-xs ${getStatusClass(bill.status)}`}>
+                    {bill.provider?.name || bill.providerName || "N/A"}
+                  </TableCell>
+                  <TableCell>
+                    <span
+                      className={`px-2 py-1 rounded text-xs ${getStatusClass(
+                        bill.status
+                      )}`}
+                    >
                       {bill.status}
                     </span>
                   </TableCell>
                   <TableCell>
-                    <span className={`px-2 py-1 rounded text-xs ${getPriorityClass(bill.priority)}`}>
+                    <span
+                      className={`px-2 py-1 rounded text-xs ${getPriorityClass(
+                        bill.priority
+                      )}`}
+                    >
                       {bill.priority}
                     </span>
                   </TableCell>
                   <TableCell>₦{bill.amount.toLocaleString()}</TableCell>
                   <TableCell>{formatDate(bill.dueDate)}</TableCell>
                   <TableCell>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="text-[#6544E4] flex items-center gap-1"
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-[#6544E4] flex items-center gap-1 p-0"
                       onClick={() => handleViewDetails(bill)}
                     >
                       <Eye size={16} />
@@ -281,15 +303,19 @@ const RequestsTable = ({
           <Pagination>
             <PaginationContent>
               <PaginationItem>
-                <PaginationPrevious 
+                <PaginationPrevious
                   onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                  className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  className={
+                    currentPage === 1
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
                 />
               </PaginationItem>
-              
+
               {[...Array(totalPages)].map((_, i) => (
                 <PaginationItem key={i}>
-                  <PaginationLink 
+                  <PaginationLink
                     isActive={currentPage === i + 1}
                     onClick={() => setCurrentPage(i + 1)}
                   >
@@ -297,11 +323,17 @@ const RequestsTable = ({
                   </PaginationLink>
                 </PaginationItem>
               ))}
-              
+
               <PaginationItem>
-                <PaginationNext 
-                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                  className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                <PaginationNext
+                  onClick={() =>
+                    setCurrentPage(Math.min(totalPages, currentPage + 1))
+                  }
+                  className={
+                    currentPage === totalPages
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
                 />
               </PaginationItem>
             </PaginationContent>
@@ -318,7 +350,7 @@ const RequestsTable = ({
               Detailed information about this bill
             </DialogDescription>
           </DialogHeader>
-          
+
           {selectedBill && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -328,27 +360,43 @@ const RequestsTable = ({
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Provider</p>
-                  <p className="font-medium">{selectedBill.provider?.name || selectedBill.providerName || "N/A"}</p>
+                  <p className="font-medium">
+                    {selectedBill.provider?.name ||
+                      selectedBill.providerName ||
+                      "N/A"}
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Status</p>
-                  <span className={`px-2 py-1 rounded text-xs inline-block mt-1 ${getStatusClass(selectedBill.status)}`}>
+                  <span
+                    className={`px-2 py-1 rounded text-xs inline-block mt-1 ${getStatusClass(
+                      selectedBill.status
+                    )}`}
+                  >
                     {selectedBill.status}
                   </span>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Priority</p>
-                  <span className={`px-2 py-1 rounded text-xs inline-block mt-1 ${getPriorityClass(selectedBill.priority)}`}>
+                  <span
+                    className={`px-2 py-1 rounded text-xs inline-block mt-1 ${getPriorityClass(
+                      selectedBill.priority
+                    )}`}
+                  >
                     {selectedBill.priority}
                   </span>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Amount</p>
-                  <p className="font-medium text-[#6544E4]">₦{selectedBill.amount.toLocaleString()}</p>
+                  <p className="font-medium text-[#6544E4]">
+                    ₦{selectedBill.amount.toLocaleString()}
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Due Date</p>
-                  <p className="font-medium">{formatDate(selectedBill.dueDate)}</p>
+                  <p className="font-medium">
+                    {formatDate(selectedBill.dueDate)}
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Type</p>
@@ -356,10 +404,12 @@ const RequestsTable = ({
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Bill ID</p>
-                  <p className="font-medium text-xs text-gray-700">{selectedBill.id}</p>
+                  <p className="font-medium text-xs text-gray-700">
+                    {selectedBill.id}
+                  </p>
                 </div>
               </div>
-              
+
               {selectedBill.note && (
                 <div>
                   <p className="text-sm text-gray-500">Note</p>
@@ -369,12 +419,16 @@ const RequestsTable = ({
 
               <div>
                 <p className="text-sm text-gray-500">Created At</p>
-                <p className="mt-1">{formatDate(selectedBill.createdAt || new Date().toISOString())}</p>
+                <p className="mt-1">
+                  {formatDate(
+                    selectedBill.createdAt || new Date().toISOString()
+                  )}
+                </p>
               </div>
 
               <div className="flex justify-end mt-6">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => setIsModalOpen(false)}
                   className="mr-2"
                 >
