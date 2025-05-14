@@ -35,7 +35,7 @@ const BundleItems: React.FC<BundleItemsProps> = ({ items }) => {
         <CardTitle>Bundle Items</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {items.map((item, index) => (
             <div
               key={index}
