@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -62,7 +61,7 @@ const BeneficiaryBundleDetails = () => {
   // Loading state
   if (isLoading) {
     return (
-      <div className="max-w-[100vw] overflow-x-hidden p-4 pt-0 md:p-6 md:pt-0">
+      <div className="">
         <div className="mb-6">
           <Skeleton className="h-10 w-32 mb-4" />
           <Skeleton className="h-8 w-64 mb-2" />
