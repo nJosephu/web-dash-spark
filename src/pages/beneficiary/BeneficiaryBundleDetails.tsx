@@ -162,12 +162,6 @@ const BeneficiaryBundleDetails = () => {
           pendingBills={pendingBills}
           rejectedBills={rejectedBills}
           dueDate={request.earliestDueDate}
-          priority={
-            request.bills[0]?.priority.toLowerCase() as
-              | "high"
-              | "medium"
-              | "low"
-          }
         />
 
         {/* Bundle items */}

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,19 +11,17 @@ interface StatCardsProps {
   rejectedBills?: number;
   amount?: string;
   date?: string;
-  priority?: "high" | "medium" | "low";
   dueDate?: string;
 }
 
-const StatCards: React.FC<StatCardsProps> = ({ 
+const StatCards: React.FC<StatCardsProps> = ({
   billsCount = 0,
   approvedBills = 0,
   pendingBills = 0,
   rejectedBills = 0,
-  amount, 
-  date, 
-  priority,
-  dueDate
+  amount,
+  date,
+  dueDate,
 }) => {
   const formatDate = (dateString: string) => {
     try {
@@ -70,11 +67,13 @@ const StatCards: React.FC<StatCardsProps> = ({
         <CardContent>
           <div className="flex items-center">
             <Calendar className="h-4 w-4 mr-2 text-gray-400" />
-            <span>{dueDate ? formatDate(dueDate) : (date ? formatDate(date) : "N/A")}</span>
+            <span>
+              {dueDate ? formatDate(dueDate) : date ? formatDate(date) : "N/A"}
+            </span>
           </div>
         </CardContent>
       </Card>
-      
+
       <Card className="border">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-gray-500">
@@ -88,7 +87,7 @@ const StatCards: React.FC<StatCardsProps> = ({
           </div>
         </CardContent>
       </Card>
-      
+
       <Card className="border">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-gray-500">
@@ -102,7 +101,7 @@ const StatCards: React.FC<StatCardsProps> = ({
           </div>
         </CardContent>
       </Card>
-      
+
       <Card className="border">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-gray-500">
@@ -116,24 +115,6 @@ const StatCards: React.FC<StatCardsProps> = ({
           </div>
         </CardContent>
       </Card>
-
-      {priority && (
-        <Card className="border">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">
-              Priority
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Badge
-              className={`${getPriorityColor(priority)} capitalize`}
-              variant="outline"
-            >
-              {priority}
-            </Badge>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 };
