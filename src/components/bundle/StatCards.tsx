@@ -11,7 +11,6 @@ interface StatCardsProps {
   rejectedBills?: number;
   amount?: string;
   date?: string;
-  dueDate?: string;
 }
 
 const StatCards: React.FC<StatCardsProps> = ({
@@ -21,7 +20,6 @@ const StatCards: React.FC<StatCardsProps> = ({
   rejectedBills = 0,
   amount,
   date,
-  dueDate,
 }) => {
   const formatDate = (dateString: string) => {
     try {
@@ -55,22 +53,6 @@ const StatCards: React.FC<StatCardsProps> = ({
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{billsCount}</div>
-        </CardContent>
-      </Card>
-
-      <Card className="border">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-gray-500">
-            {dueDate ? "Due Date" : "Date"}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center">
-            <Calendar className="h-4 w-4 mr-2 text-gray-400" />
-            <span>
-              {dueDate ? formatDate(dueDate) : date ? formatDate(date) : "N/A"}
-            </span>
-          </div>
         </CardContent>
       </Card>
 

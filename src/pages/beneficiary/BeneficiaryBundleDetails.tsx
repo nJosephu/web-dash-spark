@@ -161,7 +161,6 @@ const BeneficiaryBundleDetails = () => {
           approvedBills={approvedBills}
           pendingBills={pendingBills}
           rejectedBills={rejectedBills}
-          dueDate={request.earliestDueDate}
         />
 
         {/* Bundle items */}
