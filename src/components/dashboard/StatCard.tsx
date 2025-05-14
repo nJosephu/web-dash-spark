@@ -1,26 +1,20 @@
 
-import { ArrowUpRight, ArrowDownRight, Tag } from "lucide-react";
+import { Tag } from "lucide-react";
 import { cn } from "@/lib/utils";
+
 interface StatCardProps {
   title: string;
   value: string;
-  percentChange: number;
   color: "green" | "purple" | "red" | "yellow";
-  colortag?: "white" | "black";  // Made optional with ?
-  increaseIsGood?: boolean;
+  colortag?: "white" | "black";
 }
+
 const StatCard = ({
   title,
   value,
-  percentChange,
   color,
-  increaseIsGood = true,
-  colortag = "white",  // Added default value
+  colortag = "white",
 }: StatCardProps) => {
-  const isPositive = percentChange >= 0;
-  const showPositiveIndicator =
-    (isPositive && increaseIsGood) || (!isPositive && !increaseIsGood);
-
   // Define dot colors for different card types
   const getDotColor = () => {
     switch (color) {
@@ -34,6 +28,7 @@ const StatCard = ({
         return "bg-yellow-500";
     }
   };
+
   return (
     <div className="p-4 rounded-lg border border-gray-200">
       <div className="flex items-start gap-2">
@@ -48,25 +43,10 @@ const StatCard = ({
         <div className="flex-1">
           <span className="text-sm text-gray-600">{title}</span>
           <div className="text-xl font-medium mt-1">{value}</div>
-          <div className="flex items-center gap-1 mt-1">
-            <div
-              className={cn(
-                "flex items-center text-xs font-medium",
-                showPositiveIndicator ? "text-[#B9E54E]" : "text-red-600"
-              )}
-            >
-              {isPositive ? (
-                <ArrowUpRight size={12} />
-              ) : (
-                <ArrowDownRight size={12} />
-              )}
-              <span>{Math.abs(percentChange)}%</span>
-            </div>
-            <span className="text-xs text-gray-500">Increase this month</span>
-          </div>
         </div>
       </div>
     </div>
   );
 };
+
 export default StatCard;

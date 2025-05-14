@@ -46,29 +46,24 @@ const BeneficiaryDashboard = () => {
               <StatCard
                 title="Total bills requested"
                 value={totalAmount}
-                percentChange={10}
                 color="green"
                 colortag="black"
               />
               <StatCard
                 title="Approved bill requests"
                 value={approvedAmount}
-                percentChange={15}
                 color="purple"
                 colortag="white"
               />
               <StatCard
                 title="Rejected bill requests"
                 value={rejectedAmount}
-                percentChange={-10}
                 color="red"
-                increaseIsGood={false}
                 colortag="white"
               />
               <StatCard
                 title="Pending bill requests"
                 value={pendingAmount}
-                percentChange={20}
                 color="yellow"
                 colortag="black"
               />
