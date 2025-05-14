@@ -61,7 +61,7 @@ const BundleItems: React.FC<BundleItemsProps> = ({ items }) => {
                   )}
                 </div>
               </div>
-              <span className="font-semibold">{item.amount}</span>
+              <span className="font-medium">{item.amount}</span>
             </div>
           ))}
         </div>
