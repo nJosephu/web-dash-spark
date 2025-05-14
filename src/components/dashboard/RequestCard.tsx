@@ -6,6 +6,7 @@ import { ArrowRight, Calendar, Copy, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { formatRelativeDate } from "@/utils/dateUtils";
 
 interface RequestSponsor {
   name: string;
@@ -139,9 +140,9 @@ const RequestCard = ({
             <span className="text-sm font-semibold">{formattedAmount}</span>
           </div>
 
-          {/* Due date */}
+          {/* Changed from "Due date" to "Date" and using request creation date */}
           <div className="flex justify-between items-center">
-            <span className="text-xs text-gray-500">Due date</span>
+            <span className="text-xs text-gray-500">Date</span>
             <div className="flex items-center text-xs">
               <Calendar className="h-3 w-3 mr-1 text-gray-400" />
               <span>{formatDate(date)}</span>
