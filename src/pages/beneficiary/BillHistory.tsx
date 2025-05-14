@@ -14,7 +14,7 @@ const BillHistory = () => {
       </div>
 
       <Card>
-        <CardContent>
+        <CardContent className="p-0">
           <RequestsTable limit={5} showViewAll={false} showPagination={true} />
         </CardContent>
       </Card>
