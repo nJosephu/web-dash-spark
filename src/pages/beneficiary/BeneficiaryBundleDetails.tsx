@@ -153,16 +153,16 @@ const BeneficiaryBundleDetails = () => {
         status={componentStatus}
       />
 
+      {/* Stats cards */}
+      <StatCards
+        billsCount={billsCount}
+        approvedBills={approvedBills}
+        pendingBills={pendingBills}
+        rejectedBills={rejectedBills}
+      />
+
       {/* Bundle content */}
       <div className="md:col-span-2 space-y-6">
-        {/* Stats cards */}
-        <StatCards
-          billsCount={billsCount}
-          approvedBills={approvedBills}
-          pendingBills={pendingBills}
-          rejectedBills={rejectedBills}
-        />
-
         {/* Bundle items */}
         <BundleItems items={formattedBills} />
 
