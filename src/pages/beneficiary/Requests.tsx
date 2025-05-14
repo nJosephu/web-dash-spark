@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Filter, Plus, Search } from "lucide-react";
 import { toast } from "sonner";
 import CreateBundleSheet from "@/components/dashboard/CreateBundleSheet";
 import RequestCard from "@/components/dashboard/RequestCard";
+import RequestCardSkeleton from "@/components/dashboard/RequestCardSkeleton";
 import {
   Select,
   SelectContent,
@@ -13,87 +15,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-// Define request type
-interface Request {
-  id: string;
-  title: string;
-  amount: string;
-  date: string;
-  status: "pending" | "approved" | "rejected";
-  sponsor: string;
-  priority?: "high" | "medium" | "low";
-  description?: string;
-  items?: { name: string; amount: string }[];
-}
+import { useRequests } from "@/hooks/useRequests";
 
 const BeneficiaryRequests = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
 
-  const requestsData: Request[] = [
-    {
-      id: "REQ-001",
-      title: "Rent Payment",
-      amount: "₦120,000",
-      date: "2025-04-25",
-      status: "approved",
-      sponsor: "John Doe",
-      priority: "high",
-      description: "Monthly rent payment for apartment",
-      items: [{ name: "Rent", amount: "₦120,000" }],
-    },
-    {
-      id: "REQ-002",
-      title: "Electricity Bill",
-      amount: "₦45,000",
-      date: "2025-04-22",
-      status: "pending",
-      sponsor: "--",
-      priority: "medium",
-      description: "Monthly electricity bill payment",
-      items: [{ name: "Electricity", amount: "₦45,000" }],
-    },
-    {
-      id: "REQ-003",
-      title: "Water Bill",
-      amount: "₦15,000",
-      date: "2025-04-18",
-      status: "rejected",
-      sponsor: "Jane Smith",
-      priority: "low",
-      description: "Monthly water bill payment",
-      items: [{ name: "Water", amount: "₦15,000" }],
-    },
-    {
-      id: "REQ-004",
-      title: "Internet Payment",
-      amount: "₦25,000",
-      date: "2025-04-15",
-      status: "approved",
-      sponsor: "Mike Johnson",
-      priority: "medium",
-      description: "Monthly internet subscription",
-      items: [{ name: "Internet", amount: "₦25,000" }],
-    },
-    {
-      id: "REQ-005",
-      title: "School Fees",
-      amount: "₦180,000",
-      date: "2025-04-10",
-      status: "pending",
-      sponsor: "--",
-      priority: "high",
-      description: "Semester school fees payment",
-      items: [
-        { name: "Tuition", amount: "₦150,000" },
-        { name: "Books", amount: "₦30,000" },
-      ],
-    },
-  ];
+  const { 
+    requests, 
+    isLoading, 
+    error, 
+    requestsCount,
+    approvedRequests,
+    pendingRequests,
+    rejectedRequests,
+    cancelRequest,
+    sendReminder
+  } = useRequests();
 
   // Filter and search functionality
-  const filteredRequests = requestsData.filter((request) => {
+  const filteredRequests = requests.filter((request) => {
     // Apply status filter if selected
     if (
       statusFilter &&
@@ -107,18 +48,31 @@ const BeneficiaryRequests = () => {
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       return (
-        request.title.toLowerCase().includes(query) ||
-        request.id.toLowerCase().includes(query) ||
-        request.sponsor.toLowerCase().includes(query)
+        request.name.toLowerCase().includes(query) ||
+        request.displayId.toLowerCase().includes(query) ||
+        (request.supporter?.name || "").toLowerCase().includes(query)
       );
     }
 
     return true;
   });
 
+  const handleCancelRequest = (requestId: string) => {
+    cancelRequest(requestId);
+  };
+
+  const handleSendReminder = (requestId: string) => {
+    sendReminder(requestId);
+  };
+
   const handleCreateRequest = () => {
     // We're using the existing CreateBundleSheet component which has toast functionality built in
   };
+
+  // Create array of skeletons for loading state
+  const skeletons = Array(6).fill(0).map((_, index) => (
+    <RequestCardSkeleton key={`skeleton-${index}`} />
+  ));
 
   return (
     <div className="">
@@ -145,7 +99,7 @@ const BeneficiaryRequests = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{requestsData.length}</div>
+            <div className="text-2xl font-bold">{requestsCount}</div>
           </CardContent>
         </Card>
         <Card>
@@ -156,7 +110,7 @@ const BeneficiaryRequests = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">
-              {requestsData.filter((req) => req.status === "approved").length}
+              {approvedRequests}
             </div>
           </CardContent>
         </Card>
@@ -168,7 +122,7 @@ const BeneficiaryRequests = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-yellow-600">
-              {requestsData.filter((req) => req.status === "pending").length}
+              {pendingRequests}
             </div>
           </CardContent>
         </Card>
@@ -180,7 +134,7 @@ const BeneficiaryRequests = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-red-600">
-              {requestsData.filter((req) => req.status === "rejected").length}
+              {rejectedRequests}
             </div>
           </CardContent>
         </Card>
@@ -222,30 +176,45 @@ const BeneficiaryRequests = () => {
                 <SelectContent>
                   <SelectGroup>
                     <SelectItem value="all">All Requests</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="approved">Approved</SelectItem>
-                    <SelectItem value="rejected">Rejected</SelectItem>
+                    <SelectItem value="PENDING">Pending</SelectItem>
+                    <SelectItem value="APPROVED">Approved</SelectItem>
+                    <SelectItem value="REJECTED">Rejected</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
             </div>
           </div>
         </CardHeader>
-        {filteredRequests.length > 0 ? (
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
+            {skeletons}
+          </div>
+        ) : error ? (
+          <div className="text-center py-12 bg-white rounded-lg border">
+            <p className="text-red-500 mb-4">{error instanceof Error ? error.message : "An error occurred"}</p>
+            <Button 
+              onClick={() => window.location.reload()}
+              className="bg-[#6544E4] hover:bg-[#5A3DD0]"
+            >
+              Retry
+            </Button>
+          </div>
+        ) : filteredRequests.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
             {filteredRequests.map((request) => (
               <RequestCard
                 key={request.id}
                 id={request.id}
-                title={request.title}
-                amount={request.amount}
-                date={request.date}
+                displayId={request.displayId}
+                title={request.name}
+                amount={request.totalAmount}
+                date={request.createdAt}
                 status={request.status}
                 sponsor={{
-                  name:
-                    request.sponsor !== "--" ? request.sponsor : "No sponsor",
+                  name: request.supporter?.name || "No sponsor",
                 }}
-                priority={request.priority}
+                onCancel={handleCancelRequest}
+                onRemind={handleSendReminder}
               />
             ))}
           </div>

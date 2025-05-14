@@ -6,28 +6,37 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Calendar, Copy, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { toast } from "sonner";
+import { format } from "date-fns";
+
+interface RequestSponsor {
+  name: string;
+  avatar?: string;
+}
 
 interface RequestCardProps {
   id: string;
+  displayId: string;
   title: string;
-  amount: string;
+  amount: number;
   date: string;
-  status: "pending" | "approved" | "rejected" | "cancelled";
-  sponsor: {
-    name: string;
-    avatar?: string;
-  };
-  priority?: "high" | "medium" | "low";
+  status: "PENDING" | "APPROVED" | "REJECTED" | "CANCELLED";
+  sponsor: RequestSponsor;
+  priority?: "HIGH" | "MEDIUM" | "LOW";
+  onCancel?: (id: string) => void;
+  onRemind?: (id: string) => void;
 }
 
 const RequestCard = ({
   id,
+  displayId,
   title,
   amount,
   date,
   status,
   sponsor,
   priority,
+  onCancel,
+  onRemind,
 }: RequestCardProps) => {
   const location = useLocation();
   const isSponsor = location.pathname.includes("/dashboard/sponsor");
@@ -39,11 +48,11 @@ const RequestCard = ({
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "approved":
+      case "APPROVED":
         return "bg-green-100 text-green-800";
-      case "pending":
+      case "PENDING":
         return "bg-yellow-100 text-yellow-800";
-      case "rejected":
+      case "REJECTED":
         return "bg-red-100 text-red-800";
       default:
         return "bg-gray-100 text-gray-800";
@@ -52,11 +61,11 @@ const RequestCard = ({
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case "high":
+      case "HIGH":
         return "bg-red-100 text-red-800 border-red-200";
-      case "medium":
+      case "MEDIUM":
         return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      case "low":
+      case "LOW":
         return "bg-blue-100 text-blue-800 border-blue-200";
       default:
         return "bg-gray-100 text-gray-800 border-gray-200";
@@ -72,21 +81,32 @@ const RequestCard = ({
   };
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
+    try {
+      return format(new Date(dateString), "MMM d, yyyy");
+    } catch (error) {
+      return "Invalid date";
+    }
   };
   
   const handleCancel = () => {
-    toast.success(`Request ${id} has been cancelled`);
+    if (onCancel) {
+      onCancel(id);
+    }
   };
   
   const handleRemind = () => {
-    toast.success(`Reminder sent to ${sponsor.name}`);
+    if (onRemind) {
+      onRemind(id);
+    }
   };
+
+  // Format the amount as currency in Naira
+  const formattedAmount = new Intl.NumberFormat('en-NG', {
+    style: 'currency',
+    currency: 'NGN',
+    currencyDisplay: 'symbol',
+    minimumFractionDigits: 0,
+  }).format(amount);
 
   return (
     <Card className="overflow-hidden border border-gray-200 rounded-lg ">
@@ -95,7 +115,7 @@ const RequestCard = ({
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5">
             <Copy className="h-3.5 w-3.5 text-gray-400" />
-            <span className="text-xs font-medium text-gray-500">{id}</span>
+            <span className="text-xs font-medium text-gray-500">{displayId}</span>
           </div>
           <Badge
             className={`${getStatusColor(
@@ -117,7 +137,7 @@ const RequestCard = ({
           {/* Amount */}
           <div className="flex justify-between items-center">
             <span className="text-xs text-gray-500">Amount</span>
-            <span className="text-sm font-semibold">{amount}</span>
+            <span className="text-sm font-semibold">{formattedAmount}</span>
           </div>
 
           {/* Due date */}
@@ -160,7 +180,7 @@ const RequestCard = ({
           </Button>
 
           {/* Cancel and Remind - shown only if not approved and only for beneficiaries */}
-          {!isSponsor && status === "pending" && (
+          {!isSponsor && status === "PENDING" && (
             <div className="flex gap-2">
               <Button
                 onClick={handleCancel}
