@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -33,7 +32,7 @@ const BundleSummary: React.FC<BundleSummaryProps> = ({
       .join("")
       .toUpperCase();
   };
-  
+
   const formatDate = (dateString?: string) => {
     if (!dateString) return "N/A";
     try {
@@ -64,7 +63,7 @@ const BundleSummary: React.FC<BundleSummaryProps> = ({
             </div>
           )}
 
-          {dueDate && (
+          {/* {dueDate && (
             <div>
               <h4 className="text-sm font-medium text-gray-500 mb-2">
                 Due Date
@@ -74,7 +73,7 @@ const BundleSummary: React.FC<BundleSummaryProps> = ({
                 <span>{formatDate(dueDate)}</span>
               </div>
             </div>
-          )}
+          )} */}
 
           <div>
             <h4 className="text-sm font-medium text-gray-500 mb-2">

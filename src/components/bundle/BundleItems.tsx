@@ -8,6 +8,7 @@ interface BundleItem {
   amount: string;
   priority?: "high" | "medium" | "low";
   category?: string;
+  duedates?: string;
 }
 
 interface BundleItemsProps {
@@ -25,6 +26,17 @@ const BundleItems: React.FC<BundleItemsProps> = ({ items }) => {
         return "bg-blue-100 text-blue-800";
       default:
         return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return "N/A";
+    try {
+      const date = parseISO(dateString);
+      return format(date, "MMM dd, yyyy");
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return "Invalid Date";
     }
   };
 
@@ -59,6 +71,9 @@ const BundleItems: React.FC<BundleItemsProps> = ({ items }) => {
                       {item.priority}
                     </Badge>
                   )}
+                  <p className="tracking-widest text-xs font-regular text-gray-500 uppercase">
+                    due date : {formatDate(item.duedates)}
+                  </p>
                 </div>
               </div>
               <span className="font-medium">{item.amount}</span>

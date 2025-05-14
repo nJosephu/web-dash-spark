@@ -169,6 +169,7 @@ const BeneficiaryBundleDetails = () => {
     }).format(bill.amount),
     priority: bill.priority.toLowerCase() as "high" | "medium" | "low",
     category: bill.type,
+    duedates: bill.dueDate,
   }));
 
   return (
