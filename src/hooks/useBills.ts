@@ -7,7 +7,7 @@ import { toast } from "sonner";
 export function useBills() {
   const queryClient = useQueryClient();
 
-  // Query to fetch bills with improved configuration
+  // Query to fetch bills
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: [BILLS_QUERY_KEY],
     queryFn: fetchBills,
@@ -21,7 +21,7 @@ export function useBills() {
       createBill(billData, providerName),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [BILLS_QUERY_KEY] });
-      refetch(); // Explicitly refetch after creating
+      refetch();
       toast.success("Bill created successfully");
     },
     onError: (error: Error) => {
@@ -29,21 +29,15 @@ export function useBills() {
     },
   });
 
-  // Fixed mutation to delete a bill - using proper mutation function call
+  // Mutation to delete a bill
   const deleteBillMutation = useMutation({
-    mutationFn: (billId: string) => {
-      console.log("deleteBill mutation called with ID:", billId);
-      return deleteBill(billId);
-    },
+    mutationFn: (billId: string) => deleteBill(billId),
     onSuccess: () => {
-      console.log("Bill deleted successfully, invalidating queries");
       queryClient.invalidateQueries({ queryKey: [BILLS_QUERY_KEY] });
-      // Explicitly refetch to ensure UI updates
       refetch();
       toast.success("Bill deleted successfully");
     },
     onError: (error: Error) => {
-      console.error("Failed to delete bill:", error);
       toast.error(error.message || "Failed to delete bill");
     },
   });
@@ -55,7 +49,7 @@ export function useBills() {
     refetch,
     createBill: createBillMutation.mutate,
     isCreating: createBillMutation.isPending,
-    deleteBill: deleteBillMutation.mutateAsync, // Changed to mutateAsync to support direct awaiting
+    deleteBill: deleteBillMutation.mutateAsync,
     isDeleting: deleteBillMutation.isPending,
   };
 }

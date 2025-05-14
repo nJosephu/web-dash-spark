@@ -51,14 +51,6 @@ export default function BillsList({ bills, onRemoveBill }: BillsListProps) {
 
   const promptDeleteBill = (index: number) => {
     const bill = bills[index];
-    console.log(`Prompting to delete bill at index ${index}:`, bill);
-    
-    if (bill.id) {
-      console.log(`Bill has ID: ${bill.id}`);
-    } else {
-      console.log(`Bill at index ${index} has no ID`);
-    }
-    
     setBillToDelete({ index, id: bill.id });
     setConfirmDialogOpen(true);
   };
@@ -72,19 +64,14 @@ export default function BillsList({ bills, onRemoveBill }: BillsListProps) {
 
     try {
       if (id) {
-        console.log(`Attempting to delete bill with ID: ${id}`);
-        // Direct call to deleteBill without using the callback syntax
         await deleteBill(id);
-        console.log(`Bill ${id} deletion API call completed`);
         onRemoveBill(index);
-        refetch(); // Explicitly refetch data
+        refetch();
       } else {
         // If no ID, it's not saved on the server yet, just remove locally
-        console.log("No ID found for bill, removing locally only");
         onRemoveBill(index);
       }
     } catch (err) {
-      console.error("Error in bill deletion process:", err);
       toast.error("Failed to delete bill. Please try again.");
     } finally {
       setDeletingIndex(null);

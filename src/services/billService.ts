@@ -25,7 +25,7 @@ export interface Bill {
   requestId: string | null;
   createdAt: string;
   updatedAt: string;
-  providerName?: string; // Add provider name for display purposes
+  providerName?: string;
   provider?: {
     name: string;
   };
@@ -48,7 +48,6 @@ export const BILLS_QUERY_KEY = "bills";
 // Create a new bill
 export const createBill = async (billData: CreateBillRequest, providerName?: string): Promise<BillResponse> => {
   try {
-    console.log("Creating bill with data:", billData);
     const token = authService.getToken();
     
     if (!token) {
@@ -67,7 +66,6 @@ export const createBill = async (billData: CreateBillRequest, providerName?: str
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("Bill creation failed:", data);
       throw new Error(data.message || "Failed to create bill");
     }
 
@@ -76,7 +74,6 @@ export const createBill = async (billData: CreateBillRequest, providerName?: str
       data.bill.providerName = providerName;
     }
 
-    console.log("Bill created successfully:", data);
     return data;
   } catch (error) {
     console.error("Error creating bill:", error);
@@ -87,7 +84,6 @@ export const createBill = async (billData: CreateBillRequest, providerName?: str
 // Get all bills
 export const fetchBills = async (): Promise<BillsResponse> => {
   try {
-    console.log("Fetching bills...");
     const token = authService.getToken();
     
     if (!token) {
@@ -104,12 +100,10 @@ export const fetchBills = async (): Promise<BillsResponse> => {
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error("Bills fetch failed:", errorData);
       throw new Error(errorData.message || "Failed to fetch bills");
     }
 
     const data = await response.json();
-    console.log("Bills fetched successfully:", data);
     return data;
   } catch (error) {
     console.error("Error fetching bills:", error);
@@ -120,7 +114,6 @@ export const fetchBills = async (): Promise<BillsResponse> => {
 // Delete a bill
 export const deleteBill = async (billId: string): Promise<{ message: string }> => {
   try {
-    console.log(`Deleting bill with ID: ${billId}`);
     const token = authService.getToken();
     
     if (!token) {
@@ -137,12 +130,10 @@ export const deleteBill = async (billId: string): Promise<{ message: string }> =
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error("Bill deletion failed:", errorData);
       throw new Error(errorData.message || "Failed to delete bill");
     }
 
     const data = await response.json();
-    console.log("Bill deleted successfully:", data);
     return data;
   } catch (error) {
     console.error("Error deleting bill:", error);
