@@ -145,7 +145,7 @@ const BeneficiaryBundleDetails = () => {
   }));
 
   return (
-    <div className="max-w-[100vw] overflow-x-hidden p-4 pt-0 md:p-6 md:pt-0">
+    <div className="">
       {/* Bundle header and stats card wrapped in a Card component */}
       <Card className="mb-6">
         <CardContent className="p-6">
