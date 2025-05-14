@@ -51,6 +51,13 @@ export default function BillsList({ bills, onRemoveBill }: BillsListProps) {
   const promptDeleteBill = (index: number) => {
     const bill = bills[index];
     console.log(`Prompting to delete bill at index ${index}:`, bill);
+    
+    if (bill.id) {
+      console.log(`Bill has ID: ${bill.id}`);
+    } else {
+      console.log(`Bill at index ${index} has no ID`);
+    }
+    
     setBillToDelete({ index, id: bill.id });
     setConfirmDialogOpen(true);
   };
@@ -107,6 +114,7 @@ export default function BillsList({ bills, onRemoveBill }: BillsListProps) {
                   <span className="text-xs text-gray-500">{bill.billType} - {bill.serviceProvider}</span>
                   <span className="text-sm font-medium mt-1">₦{bill.amount}</span>
                   <span className="text-xs text-gray-500">Due: {format(bill.dueDate, 'PP')}</span>
+                  {bill.id && <span className="text-xs text-blue-500">ID: {bill.id.substring(0, 8)}...</span>}
                 </div>
                 {bill.notes && (
                   <p className="text-xs text-gray-600 mt-1 line-clamp-1">{bill.notes}</p>

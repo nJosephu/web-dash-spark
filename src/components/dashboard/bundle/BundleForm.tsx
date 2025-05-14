@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -92,14 +91,22 @@ export default function BundleForm({
       };
 
       const response = await createBill(billData);
+      console.log("Bill created with ID:", response.bill.id);
+      
+      // Find provider name for display
+      const providerName = providers.find(p => p.id === data.serviceProvider)?.name || data.serviceProvider;
+      
+      // Add ID to the form data
+      const formDataWithId = {
+        ...data,
+        id: response.bill.id, // Store the ID from the API response
+      };
       
       // Call the onSubmit callback with the form data and bill ID
-      onSubmit(data);
+      onSubmit(formDataWithId);
       
       // Reset form
       resetForm();
-      
-      // Remove toast notification from here as it's already in the parent component
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Failed to create bill";
       toast.error(`Error: ${errorMessage}`);
@@ -124,14 +131,22 @@ export default function BundleForm({
       };
 
       const response = await createBill(billData);
+      console.log("Bill created with ID:", response.bill.id);
+      
+      // Find provider name for display
+      const providerName = providers.find(p => p.id === data.serviceProvider)?.name || data.serviceProvider;
+      
+      // Add ID to the form data before passing it up
+      const formDataWithId = {
+        ...data,
+        id: response.bill.id, // Store the ID from the API response
+      };
       
       // Call the onAddAnotherBill callback with the form data and bill ID
-      onAddAnotherBill(data, response.bill.id);
+      onAddAnotherBill(formDataWithId, response.bill.id);
       
       // Reset form
       resetForm();
-      
-      // Remove toast notification from here as it's already in the parent component
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Failed to create bill";
       toast.error(`Error: ${errorMessage}`);

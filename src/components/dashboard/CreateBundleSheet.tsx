@@ -103,10 +103,10 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
     // This function handles the form submission from BundleForm
     if (bills.length === 0) {
       // If no bills yet, add the first one and stay on the bills step
-      handleAddAnotherBill(data, "");
+      handleAddAnotherBill(data, data.id || "");
     } else {
       // If there are already bills, add this one and move to summary
-      handleAddAnotherBill(data, "");
+      handleAddAnotherBill(data, data.id || "");
       setCurrentStep(BundleStep.SUMMARY);
       // Scroll to the top when moving to summary
       scrollToTop();
@@ -184,11 +184,14 @@ export default function CreateBundleSheet({ trigger }: CreateBundleSheetProps) {
     // Find the provider name based on the selected provider ID
     const providerName = providers?.find(p => p.id === data.serviceProvider)?.name || data.serviceProvider;
     
+    console.log(`Adding bill with ID: ${billId} to bundle`);
+    
     setBillsWithIds([...billsWithIds, { 
       formData: {
         ...data,
-        // Ensure we store the provider name in the form data
-        serviceProvider: providerName
+        // Ensure we store the provider name AND the ID in the form data
+        serviceProvider: providerName,
+        id: billId // Make sure the ID is stored in the form data
       }, 
       billId,
       providerName 
