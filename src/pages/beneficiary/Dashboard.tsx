@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { useAuth } from "@/context/AuthContext";
@@ -8,17 +7,27 @@ import RequestsTable from "@/components/dashboard/RequestsTable";
 import PromoBanner from "@/components/dashboard/PromoBanner";
 import { useRequests } from "@/hooks/useRequests";
 import { useCalculateDashboardMetrics } from "@/hooks/useCalculateDashboardMetrics";
-import { StatCardSkeleton, DonutChartSkeleton } from "@/components/dashboard/DashboardSkeleton";
+import {
+  StatCardSkeleton,
+  DonutChartSkeleton,
+} from "@/components/dashboard/DashboardSkeleton";
 
 const BeneficiaryDashboard = () => {
   const { user } = useAuth();
   const userName = user?.name || "User";
   const { requests, isLoading } = useRequests();
-  const { totalAmount, approvedAmount, rejectedAmount, pendingAmount, chartData } = 
-    useCalculateDashboardMetrics(requests);
+  const {
+    totalAmount,
+    approvedAmount,
+    rejectedAmount,
+    pendingAmount,
+    chartData,
+  } = useCalculateDashboardMetrics(requests);
 
   useEffect(() => {
     document.title = "Beneficiary Dashboard | Urgent2kay";
+    // Smooth scroll to top on mount
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   return (

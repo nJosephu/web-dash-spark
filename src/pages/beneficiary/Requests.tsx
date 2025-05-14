@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Filter, Plus, Search } from "lucide-react";
@@ -31,6 +31,11 @@ const BeneficiaryRequests = () => {
     cancelRequest,
     sendReminder,
   } = useRequests();
+
+  useEffect(() => {
+    // Smooth scroll to top on mount
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   // Filter and search functionality
   const filteredRequests = requests.filter((request) => {
