@@ -78,7 +78,7 @@ const BundleHeader: React.FC<BundleHeaderProps> = ({
           <h1 className="text-2xl font-bold mb-1">{title}</h1>
           <p className="text-gray-500">Created on {formatDate(date)}</p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-3">
+        {/* <div className="flex flex-col sm:flex-row gap-3">
           {status === "pending" && (
             <>
               <Button
@@ -102,7 +102,7 @@ const BundleHeader: React.FC<BundleHeaderProps> = ({
               Download Receipt
             </Button>
           )}
-        </div>
+        </div> */}
       </div>
     </>
   );
