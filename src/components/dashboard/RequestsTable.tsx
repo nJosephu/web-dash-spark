@@ -238,8 +238,8 @@ const RequestsTable = ({
       <div className="overflow-x-auto">
         {currentBills.length > 0 ? (
           <Table>
-            <TableHeader className="bg-[#F3F1F1]">
-              <TableRow>
+            <TableHeader className="bg-[#F3F1F1] border-0">
+              <TableRow className="border-0">
                 <TableHead className="text-xs uppercase">Bill Name</TableHead>
                 <TableHead className="text-xs uppercase">Provider</TableHead>
                 <TableHead className="text-xs uppercase">Bill Status</TableHead>
