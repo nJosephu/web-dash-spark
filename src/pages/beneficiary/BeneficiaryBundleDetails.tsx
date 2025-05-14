@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -13,6 +14,7 @@ import { Bell, X } from "lucide-react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRequest } from "@/hooks/useRequest";
+import { Card, CardContent } from "@/components/ui/card";
 
 const BeneficiaryBundleDetails = () => {
   const { bundleId } = useParams<{ bundleId: string }>();
@@ -145,21 +147,28 @@ const BeneficiaryBundleDetails = () => {
 
   return (
     <div className="max-w-[100vw] overflow-x-hidden p-4 pt-0 md:p-6 md:pt-0">
-      {/* Bundle header with navigation and action buttons */}
-      <BundleHeader
-        id={request.formattedId || `UZK-${request.id.substring(0, 6)}`}
-        title={request.name}
-        date={request.createdAt}
-        status={componentStatus}
-      />
+      {/* Bundle header and stats card wrapped in a Card component */}
+      <Card className="mb-6">
+        <CardContent className="p-6">
+          {/* Bundle header with navigation and action buttons */}
+          <BundleHeader
+            id={request.formattedId || `UZK-${request.id.substring(0, 6)}`}
+            title={request.name}
+            date={request.createdAt}
+            status={componentStatus}
+          />
 
-      {/* Stats cards */}
-      <StatCards
-        billsCount={billsCount}
-        approvedBills={approvedBills}
-        pendingBills={pendingBills}
-        rejectedBills={rejectedBills}
-      />
+          {/* Stats cards */}
+          <div className="mt-6">
+            <StatCards
+              billsCount={billsCount}
+              approvedBills={approvedBills}
+              pendingBills={pendingBills}
+              rejectedBills={rejectedBills}
+            />
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Bundle content */}
       <div className="md:col-span-2 space-y-6">
