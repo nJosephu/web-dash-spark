@@ -46,10 +46,10 @@ const StatCards: React.FC<StatCardsProps> = ({
     }
   };
 
-  // For sponsor view (with amount, date and priority)
-  if (amount && date) {
+  // For sponsor view (with amount only, removed date and priority)
+  if (amount) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-1 gap-4">
         <Card className="border">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
@@ -60,35 +60,6 @@ const StatCards: React.FC<StatCardsProps> = ({
             <div className="text-xl font-bold">{amount}</div>
           </CardContent>
         </Card>
-
-        <Card className="border">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-gray-500">
-              Due Date
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center">
-              <Calendar className="h-4 w-4 mr-2 text-gray-500" />
-              <span>{formatDate(date)}</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        {priority && (
-          <Card className="border">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-500">
-                Priority
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Badge className={`${getPriorityColor(priority)} capitalize`}>
-                {priority}
-              </Badge>
-            </CardContent>
-          </Card>
-        )}
       </div>
     );
   }
