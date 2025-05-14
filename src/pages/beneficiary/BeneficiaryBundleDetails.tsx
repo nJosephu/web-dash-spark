@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -222,47 +221,50 @@ const BeneficiaryBundleDetails = () => {
             createdAt={request.createdAt}
             dueDate={request.earliestDueDate}
           />
-
-          {/* Beneficiary-specific action buttons */}
-          {componentStatus === "pending" && (
-            <div className="flex flex-col sm:flex-row gap-4 mt-6">
-              <Button
-                onClick={handleDeleteRequest}
-                variant="outline"
-                className="w-full border-red-200 text-red-600 hover:bg-red-50"
-                disabled={isDeleting}
-              >
-                {isDeleting ? (
-                  <Loader className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <X className="mr-2 h-4 w-4" />
-                )}
-                {isDeleting ? "Deleting..." : "Delete Request"}
-              </Button>
-              <Button
-                onClick={handleSendReminder}
-                className="w-full bg-[#6544E4] hover:bg-[#5A3DD0]"
-              >
-                <Bell className="mr-2 h-4 w-4" />
-                Send Reminder
-              </Button>
-            </div>
-          )}
         </div>
 
         {/* Activity log */}
         <div>
           <ActivityLog activities={request.activityLog || []} />
         </div>
+
+        {/* Beneficiary-specific action buttons */}
+        {componentStatus === "pending" && (
+          <div className="flex flex-col sm:flex-row gap-4 mt-6">
+            <Button
+              onClick={handleDeleteRequest}
+              variant="outline"
+              className="w-full border-red-200 text-red-600 hover:bg-red-50"
+              disabled={isDeleting}
+            >
+              {isDeleting ? (
+                <Loader className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <X className="mr-2 h-4 w-4" />
+              )}
+              {isDeleting ? "Deleting..." : "Delete Request"}
+            </Button>
+            <Button
+              onClick={handleSendReminder}
+              className="w-full bg-[#6544E4] hover:bg-[#5A3DD0]"
+            >
+              <Bell className="mr-2 h-4 w-4" />
+              Send Reminder
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the 
+              This action cannot be undone. This will permanently delete the
               request "{request.name}" and remove it from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>
