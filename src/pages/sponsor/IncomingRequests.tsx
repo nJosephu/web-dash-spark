@@ -14,56 +14,61 @@ import {
 import { Search } from "lucide-react";
 import RequestCard from "@/components/dashboard/RequestCard";
 
-// Define the types for status and priority to match RequestCard props
-type RequestStatus = "pending" | "approved" | "rejected" | "cancelled";
-type RequestPriority = "high" | "medium" | "low";
+// Update type definitions to match API response structure
+type RequestStatus = "PENDING" | "APPROVED" | "REJECTED" | "CANCELLED";
+type RequestPriority = "HIGH" | "MEDIUM" | "LOW";
 
-// Mock data to demonstrate functionality
+// Mock data to demonstrate functionality with corrected types
 const mockRequests = [
   {
     id: "REQ-001",
+    displayId: "REQ-001",
     title: "Electricity bill payment",
-    amount: "₦15,000",
-    date: "May 3, 2025",
-    status: "pending" as RequestStatus,
+    amount: 15000, // Changed from string to number
+    date: "2025-05-03T12:00:00.000Z",
+    status: "PENDING" as RequestStatus, // Changed from lowercase to uppercase
     sponsor: { name: "N/A" },
-    priority: "high" as RequestPriority,
+    priority: "HIGH" as RequestPriority, // Changed from lowercase to uppercase
   },
   {
     id: "REQ-002",
+    displayId: "REQ-002",
     title: "Water bill payment",
-    amount: "₦8,500",
-    date: "May 2, 2025",
-    status: "approved" as RequestStatus,
+    amount: 8500, // Changed from string to number
+    date: "2025-05-02T12:00:00.000Z",
+    status: "APPROVED" as RequestStatus, // Changed from lowercase to uppercase
     sponsor: { name: "John Doe" },
-    priority: "medium" as RequestPriority,
+    priority: "MEDIUM" as RequestPriority, // Changed from lowercase to uppercase
   },
   {
     id: "REQ-003",
+    displayId: "REQ-003",
     title: "Internet bill payment",
-    amount: "₦12,000",
-    date: "May 1, 2025",
-    status: "pending" as RequestStatus,
+    amount: 12000, // Changed from string to number
+    date: "2025-05-01T12:00:00.000Z",
+    status: "PENDING" as RequestStatus, // Changed from lowercase to uppercase
     sponsor: { name: "N/A" },
-    priority: "low" as RequestPriority,
+    priority: "LOW" as RequestPriority, // Changed from lowercase to uppercase
   },
   {
     id: "REQ-004",
+    displayId: "REQ-004",
     title: "School fees payment",
-    amount: "₦45,000",
-    date: "April 30, 2025",
-    status: "rejected" as RequestStatus,
+    amount: 45000, // Changed from string to number
+    date: "2025-04-30T12:00:00.000Z",
+    status: "REJECTED" as RequestStatus, // Changed from lowercase to uppercase
     sponsor: { name: "N/A" },
-    priority: "high" as RequestPriority,
+    priority: "HIGH" as RequestPriority, // Changed from lowercase to uppercase
   },
   {
     id: "REQ-005",
+    displayId: "REQ-005",
     title: "Medical bill payment",
-    amount: "₦22,500",
-    date: "April 29, 2025",
-    status: "approved" as RequestStatus,
+    amount: 22500, // Changed from string to number
+    date: "2025-04-29T12:00:00.000Z",
+    status: "APPROVED" as RequestStatus, // Changed from lowercase to uppercase
     sponsor: { name: "Sarah Johnson" },
-    priority: "high" as RequestPriority,
+    priority: "HIGH" as RequestPriority, // Changed from lowercase to uppercase
   },
 ];
 
@@ -84,9 +89,9 @@ const SponsorIncomingRequests = () => {
     }
 
     // Filter by tab
-    if (activeTab === "pending" && request.status !== "pending") return false;
-    if (activeTab === "approved" && request.status !== "approved") return false;
-    if (activeTab === "rejected" && request.status !== "rejected") return false;
+    if (activeTab === "pending" && request.status !== "PENDING") return false;
+    if (activeTab === "approved" && request.status !== "APPROVED") return false;
+    if (activeTab === "rejected" && request.status !== "REJECTED") return false;
 
     // Filter by priority
     if (priorityFilter !== "all" && request.priority !== priorityFilter) return false;
@@ -141,9 +146,9 @@ const SponsorIncomingRequests = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All priorities</SelectItem>
-              <SelectItem value="high">High priority</SelectItem>
-              <SelectItem value="medium">Medium priority</SelectItem>
-              <SelectItem value="low">Low priority</SelectItem>
+              <SelectItem value="HIGH">High priority</SelectItem>
+              <SelectItem value="MEDIUM">Medium priority</SelectItem>
+              <SelectItem value="LOW">Low priority</SelectItem>
             </SelectContent>
           </Select>
 
@@ -156,9 +161,9 @@ const SponsorIncomingRequests = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All statuses</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="approved">Approved</SelectItem>
-              <SelectItem value="rejected">Rejected</SelectItem>
+              <SelectItem value="PENDING">Pending</SelectItem>
+              <SelectItem value="APPROVED">Approved</SelectItem>
+              <SelectItem value="REJECTED">Rejected</SelectItem>
             </SelectContent>
           </Select>
 
@@ -181,6 +186,7 @@ const SponsorIncomingRequests = () => {
               <Card key={request.id} className="p-4">
                 <RequestCard
                   id={request.id}
+                  displayId={request.displayId}
                   title={request.title}
                   amount={request.amount}
                   date={request.date}
@@ -203,6 +209,7 @@ const SponsorIncomingRequests = () => {
               <Card key={request.id} className="p-4">
                 <RequestCard
                   id={request.id}
+                  displayId={request.displayId}
                   title={request.title}
                   amount={request.amount}
                   date={request.date}
@@ -225,6 +232,7 @@ const SponsorIncomingRequests = () => {
               <Card key={request.id} className="p-4">
                 <RequestCard
                   id={request.id}
+                  displayId={request.displayId}
                   title={request.title}
                   amount={request.amount}
                   date={request.date}
@@ -247,6 +255,7 @@ const SponsorIncomingRequests = () => {
               <Card key={request.id} className="p-4">
                 <RequestCard
                   id={request.id}
+                  displayId={request.displayId}
                   title={request.title}
                   amount={request.amount}
                   date={request.date}
