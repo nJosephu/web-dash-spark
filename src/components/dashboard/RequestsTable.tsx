@@ -189,8 +189,8 @@ const RequestsTable = ({
   }
 
   return (
-    <div className="bg-white rounded-lg">
-      <div className="p-4 flex flex-col md:flex-row justify-between items-start md:items-center border-b gap-3">
+    <div className="bg-white rounded-lg p-4">
+      <div className="py-4 flex flex-col md:flex-row justify-between items-start md:items-center border-b gap-3">
         <div className="flex justify-between items-center w-full">
           <h3 className="font-medium">Bill request history</h3>
           {showViewAll && (
