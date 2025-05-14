@@ -8,6 +8,7 @@ import StatCard from "@/components/dashboard/StatCard";
 import DonutChart from "@/components/dashboard/DonutChart";
 import { Link } from "react-router-dom";
 import { StatCardSkeleton, DonutChartSkeleton } from "@/components/dashboard/DashboardSkeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const SponsorDashboard = () => {
   const { user } = useAuth();
