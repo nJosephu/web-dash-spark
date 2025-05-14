@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -152,7 +151,7 @@ const BeneficiaryBundleDetails = () => {
         <CardContent className="p-6">
           {/* Bundle header with navigation and action buttons */}
           <BundleHeader
-            id={request.formattedId || `UZK-${request.id.substring(0, 6)}`}
+            id={request.formattedId || `REQ-${request.id.substring(0, 6)}`}
             title={request.name}
             date={request.createdAt}
             status={componentStatus}
