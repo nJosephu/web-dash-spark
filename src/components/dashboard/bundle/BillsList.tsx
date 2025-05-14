@@ -1,12 +1,13 @@
 
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { X, Loader2 } from "lucide-react";
 import { FormValues } from "@/types/bundle";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { useBills } from "@/hooks/useBills";
 import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,7 +29,7 @@ export default function BillsList({ bills, onRemoveBill }: BillsListProps) {
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [billToDelete, setBillToDelete] = useState<{ index: number, id?: string } | null>(null);
   
-  const { deleteBill, refetch } = useBills();
+  const { deleteBill, refetch, isDeleting } = useBills();
 
   if (bills.length === 0) {
     return null;
@@ -101,7 +102,14 @@ export default function BillsList({ bills, onRemoveBill }: BillsListProps) {
       <h3 className="text-sm font-medium mb-2">Bills added to bundle ({bills.length})</h3>
       <div className="space-y-3">
         {bills.map((bill, index) => (
-          <div key={index} className="flex flex-col p-3 bg-[#F1EDFF] rounded-md">
+          <div key={index} className="flex flex-col p-3 bg-[#F1EDFF] rounded-md relative">
+            {deletingIndex === index && (
+              <div className="absolute inset-0 bg-white/70 rounded-md z-10 flex items-center justify-center">
+                <Skeleton className="w-full h-full absolute inset-0 bg-white/70 rounded-md" />
+                <Loader2 className="h-6 w-6 text-[#6544E4] animate-spin z-20" />
+              </div>
+            )}
+            
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center space-x-2">
