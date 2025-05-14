@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -28,53 +29,37 @@ const BundleItems: React.FC<BundleItemsProps> = ({ items }) => {
     }
   };
 
-  // Group bundle items by category
-  const groupedItems: Record<string, BundleItem[]> = {};
-  items.forEach((item) => {
-    const category = item.category || "Other";
-    if (!groupedItems[category]) {
-      groupedItems[category] = [];
-    }
-    groupedItems[category].push(item);
-  });
-
   return (
     <Card className="border">
       <CardHeader>
         <CardTitle>Bundle Items</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-6">
-          {Object.entries(groupedItems).map(([category, items]) => (
-            <div key={category}>
-              <div className="space-y-3">
-                {items.map((item, index) => (
-                  <div
-                    key={index}
-                    className="flex justify-between items-center p-3 bg-gray-50 rounded-md border border-gray-100"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="bg-[#6544E4]/10 p-2 rounded">
-                        <Package className="h-5 w-5 text-[#6544E4]" />
-                      </div>
-                      <div>
-                        <p className="font-medium">{item.name}</p>
-                        {item.priority && (
-                          <Badge
-                            className={`${getPriorityColor(
-                              item.priority
-                            )} capitalize mt-1 text-xs`}
-                            variant="outline"
-                          >
-                            {item.priority}
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                    <span className="font-semibold">{item.amount}</span>
-                  </div>
-                ))}
+        <div className="space-y-3">
+          {items.map((item, index) => (
+            <div
+              key={index}
+              className="flex justify-between items-center p-3 bg-gray-50 rounded-md border border-gray-100"
+            >
+              <div className="flex items-center gap-3">
+                <div className="bg-[#6544E4]/10 p-2 rounded">
+                  <Package className="h-5 w-5 text-[#6544E4]" />
+                </div>
+                <div>
+                  <p className="font-medium">{item.name}</p>
+                  {item.priority && (
+                    <Badge
+                      className={`${getPriorityColor(
+                        item.priority
+                      )} capitalize mt-1 text-xs`}
+                      variant="outline"
+                    >
+                      {item.priority}
+                    </Badge>
+                  )}
+                </div>
               </div>
+              <span className="font-semibold">{item.amount}</span>
             </div>
           ))}
         </div>
