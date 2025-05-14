@@ -23,7 +23,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { fetchBills, Bill } from "@/services/billService";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -36,6 +35,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useBills } from "@/hooks/useBills";
+import { Bill } from "@/services/billService";
 
 interface RequestsTableProps {
   limit?: number;
@@ -48,33 +49,12 @@ const RequestsTable = ({
   showViewAll = true,
   showPagination = true,
 }: RequestsTableProps) => {
-  const [bills, setBills] = useState<Bill[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { bills, isLoading, error, deleteBill: deleteBillAction } = useBills();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedBill, setSelectedBill] = useState<Bill | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-
-  useEffect(() => {
-    const loadBills = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await fetchBills();
-        setBills(response.bills);
-      } catch (err) {
-        console.error("Error loading bills:", err);
-        setError("Failed to load bills. Please try again later.");
-        toast.error("Failed to load bills. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadBills();
-  }, []);
 
   // Filter bills based on search query and status
   const filteredBills = bills.filter((bill) => {
@@ -149,7 +129,7 @@ const RequestsTable = ({
   };
 
   // Render loading state
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="bg-white rounded-lg">
         <div className="p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
@@ -176,8 +156,8 @@ const RequestsTable = ({
   // Render error state
   if (error) {
     return (
-      <div className="bg-white rounded-lg  p-8 text-center">
-        <p className="text-red-500 mb-4">{error}</p>
+      <div className="bg-white rounded-lg p-8 text-center">
+        <p className="text-red-500 mb-4">{error instanceof Error ? error.message : 'An error occurred'}</p>
         <Button
           onClick={() => window.location.reload()}
           className="bg-[#6544E4] hover:bg-[#5a3dd0]"

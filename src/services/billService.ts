@@ -42,6 +42,9 @@ export interface BillsResponse {
 
 const API_URL = "https://urgent-2kay-directed-bill-payment-system.onrender.com";
 
+// Cache key for React Query
+export const BILLS_QUERY_KEY = "bills";
+
 // Create a new bill
 export const createBill = async (billData: CreateBillRequest, providerName?: string): Promise<BillResponse> => {
   try {
