@@ -61,6 +61,9 @@ const BundleItems: React.FC<BundleItemsProps> = ({ items }) => {
                   <p className="tracking-widest text-xs font-regular text-gray-500 uppercase">
                     {item.category}
                   </p>
+                  <p className="tracking-widest text-xs font-regular text-gray-500 uppercase mt-1">
+                    due date : {formatDate(item.duedates)}
+                  </p>
                   <p className="font-medium">{item.name}</p>
                   {item.priority && (
                     <Badge
@@ -72,9 +75,6 @@ const BundleItems: React.FC<BundleItemsProps> = ({ items }) => {
                       {item.priority}
                     </Badge>
                   )}
-                  <p className="tracking-widest text-xs font-regular text-gray-500 uppercase">
-                    due date : {formatDate(item.duedates)}
-                  </p>
                 </div>
               </div>
               <span className="font-medium">{item.amount}</span>
