@@ -73,7 +73,7 @@ const BundleItems: React.FC<BundleItemsProps> = ({ items }) => {
                       {item.priority}
                     </Badge>
                   )}
-                  <p className="tracking-widest text-[10px] font-regular text-gray-500 uppercase mt-1">
+                  <p className="tracking-widest text-[10px] font-bold text-gray-500 uppercase mt-1">
                     due : {formatDate(item.duedates)}
                   </p>
                 </div>
