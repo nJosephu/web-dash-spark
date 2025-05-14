@@ -265,7 +265,7 @@ const BeneficiaryBundleDetails = () => {
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the
-              request "{request.name}" and remove from your the list of requests
+              request "{request.name}" and removed from your lists of requests
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
