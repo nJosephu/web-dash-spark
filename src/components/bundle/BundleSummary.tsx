@@ -1,22 +1,30 @@
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Calendar } from "lucide-react";
+import { format, parseISO } from "date-fns";
 
 interface Sponsor {
   name: string;
   avatar?: string;
+  email?: string;
 }
 
 interface BundleSummaryProps {
   description?: string;
   sponsor: Sponsor;
   amount: string;
+  createdAt?: string;
+  dueDate?: string;
 }
 
 const BundleSummary: React.FC<BundleSummaryProps> = ({
   description,
   sponsor,
   amount,
+  createdAt,
+  dueDate,
 }) => {
   const getInitials = (name: string) => {
     return name
@@ -24,6 +32,17 @@ const BundleSummary: React.FC<BundleSummaryProps> = ({
       .map((n) => n[0])
       .join("")
       .toUpperCase();
+  };
+  
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return "N/A";
+    try {
+      const date = parseISO(dateString);
+      return format(date, "MMM dd, yyyy");
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return "Invalid Date";
+    }
   };
 
   return (
@@ -33,6 +52,30 @@ const BundleSummary: React.FC<BundleSummaryProps> = ({
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
+          {createdAt && (
+            <div>
+              <h4 className="text-sm font-medium text-gray-500 mb-2">
+                Date Created
+              </h4>
+              <div className="flex items-center">
+                <Calendar className="h-4 w-4 mr-2 text-gray-400" />
+                <span>{formatDate(createdAt)}</span>
+              </div>
+            </div>
+          )}
+
+          {dueDate && (
+            <div>
+              <h4 className="text-sm font-medium text-gray-500 mb-2">
+                Due Date
+              </h4>
+              <div className="flex items-center">
+                <Calendar className="h-4 w-4 mr-2 text-gray-400" />
+                <span>{formatDate(dueDate)}</span>
+              </div>
+            </div>
+          )}
+
           <div>
             <h4 className="text-sm font-medium text-gray-500 mb-2">
               Description
@@ -49,7 +92,12 @@ const BundleSummary: React.FC<BundleSummaryProps> = ({
                 ) : null}
                 <AvatarFallback>{getInitials(sponsor.name)}</AvatarFallback>
               </Avatar>
-              <span>{sponsor.name}</span>
+              <div>
+                <div>{sponsor.name}</div>
+                {sponsor.email && (
+                  <div className="text-sm text-gray-500">{sponsor.email}</div>
+                )}
+              </div>
             </div>
           </div>
 

@@ -35,6 +35,11 @@ export interface RequestsResponse {
   data: Request[];
 }
 
+export interface RequestResponse {
+  success: boolean;
+  data: Request;
+}
+
 const API_URL = "https://urgent-2kay-directed-bill-payment-system.onrender.com";
 
 const requestService = {
@@ -55,6 +60,33 @@ const requestService = {
         const errorData = await response.json();
         console.error("Error fetching requests:", errorData);
         throw new Error(errorData.error || "Failed to fetch requests");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Request service error:", error);
+      throw error;
+    }
+  },
+  
+  // Get a single request by ID
+  getRequestById: async (requestId: string, token: string): Promise<RequestResponse> => {
+    try {
+      console.log(`Fetching request details for ID: ${requestId}`);
+      
+      const response = await fetch(`${API_URL}/api/requests/${requestId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error fetching request details:", errorData);
+        throw new Error(errorData.error || "Failed to fetch request details");
       }
 
       const data = await response.json();

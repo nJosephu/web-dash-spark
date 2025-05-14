@@ -1,22 +1,38 @@
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar } from "lucide-react";
+import { Calendar, CheckCircle, AlertCircle, Clock } from "lucide-react";
+import { format, parseISO } from "date-fns";
 
 interface StatCardsProps {
-  amount: string;
-  date: string;
+  billsCount?: number;
+  approvedBills?: number;
+  pendingBills?: number;
+  rejectedBills?: number;
+  amount?: string;
+  date?: string;
   priority?: "high" | "medium" | "low";
+  dueDate?: string;
 }
 
-const StatCards: React.FC<StatCardsProps> = ({ amount, date, priority }) => {
+const StatCards: React.FC<StatCardsProps> = ({ 
+  billsCount = 0,
+  approvedBills = 0,
+  pendingBills = 0,
+  rejectedBills = 0,
+  amount, 
+  date, 
+  priority,
+  dueDate
+}) => {
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
+    try {
+      const date = parseISO(dateString);
+      return format(date, "MMM dd, yyyy");
+    } catch (error) {
+      return "Invalid date";
+    }
   };
 
   const getPriorityColor = (priority: string | undefined) => {
@@ -41,59 +57,83 @@ const StatCards: React.FC<StatCardsProps> = ({ amount, date, priority }) => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{amount}</div>
+          <div className="text-2xl font-bold">{billsCount}</div>
         </CardContent>
       </Card>
 
       <Card className="border">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-gray-500">
-            Due Date
+            {dueDate ? "Due Date" : "Date"}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center">
             <Calendar className="h-4 w-4 mr-2 text-gray-400" />
-            <span>{formatDate(date)}</span>
+            <span>{dueDate ? formatDate(dueDate) : (date ? formatDate(date) : "N/A")}</span>
+          </div>
+        </CardContent>
+      </Card>
+      
+      <Card className="border">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium text-gray-500">
+            Approved
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center">
+            <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
+            <span className="text-green-500 font-medium">{approvedBills}</span>
+          </div>
+        </CardContent>
+      </Card>
+      
+      <Card className="border">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium text-gray-500">
+            Pending
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center">
+            <Clock className="h-4 w-4 mr-2 text-yellow-500" />
+            <span className="text-yellow-500 font-medium">{pendingBills}</span>
+          </div>
+        </CardContent>
+      </Card>
+      
+      <Card className="border">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium text-gray-500">
+            Rejected
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center">
+            <AlertCircle className="h-4 w-4 mr-2 text-red-500" />
+            <span className="text-red-500 font-medium">{rejectedBills}</span>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="border">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-gray-500">
-            Priority
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {priority && (
+      {priority && (
+        <Card className="border">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-gray-500">
+              Priority
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
             <Badge
               className={`${getPriorityColor(priority)} capitalize`}
               variant="outline"
             >
               {priority}
             </Badge>
-          )}
-        </CardContent>
-      </Card>
-
-      <Card className="border">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium text-gray-500">
-            Priority
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {priority && (
-            <Badge
-              className={`${getPriorityColor(priority)} capitalize`}
-              variant="outline"
-            >
-              {priority}
-            </Badge>
-          )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
