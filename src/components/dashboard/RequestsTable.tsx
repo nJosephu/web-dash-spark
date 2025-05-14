@@ -151,8 +151,8 @@ const RequestsTable = ({
   // Render loading state
   if (loading) {
     return (
-      <div className="bg-white rounded-lg shadow">
-        <div className="p-4 flex flex-col md:flex-row justify-between items-start md:items-center border-b gap-3">
+      <div className="bg-white rounded-lg">
+        <div className="p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
           <h3 className="font-medium">Bill request history</h3>
           <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto">
             <Skeleton className="h-9 w-[180px]" />
@@ -176,7 +176,7 @@ const RequestsTable = ({
   // Render error state
   if (error) {
     return (
-      <div className="bg-white rounded-lg shadow p-8 text-center">
+      <div className="bg-white rounded-lg  p-8 text-center">
         <p className="text-red-500 mb-4">{error}</p>
         <Button
           onClick={() => window.location.reload()}
@@ -190,7 +190,7 @@ const RequestsTable = ({
 
   return (
     <div className="bg-white rounded-lg p-4">
-      <div className="pb-4 flex flex-col md:flex-row justify-between items-start md:items-center border-b gap-3">
+      <div className="pb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
         <div className="flex justify-between items-center w-full">
           <h3 className="font-medium">Bill request history</h3>
           {showViewAll && (
