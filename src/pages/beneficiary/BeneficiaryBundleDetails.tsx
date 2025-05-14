@@ -230,7 +230,7 @@ const BeneficiaryBundleDetails = () => {
 
         {/* Beneficiary-specific action buttons */}
         {componentStatus === "pending" && (
-          <div className="flex flex-col sm:flex-row gap-4 mt-6">
+          <div className="flex flex-col sm:flex-row gap-4">
             <Button
               onClick={handleSendReminder}
               className="w-full bg-[#6544E4] hover:bg-[#5A3DD0]"
