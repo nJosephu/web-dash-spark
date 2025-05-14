@@ -6,35 +6,19 @@ import StatCard from "@/components/dashboard/StatCard";
 import DonutChart from "@/components/dashboard/DonutChart";
 import RequestsTable from "@/components/dashboard/RequestsTable";
 import PromoBanner from "@/components/dashboard/PromoBanner";
+import { useRequests } from "@/hooks/useRequests";
+import { useCalculateDashboardMetrics } from "@/hooks/useCalculateDashboardMetrics";
 
 const BeneficiaryDashboard = () => {
   const { user } = useAuth();
   const userName = user?.name || "User";
+  const { requests, isLoading } = useRequests();
+  const { totalAmount, approvedAmount, rejectedAmount, pendingAmount, chartData } = 
+    useCalculateDashboardMetrics(requests);
 
   useEffect(() => {
     document.title = "Beneficiary Dashboard | Urgent2kay";
   }, []);
-
-  const chartData = [
-    {
-      name: "Approved",
-      value: 80,
-      color: "#7B68EE",
-      percentage: 80,
-    },
-    {
-      name: "Rejected",
-      value: 10,
-      color: "#FF5252",
-      percentage: 10,
-    },
-    {
-      name: "Pending",
-      value: 10,
-      color: "#FFC107",
-      percentage: 10,
-    },
-  ];
 
   return (
     <>
@@ -53,21 +37,21 @@ const BeneficiaryDashboard = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <StatCard
               title="Total bills requested"
-              value="₦300,480"
+              value={totalAmount}
               percentChange={10}
               color="green"
               colortag="black"
             />
             <StatCard
               title="Approved bill requests"
-              value="₦200,480"
+              value={approvedAmount}
               percentChange={15}
               color="purple"
               colortag="white"
             />
             <StatCard
               title="Rejected bill requests"
-              value="₦30,000"
+              value={rejectedAmount}
               percentChange={-10}
               color="red"
               increaseIsGood={false}
@@ -75,7 +59,7 @@ const BeneficiaryDashboard = () => {
             />
             <StatCard
               title="Pending bill requests"
-              value="₦70,000"
+              value={pendingAmount}
               percentChange={20}
               color="yellow"
               colortag="black"
