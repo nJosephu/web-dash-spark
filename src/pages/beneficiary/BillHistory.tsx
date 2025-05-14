@@ -9,8 +9,25 @@ const BillHistory = () => {
 
   useEffect(() => {
     document.title = "Bill History | Urgent2kay";
-    // Refresh the bills data when this page loads
-    refetch();
+    
+    // Explicitly refetch data when component mounts
+    console.log("BillHistory component mounted - refreshing bills data");
+    refetch().then(() => {
+      console.log("Bills data refreshed successfully");
+    }).catch(error => {
+      console.error("Error refreshing bills data:", error);
+    });
+    
+    // Set up interval to periodically refresh data (every 30 seconds)
+    const refreshInterval = setInterval(() => {
+      refetch().catch(error => {
+        console.error("Error in periodic refresh:", error);
+      });
+    }, 30000);
+    
+    return () => {
+      clearInterval(refreshInterval);
+    };
   }, [refetch]);
 
   return (

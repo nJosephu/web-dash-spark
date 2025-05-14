@@ -7,6 +7,16 @@ import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { useBills } from "@/hooks/useBills";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface BillsListProps {
   bills: FormValues[];
@@ -15,7 +25,10 @@ interface BillsListProps {
 
 export default function BillsList({ bills, onRemoveBill }: BillsListProps) {
   const [deletingIndex, setDeletingIndex] = useState<number | null>(null);
-  const { deleteBill } = useBills();
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [billToDelete, setBillToDelete] = useState<{ index: number, id?: string } | null>(null);
+  
+  const { deleteBill, refetch } = useBills();
 
   if (bills.length === 0) {
     return null;
@@ -35,33 +48,58 @@ export default function BillsList({ bills, onRemoveBill }: BillsListProps) {
     }
   };
 
-  const handleRemoveBill = async (index: number) => {
+  const promptDeleteBill = (index: number) => {
     const bill = bills[index];
+    setBillToDelete({ index, id: bill.id });
+    setConfirmDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!billToDelete) return;
     
-    // If bill has an ID, it exists on the server and needs to be deleted
-    if (bill.id) {
-      try {
-        setDeletingIndex(index);
-        // Use our React Query mutation
-        deleteBill(bill.id, {
-          onSuccess: () => {
-            // This will happen after the query is invalidated and refetch is complete
-            onRemoveBill(index);
-            setDeletingIndex(null);
-          },
-          onError: () => {
-            setDeletingIndex(null);
-          }
+    const { index, id } = billToDelete;
+    setDeletingIndex(index);
+    setConfirmDialogOpen(false);
+
+    try {
+      if (id) {
+        console.log(`Deleting bill with ID: ${id}`);
+        // Use the React Query mutation with callback
+        await new Promise<void>((resolve, reject) => {
+          deleteBill(id, {
+            onSuccess: () => {
+              console.log(`Bill ${id} deleted successfully`);
+              onRemoveBill(index);
+              refetch(); // Explicitly refetch data
+              resolve();
+            },
+            onError: (error) => {
+              console.error(`Error deleting bill ${id}:`, error);
+              reject(error);
+            },
+            onSettled: () => {
+              setDeletingIndex(null);
+              setBillToDelete(null);
+            }
+          });
         });
-      } catch (err) {
-        console.error("Error deleting bill:", err);
-        toast.error("Failed to delete bill. Please try again.");
+      } else {
+        // If no ID, it's not saved on the server yet, just remove locally
+        onRemoveBill(index);
         setDeletingIndex(null);
+        setBillToDelete(null);
       }
-    } else {
-      // If no ID, it's not saved on the server yet, just remove locally
-      onRemoveBill(index);
+    } catch (err) {
+      console.error("Error in bill deletion process:", err);
+      toast.error("Failed to delete bill. Please try again.");
+      setDeletingIndex(null);
+      setBillToDelete(null);
     }
+  };
+
+  const cancelDelete = () => {
+    setConfirmDialogOpen(false);
+    setBillToDelete(null);
   };
 
   return (
@@ -90,7 +128,7 @@ export default function BillsList({ bills, onRemoveBill }: BillsListProps) {
               <Button 
                 variant="ghost" 
                 size="sm" 
-                onClick={() => handleRemoveBill(index)}
+                onClick={() => promptDeleteBill(index)}
                 className="h-8 w-8 p-0 rounded-full"
                 disabled={deletingIndex === index}
               >
@@ -100,6 +138,24 @@ export default function BillsList({ bills, onRemoveBill }: BillsListProps) {
           </div>
         ))}
       </div>
+
+      {/* Confirmation Dialog */}
+      <AlertDialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this bill? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={cancelDelete}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmDelete} className="bg-red-600 hover:bg-red-700">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
