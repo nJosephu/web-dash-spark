@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,16 +20,16 @@ const BeneficiaryRequests = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
 
-  const { 
-    requests, 
-    isLoading, 
-    error, 
+  const {
+    requests,
+    isLoading,
+    error,
     requestsCount,
     approvedRequests,
     pendingRequests,
     rejectedRequests,
     cancelRequest,
-    sendReminder
+    sendReminder,
   } = useRequests();
 
   // Filter and search functionality
@@ -70,13 +69,16 @@ const BeneficiaryRequests = () => {
   };
 
   // Create array of skeletons for loading state
-  const skeletons = Array(6).fill(0).map((_, index) => (
-    <RequestCardSkeleton key={`skeleton-${index}`} />
-  ));
+  const skeletons = Array(6)
+    .fill(0)
+    .map((_, index) => <RequestCardSkeleton key={`skeleton-${index}`} />);
 
   return (
     <div className="">
-      <div className="flex justify-between items-center mb-6">
+      <div
+        className="flex flex-col sm:flex-row justify-between items-center gap-5 mb-6
+"
+      >
         <div>
           <p className="text-gray-500">
             Manage and track all your bill requests
@@ -191,8 +193,10 @@ const BeneficiaryRequests = () => {
           </div>
         ) : error ? (
           <div className="text-center py-12 bg-white rounded-lg border">
-            <p className="text-red-500 mb-4">{error instanceof Error ? error.message : "An error occurred"}</p>
-            <Button 
+            <p className="text-red-500 mb-4">
+              {error instanceof Error ? error.message : "An error occurred"}
+            </p>
+            <Button
               onClick={() => window.location.reload()}
               className="bg-[#6544E4] hover:bg-[#5A3DD0]"
             >
