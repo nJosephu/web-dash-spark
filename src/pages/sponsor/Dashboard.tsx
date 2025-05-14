@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,10 +7,13 @@ import { useAuth } from "@/context/AuthContext";
 import StatCard from "@/components/dashboard/StatCard";
 import DonutChart from "@/components/dashboard/DonutChart";
 import { Link } from "react-router-dom";
+import { StatCardSkeleton, DonutChartSkeleton } from "@/components/dashboard/DashboardSkeleton";
 
 const SponsorDashboard = () => {
   const { user } = useAuth();
   const userName = user?.name || "User";
+  // Simulate loading for demo purposes - in a real app, this would come from a data fetching hook
+  const isLoading = false;
 
   useEffect(() => {
     document.title = "Sponsor Dashboard | Urgent2kay";
@@ -66,36 +70,48 @@ const SponsorDashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6">
         <Card className="p-4 rounded-lg">
           <h3 className="font-medium mb-3 px-1">Your Impact</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <StatCard
-              title="Total funded"
-              value="₦450,000"
-              percentChange={15}
-              color="green"
-            />
-            <StatCard
-              title="People helped"
-              value="24"
-              percentChange={8}
-              color="purple"
-            />
-            <StatCard
-              title="Average contribution"
-              value="₦18,750"
-              percentChange={5}
-              color="purple"
-            />
-            <StatCard
-              title="Pending reviews"
-              value="3"
-              percentChange={0}
-              color="yellow"
-            />
-          </div>
+          {isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {[1, 2, 3, 4].map((i) => (
+                <StatCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <StatCard
+                title="Total funded"
+                value="₦450,000"
+                percentChange={15}
+                color="green"
+              />
+              <StatCard
+                title="People helped"
+                value="24"
+                percentChange={8}
+                color="purple"
+              />
+              <StatCard
+                title="Average contribution"
+                value="₦18,750"
+                percentChange={5}
+                color="purple"
+              />
+              <StatCard
+                title="Pending reviews"
+                value="3"
+                percentChange={0}
+                color="yellow"
+              />
+            </div>
+          )}
         </Card>
 
         <Card className="p-4 rounded-lg">
-          <DonutChart data={chartData} title="Funding Distribution" />
+          {isLoading ? (
+            <DonutChartSkeleton />
+          ) : (
+            <DonutChart data={chartData} title="Funding Distribution" />
+          )}
         </Card>
       </div>
 
@@ -103,30 +119,50 @@ const SponsorDashboard = () => {
         <Card className="p-4 rounded-lg">
           <h3 className="font-medium mb-3 px-1">Recent Funding Activity</h3>
           <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="flex items-center justify-between border-b pb-3 last:border-0"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="bg-[#F1EDFF] p-2 rounded-full">
-                    <Receipt className="h-5 w-5 text-[#6544E4]" />
+            {isLoading ? (
+              // Skeleton for funding activity
+              Array(3).fill(0).map((_, i) => (
+                <div key={i} className="flex items-center justify-between border-b pb-3 last:border-0">
+                  <div className="flex items-center gap-3">
+                    <Skeleton className="h-9 w-9 rounded-full" />
+                    <div>
+                      <Skeleton className="h-4 w-32 mb-1" />
+                      <Skeleton className="h-3 w-24" />
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-medium">Medical Bill Payment</h4>
-                    <p className="text-sm text-gray-500">
-                      Funded {i} day{i > 1 ? "s" : ""} ago
-                    </p>
+                  <div className="text-right">
+                    <Skeleton className="h-4 w-16 mb-1" />
+                    <Skeleton className="h-5 w-20" />
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="font-medium">₦{25000 + i * 5000}</p>
-                  <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">
-                    Completed
-                  </span>
+              ))
+            ) : (
+              // Actual funding activity data
+              [1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between border-b pb-3 last:border-0"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="bg-[#F1EDFF] p-2 rounded-full">
+                      <Receipt className="h-5 w-5 text-[#6544E4]" />
+                    </div>
+                    <div>
+                      <h4 className="font-medium">Medical Bill Payment</h4>
+                      <p className="text-sm text-gray-500">
+                        Funded {i} day{i > 1 ? "s" : ""} ago
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-medium">₦{25000 + i * 5000}</p>
+                    <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                      Completed
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </Card>
       </div>

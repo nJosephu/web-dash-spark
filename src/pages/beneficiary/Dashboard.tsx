@@ -8,6 +8,7 @@ import RequestsTable from "@/components/dashboard/RequestsTable";
 import PromoBanner from "@/components/dashboard/PromoBanner";
 import { useRequests } from "@/hooks/useRequests";
 import { useCalculateDashboardMetrics } from "@/hooks/useCalculateDashboardMetrics";
+import { StatCardSkeleton, DonutChartSkeleton } from "@/components/dashboard/DashboardSkeleton";
 
 const BeneficiaryDashboard = () => {
   const { user } = useAuth();
@@ -34,41 +35,53 @@ const BeneficiaryDashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6">
         <Card className="p-4 rounded-lg">
           <h3 className="font-medium mb-3 px-1">Overview</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <StatCard
-              title="Total bills requested"
-              value={totalAmount}
-              percentChange={10}
-              color="green"
-              colortag="black"
-            />
-            <StatCard
-              title="Approved bill requests"
-              value={approvedAmount}
-              percentChange={15}
-              color="purple"
-              colortag="white"
-            />
-            <StatCard
-              title="Rejected bill requests"
-              value={rejectedAmount}
-              percentChange={-10}
-              color="red"
-              increaseIsGood={false}
-              colortag="white"
-            />
-            <StatCard
-              title="Pending bill requests"
-              value={pendingAmount}
-              percentChange={20}
-              color="yellow"
-              colortag="black"
-            />
-          </div>
+          {isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {[1, 2, 3, 4].map((i) => (
+                <StatCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <StatCard
+                title="Total bills requested"
+                value={totalAmount}
+                percentChange={10}
+                color="green"
+                colortag="black"
+              />
+              <StatCard
+                title="Approved bill requests"
+                value={approvedAmount}
+                percentChange={15}
+                color="purple"
+                colortag="white"
+              />
+              <StatCard
+                title="Rejected bill requests"
+                value={rejectedAmount}
+                percentChange={-10}
+                color="red"
+                increaseIsGood={false}
+                colortag="white"
+              />
+              <StatCard
+                title="Pending bill requests"
+                value={pendingAmount}
+                percentChange={20}
+                color="yellow"
+                colortag="black"
+              />
+            </div>
+          )}
         </Card>
 
         <Card className="p-4 rounded-lg">
-          <DonutChart data={chartData} title="Request Rate" />
+          {isLoading ? (
+            <DonutChartSkeleton />
+          ) : (
+            <DonutChart data={chartData} title="Request Rate" />
+          )}
         </Card>
       </div>
 
