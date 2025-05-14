@@ -78,7 +78,7 @@ const BundleHeader: React.FC<BundleHeaderProps> = ({
           <h1 className="text-2xl font-bold mb-1">{title}</h1>
           <p className="text-gray-500">Created on {formatDate(date)}</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-3 sm:flex-col">
           {status === "pending" && (
             <>
               <Button
