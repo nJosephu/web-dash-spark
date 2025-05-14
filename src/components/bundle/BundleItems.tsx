@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -46,6 +45,9 @@ const BundleItems: React.FC<BundleItemsProps> = ({ items }) => {
                   <Package className="h-5 w-5 text-[#6544E4]" />
                 </div>
                 <div>
+                  <p className="tracking-wide text-sm font-regular text-gray-500 uppercase">
+                    {item.category}
+                  </p>
                   <p className="font-medium">{item.name}</p>
                   {item.priority && (
                     <Badge
