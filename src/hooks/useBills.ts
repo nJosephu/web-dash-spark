@@ -29,14 +29,17 @@ export function useBills() {
     },
   });
 
-  // Enhanced mutation to delete a bill
+  // Fixed mutation to delete a bill - using proper mutation function call
   const deleteBillMutation = useMutation({
-    mutationFn: (billId: string) => deleteBill(billId),
+    mutationFn: (billId: string) => {
+      console.log("deleteBill mutation called with ID:", billId);
+      return deleteBill(billId);
+    },
     onSuccess: () => {
       console.log("Bill deleted successfully, invalidating queries");
       queryClient.invalidateQueries({ queryKey: [BILLS_QUERY_KEY] });
       // Explicitly refetch to ensure UI updates
-      setTimeout(() => refetch(), 300); // Small delay to ensure backend has processed
+      refetch();
       toast.success("Bill deleted successfully");
     },
     onError: (error: Error) => {
@@ -52,7 +55,7 @@ export function useBills() {
     refetch,
     createBill: createBillMutation.mutate,
     isCreating: createBillMutation.isPending,
-    deleteBill: deleteBillMutation.mutate,
+    deleteBill: deleteBillMutation.mutateAsync, // Changed to mutateAsync to support direct awaiting
     isDeleting: deleteBillMutation.isPending,
   };
 }

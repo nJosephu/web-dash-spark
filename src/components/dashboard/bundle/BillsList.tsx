@@ -50,6 +50,7 @@ export default function BillsList({ bills, onRemoveBill }: BillsListProps) {
 
   const promptDeleteBill = (index: number) => {
     const bill = bills[index];
+    console.log(`Prompting to delete bill at index ${index}:`, bill);
     setBillToDelete({ index, id: bill.id });
     setConfirmDialogOpen(true);
   };
@@ -63,35 +64,21 @@ export default function BillsList({ bills, onRemoveBill }: BillsListProps) {
 
     try {
       if (id) {
-        console.log(`Deleting bill with ID: ${id}`);
-        // Use the React Query mutation with callback
-        await new Promise<void>((resolve, reject) => {
-          deleteBill(id, {
-            onSuccess: () => {
-              console.log(`Bill ${id} deleted successfully`);
-              onRemoveBill(index);
-              refetch(); // Explicitly refetch data
-              resolve();
-            },
-            onError: (error) => {
-              console.error(`Error deleting bill ${id}:`, error);
-              reject(error);
-            },
-            onSettled: () => {
-              setDeletingIndex(null);
-              setBillToDelete(null);
-            }
-          });
-        });
+        console.log(`Attempting to delete bill with ID: ${id}`);
+        // Direct call to deleteBill without using the callback syntax
+        await deleteBill(id);
+        console.log(`Bill ${id} deletion API call completed`);
+        onRemoveBill(index);
+        refetch(); // Explicitly refetch data
       } else {
         // If no ID, it's not saved on the server yet, just remove locally
+        console.log("No ID found for bill, removing locally only");
         onRemoveBill(index);
-        setDeletingIndex(null);
-        setBillToDelete(null);
       }
     } catch (err) {
       console.error("Error in bill deletion process:", err);
       toast.error("Failed to delete bill. Please try again.");
+    } finally {
       setDeletingIndex(null);
       setBillToDelete(null);
     }
