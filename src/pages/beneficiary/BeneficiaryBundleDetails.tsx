@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 // Import components
@@ -9,16 +10,27 @@ import BundleSummary from "@/components/bundle/BundleSummary";
 import ActivityLog from "@/components/bundle/ActivityLog";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Bell, X } from "lucide-react";
+import { Bell, X, Loader } from "lucide-react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRequest } from "@/hooks/useRequest";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const BeneficiaryBundleDetails = () => {
   const { bundleId } = useParams<{ bundleId: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   // Use our custom hook to fetch request data
   const {
@@ -26,6 +38,8 @@ const BeneficiaryBundleDetails = () => {
     isLoading,
     error,
     cancelRequest,
+    deleteRequest,
+    isDeleting,
     sendReminder,
     billsCount,
     approvedBills,
@@ -50,6 +64,18 @@ const BeneficiaryBundleDetails = () => {
 
     toast.loading("Cancelling request...");
     cancelRequest();
+  };
+
+  // Handle delete request
+  const handleDeleteRequest = () => {
+    if (!request) return;
+    setIsDeleteDialogOpen(true);
+  };
+
+  // Handle delete confirmation
+  const handleConfirmDelete = () => {
+    if (!request) return;
+    deleteRequest();
   };
 
   // Handle send reminder
@@ -201,12 +227,17 @@ const BeneficiaryBundleDetails = () => {
           {componentStatus === "pending" && (
             <div className="flex flex-col sm:flex-row gap-4 mt-6">
               <Button
-                onClick={handleCancelRequest}
+                onClick={handleDeleteRequest}
                 variant="outline"
                 className="w-full border-red-200 text-red-600 hover:bg-red-50"
+                disabled={isDeleting}
               >
-                <X className="mr-2 h-4 w-4" />
-                Cancel Request
+                {isDeleting ? (
+                  <Loader className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <X className="mr-2 h-4 w-4" />
+                )}
+                {isDeleting ? "Deleting..." : "Delete Request"}
               </Button>
               <Button
                 onClick={handleSendReminder}
@@ -224,6 +255,36 @@ const BeneficiaryBundleDetails = () => {
           <ActivityLog activities={request.activityLog || []} />
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the 
+              request "{request.name}" and remove it from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmDelete}
+              disabled={isDeleting}
+              className="bg-red-600 text-white hover:bg-red-700 focus:ring-red-600"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader className="mr-2 h-4 w-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

@@ -120,6 +120,29 @@ const requestService = {
     }
   },
   
+  // Delete a request by ID
+  deleteRequest: async (requestId: string, token: string): Promise<{ success: boolean }> => {
+    try {
+      const response = await fetch(`${API_URL}/api/requests/${requestId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to delete request");
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error("Error deleting request:", error);
+      throw error;
+    }
+  },
+  
   // Send a reminder for a request
   sendReminder: async (requestId: string, token: string): Promise<{ success: boolean }> => {
     try {

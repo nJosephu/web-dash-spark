@@ -1,8 +1,10 @@
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import requestService, { Request, Bill } from "@/services/requestService";
 import { format, parseISO } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 interface FormattedRequest extends Request {
   formattedId: string;
@@ -27,6 +29,7 @@ interface ActivityLogItem {
 export const useRequest = (requestId: string | undefined) => {
   const { user, token } = useAuth();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   // Helper function to format currency
   const formatCurrency = (amount: number): string => {
@@ -149,6 +152,22 @@ export const useRequest = (requestId: string | undefined) => {
     },
   });
 
+  // Mutation to delete a request
+  const deleteRequestMutation = useMutation({
+    mutationFn: async () => {
+      if (!requestId || !token) throw new Error("Authentication required");
+      return await requestService.deleteRequest(requestId, token);
+    },
+    onSuccess: () => {
+      toast.success("Request deleted successfully");
+      queryClient.invalidateQueries({ queryKey: ["requests"] });
+      navigate("/dashboard/beneficiary/requests");
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to delete request: ${error.message}`);
+    },
+  });
+
   // Mutation to send a reminder
   const sendReminderMutation = useMutation({
     mutationFn: async () => {
@@ -178,6 +197,8 @@ export const useRequest = (requestId: string | undefined) => {
     error,
     refetch,
     cancelRequest: cancelRequestMutation.mutate,
+    deleteRequest: deleteRequestMutation.mutate,
+    isDeleting: deleteRequestMutation.isPending,
     sendReminder: sendReminderMutation.mutate,
     // Summary data
     billsCount,
