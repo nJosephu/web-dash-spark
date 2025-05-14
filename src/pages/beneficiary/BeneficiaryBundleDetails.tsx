@@ -9,7 +9,7 @@ import BundleSummary from "@/components/bundle/BundleSummary";
 import ActivityLog from "@/components/bundle/ActivityLog";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Bell, X } from "lucide-react";
+import { Bell, X, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRequest } from "@/hooks/useRequest";
@@ -146,6 +146,15 @@ const BeneficiaryBundleDetails = () => {
 
   return (
     <div className="max-w-[100vw] overflow-x-hidden p-4 pt-0 md:p-6 md:pt-0">
+      {/* Back button */}
+      <Button
+        variant="ghost"
+        className="mb-6 -ml-3 text-gray-600 hover:text-gray-800"
+        onClick={() => navigate(-1)}
+      >
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Back to Requests
+      </Button>
       {/* Bundle header and stats card wrapped in a Card component */}
       <Card className="mb-6">
         <CardContent className="p-6">

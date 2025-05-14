@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -58,16 +57,6 @@ const BundleHeader: React.FC<BundleHeaderProps> = ({
 
   return (
     <>
-      {/* Back button */}
-      <Button
-        variant="ghost"
-        className="mb-6 -ml-3 text-gray-600 hover:text-gray-800"
-        onClick={() => navigate(-1)}
-      >
-        <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Requests
-      </Button>
-
       {/* Bundle header */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-6 gap-4">
         <div>
