@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,7 +20,16 @@ const SponsorIncomingRequests = () => {
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
   // Fetch requests using our custom hook
-  const { requests, isLoading, error, refetch, requestsCount, approvedRequests, pendingRequests, rejectedRequests } = useSponsorRequests();
+  const {
+    requests,
+    isLoading,
+    error,
+    refetch,
+    requestsCount,
+    approvedRequests,
+    pendingRequests,
+    rejectedRequests,
+  } = useSponsorRequests();
 
   // Filter requests based on search query and status filter
   const filteredRequests = requests.filter((request) => {
@@ -35,11 +43,19 @@ const SponsorIncomingRequests = () => {
     }
 
     // Filter by status
-    if (statusFilter === "pending" && request.status !== "PENDING") return false;
-    if (statusFilter === "approved" && request.status !== "APPROVED") return false;
-    if (statusFilter === "rejected" && request.status !== "REJECTED") return false;
-    if (statusFilter !== "all" && statusFilter !== "pending" && 
-        statusFilter !== "approved" && statusFilter !== "rejected") return true;
+    if (statusFilter === "pending" && request.status !== "PENDING")
+      return false;
+    if (statusFilter === "approved" && request.status !== "APPROVED")
+      return false;
+    if (statusFilter === "rejected" && request.status !== "REJECTED")
+      return false;
+    if (
+      statusFilter !== "all" &&
+      statusFilter !== "pending" &&
+      statusFilter !== "approved" &&
+      statusFilter !== "rejected"
+    )
+      return true;
 
     return true;
   });
@@ -48,12 +64,7 @@ const SponsorIncomingRequests = () => {
   if (isLoading) {
     return (
       <div>
-        <div className="mb-6">
-          <h1 className="text-2xl font-medium">Fund Requests</h1>
-          <p className="text-gray-500">
-            Manage and review incoming requests from beneficiaries
-          </p>
-        </div>
+        <div className="mb-6"></div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -89,21 +100,18 @@ const SponsorIncomingRequests = () => {
   if (error) {
     return (
       <div>
-        <div className="mb-6">
-          <h1 className="text-2xl font-medium">Fund Requests</h1>
-          <p className="text-gray-500">
-            Manage and review incoming requests from beneficiaries
-          </p>
-        </div>
+        <div className="mb-6"></div>
 
         <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6">
           <p className="font-medium">Error loading requests</p>
           <p className="text-sm mt-1">
-            {error instanceof Error ? error.message : "Failed to load requests. Please try again."}
+            {error instanceof Error
+              ? error.message
+              : "Failed to load requests. Please try again."}
           </p>
-          <Button 
+          <Button
             onClick={() => refetch()}
-            variant="outline" 
+            variant="outline"
             className="mt-3 text-red-600 border-red-200 hover:bg-red-50"
           >
             <RefreshCw className="h-4 w-4 mr-2" />
@@ -125,29 +133,29 @@ const SponsorIncomingRequests = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <StatCard 
-          title="Total Requests" 
-          value={requestsCount.toString()} 
-          color="purple" 
-          colortag="white" 
+        <StatCard
+          title="Total Requests"
+          value={requestsCount.toString()}
+          color="purple"
+          colortag="white"
         />
-        <StatCard 
-          title="Approved Requests" 
-          value={approvedRequests.toString()} 
-          color="green" 
-          colortag="black" 
+        <StatCard
+          title="Approved Requests"
+          value={approvedRequests.toString()}
+          color="green"
+          colortag="black"
         />
-        <StatCard 
-          title="Pending Requests" 
-          value={pendingRequests.toString()} 
-          color="yellow" 
-          colortag="black" 
+        <StatCard
+          title="Pending Requests"
+          value={pendingRequests.toString()}
+          color="yellow"
+          colortag="black"
         />
-        <StatCard 
-          title="Rejected Requests" 
-          value={rejectedRequests.toString()} 
-          color="red" 
-          colortag="white" 
+        <StatCard
+          title="Rejected Requests"
+          value={rejectedRequests.toString()}
+          color="red"
+          colortag="white"
         />
       </div>
 
@@ -208,8 +216,8 @@ const SponsorIncomingRequests = () => {
         <div className="text-center p-6 bg-gray-50 rounded-lg">
           <p className="text-gray-500">No requests match your filters</p>
           {searchQuery || statusFilter !== "all" ? (
-            <Button 
-              variant="link" 
+            <Button
+              variant="link"
               onClick={() => {
                 setSearchQuery("");
                 setStatusFilter("all");
