@@ -19,6 +19,7 @@ interface RequestCardProps {
   date: string;
   status: "PENDING" | "APPROVED" | "REJECTED" | "CANCELLED";
   requester: RequestRequester;
+  supporter?: RequestRequester;
   isBeneficiary?: boolean;
 }
 
@@ -30,6 +31,7 @@ const RequestCard = ({
   date,
   status,
   requester,
+  supporter,
   isBeneficiary = true,
 }: RequestCardProps) => {
   // Determine correct link based on role
@@ -74,6 +76,12 @@ const RequestCard = ({
     minimumFractionDigits: 0,
   }).format(amount);
 
+  // If we're in the beneficiary view, show the supporter if available
+  // Otherwise show "No sponsor yet"
+  const personToDisplay = isBeneficiary 
+    ? (supporter || { name: "No sponsor yet", email: "" }) 
+    : requester;
+
   return (
     <div className="p-4 bg-white rounded-lg border border-gray-200">
       {/* Header with ID and status */}
@@ -109,14 +117,14 @@ const RequestCard = ({
           </span>
           <div className="flex items-center gap-2">
             <Avatar className="h-6 w-6">
-              {requester.avatar ? (
-                <AvatarImage src={requester.avatar} alt={requester.name} />
+              {personToDisplay.avatar ? (
+                <AvatarImage src={personToDisplay.avatar} alt={personToDisplay.name} />
               ) : null}
               <AvatarFallback className="text-xs bg-gray-200">
-                {getInitials(requester.name)}
+                {getInitials(personToDisplay.name)}
               </AvatarFallback>
             </Avatar>
-            <span>{requester.name}</span>
+            <span>{personToDisplay.name}</span>
           </div>
         </div>
       </div>

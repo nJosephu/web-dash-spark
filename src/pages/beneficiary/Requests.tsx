@@ -187,6 +187,7 @@ const Requests = () => {
                   date={request.createdAt}
                   status={request.status}
                   requester={request.requester}
+                  supporter={request.supporter}
                   isBeneficiary={true}
                 />
               </Card>

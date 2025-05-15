@@ -198,6 +198,7 @@ const SponsorIncomingRequests = () => {
                   date={request.createdAt}
                   status={request.status}
                   requester={request.requester}
+                  supporter={request.supporter}
                   isBeneficiary={false}
                 />
               </Card>
