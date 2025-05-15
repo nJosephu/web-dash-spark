@@ -52,17 +52,7 @@ const Requests = () => {
   if (isLoading) {
     return (
       <div className="container p-0">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <p className="text-gray-500">
-              Manage and track all your bill requests
-            </p>
-          </div>
-          <Button disabled className="bg-[#6544E4]">
-            <Plus className="mr-2" size={16} />
-            Create Request
-          </Button>
-        </div>
+        <div className="flex justify-between items-center mb-6"></div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -97,17 +87,7 @@ const Requests = () => {
   if (error) {
     return (
       <div className="container p-0">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <p className="text-gray-500">
-              Manage and track all your bill requests
-            </p>
-          </div>
-          <Button className="bg-[#6544E4]">
-            <Plus className="mr-2" size={16} />
-            Create Request
-          </Button>
-        </div>
+        <div className="flex justify-between items-center mb-6"></div>
 
         <div className="bg-red-50 text-red-600 p-4 rounded-lg">
           <p className="font-medium">Error loading requests</p>
@@ -169,29 +149,31 @@ const Requests = () => {
 
       {/* Sent Requests */}
       <div>
-        <h2 className="text-lg font-medium mb-4">Sent Requests</h2>
         <div className="flex flex-col md:flex-row justify-between gap-4 mb-6">
-          <div className="relative w-full md:w-64">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-            <Input
-              type="text"
-              placeholder="Search requests..."
-              className="pl-9"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+          <h2 className="text-lg font-medium mb-4">Sent Requests</h2>
+          <div className="flex flex-col md:flex-row gap-4 mb-6">
+            <div className="relative w-full md:w-64">
+              <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+              <Input
+                type="text"
+                placeholder="Search requests..."
+                className="pl-9"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-full md:w-40">
+                <SelectValue placeholder="All Requests" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Requests</SelectItem>
+                <SelectItem value="approved">Approved</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="rejected">Rejected</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-full md:w-40">
-              <SelectValue placeholder="All Requests" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Requests</SelectItem>
-              <SelectItem value="approved">Approved</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="rejected">Rejected</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
 
         {filteredRequests.length > 0 ? (
