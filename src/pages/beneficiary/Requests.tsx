@@ -42,7 +42,7 @@ interface RequestCardProps {
   amount: number;
   date: string;
   status: string;
-  requester: User;
+  requester: User | Partial<User> | null; // Updated to accept partial User or null
   onCancel: (id: string) => void;
   onRemind: (id: string) => void;
 }
@@ -93,6 +93,11 @@ const RequestCard: React.FC<RequestCardProps> = ({
     }
   };
 
+  // Get requester name with fallback
+  const getRequesterName = () => {
+    return requester?.name || "N/A";
+  };
+
   return (
     <Card className="bg-white shadow-md rounded-md overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
@@ -114,7 +119,7 @@ const RequestCard: React.FC<RequestCardProps> = ({
           Date: {formatDate(date)}
         </CardDescription>
         <CardDescription className="text-sm text-gray-500 mt-1">
-          Requester: {requester.name}
+          Requester: {getRequesterName()}
         </CardDescription>
       </CardContent>
       <CardFooter className="flex justify-between items-center px-4 py-3 bg-gray-50">
