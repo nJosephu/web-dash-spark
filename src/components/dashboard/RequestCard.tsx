@@ -2,12 +2,9 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Calendar, Copy, X } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
-import { toast } from "sonner";
+import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import { format } from "date-fns";
-import { formatRelativeDate } from "@/utils/dateUtils";
 
 interface RequestRequester {
   name: string;
@@ -23,9 +20,9 @@ interface RequestCardProps {
   date: string;
   status: "PENDING" | "APPROVED" | "REJECTED" | "CANCELLED";
   requester: RequestRequester;
-  priority?: "HIGH" | "MEDIUM" | "LOW";
   onCancel?: (id: string) => void;
   onRemind?: (id: string) => void;
+  isBeneficiary?: boolean;
 }
 
 const RequestCard = ({
@@ -36,17 +33,14 @@ const RequestCard = ({
   date,
   status,
   requester,
-  priority,
   onCancel,
   onRemind,
+  isBeneficiary = true,
 }: RequestCardProps) => {
-  const location = useLocation();
-  const isSponsor = location.pathname.includes("/dashboard/sponsor");
-
-  // Determine correct link based on role (sponsor or beneficiary)
-  const detailsLink = isSponsor
-    ? `/dashboard/sponsor/requests/${id}`
-    : `/dashboard/beneficiary/requests/${id}`;
+  // Determine correct link based on role
+  const detailsLink = isBeneficiary
+    ? `/dashboard/beneficiary/requests/${id}`
+    : `/dashboard/sponsor/requests/${id}`;
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -61,19 +55,6 @@ const RequestCard = ({
     }
   };
 
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case "HIGH":
-        return "bg-red-100 text-red-800 border-red-200";
-      case "MEDIUM":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      case "LOW":
-        return "bg-blue-100 text-blue-800 border-blue-200";
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
-    }
-  };
-
   const getInitials = (name: string) => {
     return name
       .split(" ")
@@ -84,21 +65,9 @@ const RequestCard = ({
 
   const formatDate = (dateString: string) => {
     try {
-      return format(new Date(dateString), "MMM d, yyyy");
+      return format(new Date(dateString), "MMM dd, yyyy");
     } catch (error) {
       return "Invalid date";
-    }
-  };
-
-  const handleCancel = () => {
-    if (onCancel) {
-      onCancel(id);
-    }
-  };
-
-  const handleRemind = () => {
-    if (onRemind) {
-      onRemind(id);
     }
   };
 
@@ -111,84 +80,82 @@ const RequestCard = ({
   }).format(amount);
 
   return (
-    <Card className="overflow-hidden border border-gray-200 rounded-lg ">
-      {/* Card Header with ID, status and priority */}
-      <div className="flex items-center justify-between border-b border-gray-100 p-4">
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5">
-            <Copy className="h-3.5 w-3.5 text-gray-400" />
-            <span className="text-xs font-medium text-gray-500">
-              {displayId}
-            </span>
+    <div className="p-4 bg-white rounded-lg border border-gray-200">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center space-x-2">
+          <span className="text-sm text-gray-600">{displayId}</span>
+        </div>
+        <Badge className={`${getStatusColor(status)}`}>
+          {status}
+        </Badge>
+      </div>
+
+      <h3 className="text-lg font-medium mb-4">{title}</h3>
+
+      <div className="space-y-2 mb-4">
+        <div className="flex justify-between items-center">
+          <span className="text-sm text-gray-500">Amount</span>
+          <span className="font-medium">{formattedAmount}</span>
+        </div>
+        
+        <div className="flex justify-between items-center">
+          <span className="text-sm text-gray-500">Date</span>
+          <span>{formatDate(date)}</span>
+        </div>
+        
+        <div className="flex justify-between items-center">
+          <span className="text-sm text-gray-500">
+            {isBeneficiary ? "Requester" : "Sponsor"}
+          </span>
+          <div className="flex items-center space-x-1">
+            <Avatar className="h-5 w-5">
+              {requester.avatar ? (
+                <AvatarImage src={requester.avatar} alt={requester.name} />
+              ) : null}
+              <AvatarFallback className="text-xs">
+                {getInitials(requester.name)}
+              </AvatarFallback>
+            </Avatar>
+            <span className="text-sm">{requester.name}</span>
           </div>
-          <Badge
-            className={`${getStatusColor(
-              status
-            )} text-xs font-medium capitalize`}
-            variant="outline"
-          >
-            {status.toLowerCase()}
-          </Badge>
         </div>
       </div>
 
-      <CardContent className="p-4">
-        {/* Title */}
-        <h3 className="text-base font-medium mb-4 line-clamp-1">{title}</h3>
+      <div className="flex items-center justify-between mt-4">
+        <Button
+          asChild
+          className="bg-[#6544E4] hover:bg-[#5A3DD0] text-white px-4 py-2"
+        >
+          <Link to={detailsLink}>
+            View details
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Link>
+        </Button>
 
-        {/* Details */}
-        <div className="flex flex-col space-y-3">
-          {/* Amount */}
-          <div className="flex justify-between items-center">
-            <span className="text-xs text-gray-500">Amount</span>
-            <span className="text-sm font-semibold">{formattedAmount}</span>
+        {status === "PENDING" && (
+          <div className="flex space-x-2">
+            {onCancel && (
+              <Button 
+                onClick={() => onCancel(id)} 
+                variant="outline" 
+                className="text-red-500 border-red-200 hover:bg-red-50"
+              >
+                Cancel
+              </Button>
+            )}
+            {onRemind && (
+              <Button 
+                onClick={() => onRemind(id)} 
+                variant="outline"
+                className="text-yellow-500 border-yellow-200 hover:bg-yellow-50"
+              >
+                Remind
+              </Button>
+            )}
           </div>
-
-          {/* Date */}
-          <div className="flex justify-between items-center">
-            <span className="text-xs text-gray-500">Date</span>
-            <div className="flex items-center text-xs">
-              <Calendar className="h-3 w-3 mr-1 text-gray-400" />
-              <span>{formatDate(date)}</span>
-            </div>
-          </div>
-
-          {/* Show Requester for Sponsor view, otherwise show nothing or sponsor info */}
-          <div className="flex justify-between items-center">
-            <span className="text-xs text-gray-500">
-              {isSponsor ? "Requester" : "From"}
-            </span>
-            <div className="flex items-center gap-1.5">
-              <Avatar className="h-5 w-5">
-                {requester.avatar ? (
-                  <AvatarImage src={requester.avatar} alt={requester.name} />
-                ) : null}
-                <AvatarFallback className="text-xs bg-gray-100 text-gray-500">
-                  {getInitials(requester.name)}
-                </AvatarFallback>
-              </Avatar>
-              <span className="text-xs">{requester.name}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Actions */}
-        <div className="mt-4 space-y-2">
-          {/* View Details - always shown */}
-          <Button
-            asChild
-            className="w-full bg-[#6544E4] hover:bg-[#5A3DD0] rounded-md h-9 text-xs"
-          >
-            <Link to={detailsLink}>
-              View details
-              <ArrowRight className="h-3.5 w-3.5 ml-1" />
-            </Link>
-          </Button>
-
-          {/* Cancel and Remind buttons would be added here if needed */}
-        </div>
-      </CardContent>
-    </Card>
+        )}
+      </div>
+    </div>
   );
 };
 

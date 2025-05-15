@@ -7,19 +7,15 @@ import { Input } from "@/components/ui/input";
 import { Search, RefreshCw } from "lucide-react";
 import RequestCard from "@/components/dashboard/RequestCard";
 import { useSponsorRequests } from "@/hooks/useSponsorRequests";
-import { Request } from "@/services/requestService";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Link } from "react-router-dom";
-
-// Define request status type for type safety
-type RequestStatus = "PENDING" | "APPROVED" | "REJECTED" | "CANCELLED";
+import StatCard from "@/components/dashboard/StatCard";
 
 const SponsorIncomingRequests = () => {
   const [activeTab, setActiveTab] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   // Fetch requests using our custom hook
-  const { requests, isLoading, error, refetch } = useSponsorRequests();
+  const { requests, isLoading, error, refetch, requestsCount, approvedRequests, pendingRequests, rejectedRequests } = useSponsorRequests();
 
   // Filter requests based on search query and tab
   const filteredRequests = requests.filter((request) => {
@@ -51,6 +47,14 @@ const SponsorIncomingRequests = () => {
           </p>
         </div>
 
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <Skeleton className="h-24" />
+          <Skeleton className="h-24" />
+          <Skeleton className="h-24" />
+          <Skeleton className="h-24" />
+        </div>
+
         <Tabs defaultValue="all" className="mb-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
             <TabsList>
@@ -73,27 +77,7 @@ const SponsorIncomingRequests = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
             {[...Array(6)].map((_, index) => (
               <Card key={index} className="overflow-hidden">
-                <div className="p-4 border-b border-gray-100">
-                  <Skeleton className="h-6 w-24" />
-                </div>
-                <div className="p-4">
-                  <Skeleton className="h-5 w-full mb-4" />
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <Skeleton className="h-4 w-20" />
-                      <Skeleton className="h-4 w-24" />
-                    </div>
-                    <div className="flex justify-between">
-                      <Skeleton className="h-4 w-20" />
-                      <Skeleton className="h-4 w-32" />
-                    </div>
-                    <div className="flex justify-between">
-                      <Skeleton className="h-4 w-20" />
-                      <Skeleton className="h-4 w-28" />
-                    </div>
-                    <Skeleton className="h-9 w-full mt-4" />
-                  </div>
-                </div>
+                <Skeleton className="h-64" />
               </Card>
             ))}
           </div>
@@ -138,6 +122,34 @@ const SponsorIncomingRequests = () => {
         <p className="text-gray-500">
           Manage and review incoming requests from beneficiaries
         </p>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <StatCard 
+          title="Total Requests" 
+          value={requestsCount.toString()} 
+          color="purple" 
+          colortag="white" 
+        />
+        <StatCard 
+          title="Approved Requests" 
+          value={approvedRequests.toString()} 
+          color="green" 
+          colortag="black" 
+        />
+        <StatCard 
+          title="Pending Requests" 
+          value={pendingRequests.toString()} 
+          color="yellow" 
+          colortag="black" 
+        />
+        <StatCard 
+          title="Rejected Requests" 
+          value={rejectedRequests.toString()} 
+          color="red" 
+          colortag="white" 
+        />
       </div>
 
       <Tabs
@@ -185,13 +197,13 @@ const SponsorIncomingRequests = () => {
                 <Card key={request.id} className="p-0 overflow-hidden">
                   <RequestCard
                     id={request.id}
-                    displayId={request.displayId}
+                    displayId={`REQ-${request.id.substring(0, 3)}`}
                     title={request.name}
                     amount={request.totalAmount}
                     date={request.createdAt}
                     status={request.status}
                     requester={request.requester}
-                    priority={request.bills[0]?.priority || "MEDIUM"}
+                    isBeneficiary={false}
                   />
                 </Card>
               ))}
@@ -222,13 +234,13 @@ const SponsorIncomingRequests = () => {
                 <Card key={request.id} className="p-0 overflow-hidden">
                   <RequestCard
                     id={request.id}
-                    displayId={request.displayId}
+                    displayId={`REQ-${request.id.substring(0, 3)}`}
                     title={request.name}
                     amount={request.totalAmount}
                     date={request.createdAt}
                     status={request.status}
                     requester={request.requester}
-                    priority={request.bills[0]?.priority || "MEDIUM"}
+                    isBeneficiary={false}
                   />
                 </Card>
               ))}
@@ -256,13 +268,13 @@ const SponsorIncomingRequests = () => {
                 <Card key={request.id} className="p-0 overflow-hidden">
                   <RequestCard
                     id={request.id}
-                    displayId={request.displayId}
+                    displayId={`REQ-${request.id.substring(0, 3)}`}
                     title={request.name}
                     amount={request.totalAmount}
                     date={request.createdAt}
                     status={request.status}
                     requester={request.requester}
-                    priority={request.bills[0]?.priority || "MEDIUM"}
+                    isBeneficiary={false}
                   />
                 </Card>
               ))}
@@ -290,13 +302,13 @@ const SponsorIncomingRequests = () => {
                 <Card key={request.id} className="p-0 overflow-hidden">
                   <RequestCard
                     id={request.id}
-                    displayId={request.displayId}
+                    displayId={`REQ-${request.id.substring(0, 3)}`}
                     title={request.name}
                     amount={request.totalAmount}
                     date={request.createdAt}
                     status={request.status}
                     requester={request.requester}
-                    priority={request.bills[0]?.priority || "MEDIUM"}
+                    isBeneficiary={false}
                   />
                 </Card>
               ))}

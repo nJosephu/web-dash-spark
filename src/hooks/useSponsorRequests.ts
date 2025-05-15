@@ -1,7 +1,6 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
-import { toast } from "sonner";
 import requestService, { Request } from "@/services/requestService";
 
 export const useSponsorRequests = () => {
@@ -12,21 +11,20 @@ export const useSponsorRequests = () => {
     return request.bills.reduce((total, bill) => total + bill.amount, 0);
   };
   
-  // Query to fetch requests for the sponsor
+  // Query to fetch requests
   const {
     data: requestsData,
     isLoading,
     error,
     refetch
   } = useQuery({
-    queryKey: ["sponsorRequests", user?.id],
+    queryKey: ["sponsor-requests", user?.id],
     queryFn: async () => {
       if (!user?.id || !token) {
         console.error("User ID or token not available");
         throw new Error("Authentication required");
       }
       
-      console.log(`Fetching requests for sponsor: ${user.id}`);
       const response = await requestService.getSponsorRequests(user.id, token);
       
       // Process the data before returning it
@@ -35,7 +33,7 @@ export const useSponsorRequests = () => {
           ...request,
           // Add a calculated totalAmount property
           totalAmount: calculateRequestAmount(request),
-          // Generate a simple request ID (e.g., REQ-001) based on first 3 chars of ID
+          // Generate a simple request ID (e.g., REQ-001) based on index
           displayId: `REQ-${request.id.substring(0, 3)}`,
         }));
       }
@@ -44,11 +42,22 @@ export const useSponsorRequests = () => {
     },
     enabled: !!user?.id && !!token,
   });
+
+  // Summary data calculations
+  const requestsCount = requestsData?.length || 0;
+  const approvedRequests = requestsData?.filter(req => req.status === "APPROVED").length || 0;
+  const pendingRequests = requestsData?.filter(req => req.status === "PENDING").length || 0;
+  const rejectedRequests = requestsData?.filter(req => req.status === "REJECTED").length || 0;
   
   return {
     requests: requestsData || [],
     isLoading,
     error,
     refetch,
+    // Summary data
+    requestsCount,
+    approvedRequests,
+    pendingRequests,
+    rejectedRequests,
   };
 };
