@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -61,9 +60,9 @@ const SponsorBundleDetails = () => {
   // Handle approve/reject actions
   const handleApproveRequest = () => {
     if (!request) return;
-    
+
     setIsProcessing(true);
-    
+
     // Simulate API call with timeout (replace with actual API call)
     setTimeout(() => {
       toast.success("Request approved successfully");
@@ -170,7 +169,7 @@ const SponsorBundleDetails = () => {
   }));
 
   return (
-    <div className="max-w-[100vw] overflow-x-hidden p-4 pt-0 md:p-6 md:pt-0">
+    <div className="">
       {/* Bundle header with navigation and action buttons */}
       <Card className="mb-6">
         <CardContent className="p-6">
@@ -198,7 +197,10 @@ const SponsorBundleDetails = () => {
         {/* Bundle information */}
         <div className="space-y-6">
           {/* Bundle items */}
-          <BundleItems items={formattedBills} showDeleteButton={componentStatus === "pending"} />
+          <BundleItems
+            items={formattedBills}
+            showDeleteButton={componentStatus === "pending"}
+          />
 
           {/* Bundle summary */}
           <BundleSummary
@@ -219,16 +221,16 @@ const SponsorBundleDetails = () => {
           {/* Sponsor-specific action buttons */}
           {componentStatus === "pending" && (
             <div className="flex gap-4 mt-6">
-              <Button 
+              <Button
                 onClick={handleCancelRequest}
                 disabled={isProcessing}
-                variant="outline" 
+                variant="outline"
                 className="flex-1 border-red-200 text-red-600 hover:bg-red-50"
               >
                 <X className="mr-2 h-4 w-4" />
                 Cancel Request
               </Button>
-              <Button 
+              <Button
                 onClick={handleApproveRequest}
                 disabled={isProcessing}
                 className="flex-1 bg-[#6544E4] hover:bg-[#5A3DD0]"
@@ -254,7 +256,8 @@ const SponsorBundleDetails = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Confirm Cancellation</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to cancel this request? This action cannot be undone.
+              Are you sure you want to cancel this request? This action cannot
+              be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
