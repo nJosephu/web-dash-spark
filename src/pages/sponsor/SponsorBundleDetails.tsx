@@ -1,7 +1,6 @@
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import TopNav from "@/components/layout/TopNav";
 
 // Import components
 import BundleHeader from "@/components/bundle/BundleHeader";
@@ -9,482 +8,234 @@ import StatCards from "@/components/bundle/StatCards";
 import BundleItems from "@/components/bundle/BundleItems";
 import BundleSummary from "@/components/bundle/BundleSummary";
 import ActivityLog from "@/components/bundle/ActivityLog";
-import { Button } from "@/components/ui/button";
-import { Check, X } from "lucide-react";
-import { toast } from "sonner";
-
-// Import types
-import { Bundle } from "@/types/bundleTypes";
 import { useAuth } from "@/context/AuthContext";
-
-// Using the same mock data structure as the original BundleDetails component
-const mockBundles: Record<string, Bundle> = {
-  "REQ-001": {
-    id: "U2K-001289",
-    title: "Rent Payment",
-    amount: "₦120,000",
-    date: "2025-04-25",
-    status: "approved",
-    sponsor: {
-      name: "John Doe",
-      avatar: "",
-    },
-    priority: "high",
-    description: "Monthly rent payment for apartment",
-    items: [
-      {
-        name: "Rent",
-        amount: "₦120,000",
-        priority: "high",
-        category: "Accommodation",
-      },
-      {
-        name: "Rent",
-        amount: "₦120,000",
-        priority: "high",
-        category: "Accommodation",
-      },
-    ],
-    activityLog: [
-      {
-        type: "created",
-        message: "Bundle was created",
-        timestamp: "2025-04-20T10:30:00",
-        user: {
-          name: "You",
-        },
-        completed: true,
-      },
-      {
-        type: "sent",
-        message: "Bundle was sent to John Doe",
-        timestamp: "2025-04-20T10:35:00",
-        user: {
-          name: "System",
-        },
-        completed: true,
-      },
-      {
-        type: "viewed",
-        message: "John Doe viewed the bundle",
-        timestamp: "2025-04-21T14:22:00",
-        user: {
-          name: "John Doe",
-        },
-        completed: true,
-      },
-      {
-        type: "approved",
-        message: "Bundle was approved",
-        timestamp: "2025-04-22T09:15:00",
-        user: {
-          name: "John Doe",
-        },
-        completed: true,
-      },
-      {
-        type: "completed",
-        message: "Payment was processed",
-        timestamp: "2025-04-23T11:30:00",
-        user: {
-          name: "System",
-        },
-        completed: true,
-      },
-    ],
-  },
-  "REQ-002": {
-    id: "U2K-001290",
-    title: "Electricity Bill",
-    amount: "₦45,000",
-    date: "2025-04-22",
-    status: "pending",
-    sponsor: {
-      name: "Jane Smith",
-      avatar: "",
-    },
-    priority: "medium",
-    description: "Monthly electricity bill payment",
-    items: [
-      {
-        name: "Electricity",
-        amount: "₦45,000",
-        priority: "medium",
-        category: "Utilities",
-      },
-    ],
-    activityLog: [
-      {
-        type: "created",
-        message: "Bundle was created",
-        timestamp: "2025-04-18T08:30:00",
-        user: {
-          name: "You",
-        },
-        completed: true,
-      },
-      {
-        type: "sent",
-        message: "Bundle was sent to Jane Smith",
-        timestamp: "2025-04-18T08:35:00",
-        user: {
-          name: "System",
-        },
-        completed: true,
-      },
-      {
-        type: "viewed",
-        message: "Jane Smith viewed the bundle",
-        timestamp: "2025-04-19T10:15:00",
-        user: {
-          name: "Jane Smith",
-        },
-        completed: true,
-      },
-      {
-        type: "pending",
-        message: "Awaiting sponsor approval",
-        timestamp: "2025-04-19T10:20:00",
-        user: {
-          name: "System",
-        },
-        completed: false,
-      },
-    ],
-  },
-  "REQ-003": {
-    id: "U2K-001291",
-    title: "Water Bill",
-    amount: "₦15,000",
-    date: "2025-04-18",
-    status: "rejected",
-    sponsor: {
-      name: "Mike Johnson",
-      avatar: "",
-    },
-    priority: "low",
-    description: "Monthly water bill payment",
-    items: [
-      {
-        name: "Water",
-        amount: "₦15,000",
-        priority: "low",
-        category: "Utilities",
-      },
-    ],
-    activityLog: [
-      {
-        type: "created",
-        message: "Bundle was created",
-        timestamp: "2025-04-15T14:30:00",
-        user: {
-          name: "You",
-        },
-        completed: true,
-      },
-      {
-        type: "sent",
-        message: "Bundle was sent to Mike Johnson",
-        timestamp: "2025-04-15T14:35:00",
-        user: {
-          name: "System",
-        },
-        completed: true,
-      },
-      {
-        type: "viewed",
-        message: "Mike Johnson viewed the bundle",
-        timestamp: "2025-04-16T09:22:00",
-        user: {
-          name: "Mike Johnson",
-        },
-        completed: true,
-      },
-      {
-        type: "rejected",
-        message: "Bundle was rejected: Not in budget this month",
-        timestamp: "2025-04-16T10:15:00",
-        user: {
-          name: "Mike Johnson",
-        },
-        completed: true,
-      },
-    ],
-  },
-  "REQ-004": {
-    id: "U2K-001292",
-    title: "Internet Payment",
-    amount: "₦25,000",
-    date: "2025-04-15",
-    status: "approved",
-    sponsor: {
-      name: "Mike Johnson",
-      avatar: "",
-    },
-    priority: "medium",
-    description: "Monthly internet subscription",
-    items: [
-      {
-        name: "Internet",
-        amount: "₦25,000",
-        priority: "medium",
-        category: "Utilities",
-      },
-    ],
-    activityLog: [
-      {
-        type: "created",
-        message: "Bundle was created",
-        timestamp: "2025-04-10T10:30:00",
-        user: {
-          name: "You",
-        },
-        completed: true,
-      },
-      {
-        type: "sent",
-        message: "Bundle was sent to Mike Johnson",
-        timestamp: "2025-04-10T10:35:00",
-        user: {
-          name: "System",
-        },
-        completed: true,
-      },
-      {
-        type: "viewed",
-        message: "Mike Johnson viewed the bundle",
-        timestamp: "2025-04-12T14:22:00",
-        user: {
-          name: "Mike Johnson",
-        },
-        completed: true,
-      },
-      {
-        type: "approved",
-        message: "Bundle was approved",
-        timestamp: "2025-04-12T15:15:00",
-        user: {
-          name: "Mike Johnson",
-        },
-        completed: true,
-      },
-      {
-        type: "completed",
-        message: "Payment was processed",
-        timestamp: "2025-04-13T11:30:00",
-        user: {
-          name: "System",
-        },
-        completed: true,
-      },
-    ],
-  },
-  "REQ-005": {
-    id: "U2K-001293",
-    title: "School Fees",
-    amount: "₦180,000",
-    date: "2025-04-10",
-    status: "pending",
-    sponsor: {
-      name: "Sarah Williams",
-      avatar: "",
-    },
-    priority: "high",
-    description: "Semester school fees payment",
-    items: [
-      {
-        name: "Tuition",
-        amount: "₦150,000",
-        priority: "high",
-        category: "Education",
-      },
-      {
-        name: "Books",
-        amount: "₦30,000",
-        priority: "medium",
-        category: "Education",
-      },
-    ],
-    activityLog: [
-      {
-        type: "created",
-        message: "Bundle was created",
-        timestamp: "2025-04-05T16:30:00",
-        user: {
-          name: "You",
-        },
-        completed: true,
-      },
-      {
-        type: "sent",
-        message: "Bundle was sent to Sarah Williams",
-        timestamp: "2025-04-05T16:35:00",
-        user: {
-          name: "System",
-        },
-        completed: true,
-      },
-      {
-        type: "viewed",
-        message: "Sarah Williams viewed the bundle",
-        timestamp: "2025-04-07T09:22:00",
-        user: {
-          name: "Sarah Williams",
-        },
-        completed: true,
-      },
-      {
-        type: "pending",
-        message: "Awaiting sponsor approval",
-        timestamp: "2025-04-07T09:30:00",
-        user: {
-          name: "System",
-        },
-        completed: false,
-      },
-    ],
-  },
-};
+import { Button } from "@/components/ui/button";
+import { Check, X, Loader } from "lucide-react";
+import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from "@/components/ui/card";
+import { format, parseISO } from "date-fns";
+import { useRequest } from "@/hooks/useRequest";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const SponsorBundleDetails = () => {
   const { bundleId } = useParams<{ bundleId: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [bundle, setBundle] = useState<Bundle | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  useEffect(() => {
-    // Get bundle data and add debug logging
-    console.log("SponsorBundleDetails - Bundle ID:", bundleId);
-    
-    if (bundleId && mockBundles[bundleId]) {
-      console.log("SponsorBundleDetails - Found bundle data for ID:", bundleId);
-      setBundle(mockBundles[bundleId]);
-      document.title = `${mockBundles[bundleId].title} | Sponsor View | Urgent2kay`;
-    } else {
-      console.log("SponsorBundleDetails - No bundle found for ID:", bundleId);
-      console.log("Available bundle IDs:", Object.keys(mockBundles));
-      navigate("/dashboard/sponsor/requests");
+  // Use our custom hook to fetch request data
+  const {
+    request,
+    isLoading,
+    error,
+    cancelRequest,
+    deleteRequest,
+    isDeleting,
+    sendReminder,
+    billsCount,
+    approvedBills,
+    pendingBills,
+    rejectedBills,
+    formatCurrency,
+  } = useRequest(bundleId);
+
+  // Format the date using date-fns
+  const formatDate = (dateString: string) => {
+    try {
+      return format(parseISO(dateString), "MMM dd, yyyy");
+    } catch (error) {
+      return "Invalid Date";
     }
-  }, [bundleId, navigate]);
+  };
 
-  // Handling approve/reject actions
-  const handleApproveBundle = () => {
-    if (!bundle) return;
+  // Handle approve/reject actions
+  const handleApproveRequest = () => {
+    if (!request) return;
     
     setIsProcessing(true);
     
-    // Simulate API call with timeout
+    // Simulate API call with timeout (replace with actual API call)
     setTimeout(() => {
-      // Update bundle status - use a literal type that matches the Bundle interface
-      const updatedBundle: Bundle = {
-        ...bundle,
-        status: "approved" as const, // Explicitly set as a literal type
-        activityLog: [
-          ...bundle.activityLog,
-          {
-            type: "approved",
-            message: "Bundle was approved by you",
-            timestamp: new Date().toISOString(),
-            user: {
-              name: user?.name || "You",
-            },
-            completed: true,
-          }
-        ]
-      };
-      
-      setBundle(updatedBundle);
-      toast.success("Bundle approved successfully");
+      toast.success("Request approved successfully");
       setIsProcessing(false);
+      // After successful operation, navigate back to requests list
+      navigate("/dashboard/sponsor/requests");
     }, 1000);
   };
 
-  const handleRejectBundle = () => {
-    if (!bundle) return;
-    
-    setIsProcessing(true);
-    
-    // Simulate API call with timeout
-    setTimeout(() => {
-      // Update bundle status - use a literal type that matches the Bundle interface
-      const updatedBundle: Bundle = {
-        ...bundle,
-        status: "rejected" as const, // Explicitly set as a literal type
-        activityLog: [
-          ...bundle.activityLog,
-          {
-            type: "rejected",
-            message: "Bundle was rejected by you",
-            timestamp: new Date().toISOString(),
-            user: {
-              name: user?.name || "You",
-            },
-            completed: true,
-          }
-        ]
-      };
-      
-      setBundle(updatedBundle);
-      toast.success("Bundle rejected");
-      setIsProcessing(false);
-    }, 1000);
+  // Handle cancel request
+  const handleCancelRequest = () => {
+    setIsDeleteDialogOpen(true);
   };
 
-  if (!bundle) {
-    return <div>Loading...</div>;
+  // Handle delete confirmation
+  const handleConfirmDelete = () => {
+    if (!bundleId) return;
+    deleteRequest();
+    // After successful operation, navigate back to requests list
+    navigate("/dashboard/sponsor/requests");
+  };
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="">
+        <div className="mb-6">
+          <Skeleton className="h-10 w-32 mb-4" />
+          <Skeleton className="h-8 w-64 mb-2" />
+          <Skeleton className="h-4 w-32 mb-6" />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
+          <div className="md:col-span-2 space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4">
+              <Skeleton className="h-24" />
+              <Skeleton className="h-24" />
+              <Skeleton className="h-24" />
+              <Skeleton className="h-24" />
+            </div>
+
+            <Skeleton className="h-64" />
+            <Skeleton className="h-48" />
+
+            <div className="flex gap-4">
+              <Skeleton className="h-10 flex-1" />
+              <Skeleton className="h-10 flex-1" />
+            </div>
+          </div>
+
+          <div className="md:col-span-4">
+            <Skeleton className="h-96" />
+          </div>
+        </div>
+      </div>
+    );
   }
+
+  // Error state
+  if (error || !request) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[60vh]">
+        <h2 className="text-2xl font-bold mb-4">Request Not Found</h2>
+        <p className="text-gray-500 mb-8">
+          {error instanceof Error
+            ? error.message
+            : "Failed to load request details"}
+        </p>
+        <div className="flex gap-4">
+          <Button
+            onClick={() => navigate("/dashboard/sponsor/requests")}
+            variant="outline"
+          >
+            Back to Requests
+          </Button>
+          <Button
+            onClick={() => window.location.reload()}
+            className="bg-[#6544E4] hover:bg-[#5A3DD0]"
+          >
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Convert status from API (PENDING, APPROVED, REJECTED) to component format (pending, approved, rejected)
+  const statusMapping: Record<string, "pending" | "approved" | "rejected"> = {
+    PENDING: "pending",
+    APPROVED: "approved",
+    REJECTED: "rejected",
+  };
+
+  const componentStatus = statusMapping[request.status] || "pending";
+
+  // Format the bills array for the BundleItems component
+  const formattedBills = request.bills.map((bill) => ({
+    id: bill.id,
+    name: bill.billName,
+    amount: formatCurrency(bill.amount),
+    priority: bill.priority.toLowerCase() as "high" | "medium" | "low",
+    category: bill.type || bill.provider?.name || "Bill",
+    duedates: bill.dueDate,
+  }));
 
   return (
     <div className="max-w-[100vw] overflow-x-hidden p-4 pt-0 md:p-6 md:pt-0">
       {/* Bundle header with navigation and action buttons */}
-      <BundleHeader
-        id={bundle.id}
-        title={bundle.title}
-        date={bundle.date}
-        status={bundle.status}
-      />
+      <Card className="mb-6">
+        <CardContent className="p-6">
+          <BundleHeader
+            id={request.formattedId || `REQ-${request.id.substring(0, 6)}`}
+            title={request.name}
+            date={request.createdAt}
+            status={componentStatus}
+          />
+
+          {/* Stats cards */}
+          <div className="mt-6">
+            <StatCards
+              billsCount={billsCount}
+              approvedBills={approvedBills}
+              pendingBills={pendingBills}
+              rejectedBills={rejectedBills}
+            />
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Bundle content */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Left section - Bundle information */}
         <div className="md:col-span-2 space-y-6">
-          {/* Stats cards */}
-          <StatCards
-            amount={bundle.amount}
-            date={bundle.date}
-            priority={bundle.priority}
-          />
-
           {/* Bundle items */}
-          <BundleItems items={bundle.items} />
+          <BundleItems items={formattedBills} showDeleteButton={componentStatus === "pending"} />
 
           {/* Bundle summary */}
           <BundleSummary
-            description={bundle.description}
-            sponsor={bundle.sponsor}
-            amount={bundle.amount}
+            description={request.notes}
+            sponsor={{
+              name: request.supporter?.name || "No sponsor assigned",
+              email: request.supporter?.email,
+            }}
+            amount={request.formattedAmount}
+            createdAt={request.createdAt}
+            dueDate={request.earliestDueDate}
           />
 
           {/* Sponsor-specific action buttons */}
-          {bundle.status === "pending" && (
+          {componentStatus === "pending" && (
             <div className="flex gap-4 mt-6">
               <Button 
-                onClick={handleRejectBundle}
+                onClick={handleCancelRequest}
                 disabled={isProcessing}
                 variant="outline" 
                 className="flex-1 border-red-200 text-red-600 hover:bg-red-50"
               >
                 <X className="mr-2 h-4 w-4" />
-                Reject Request
+                Cancel Request
               </Button>
               <Button 
-                onClick={handleApproveBundle}
+                onClick={handleApproveRequest}
                 disabled={isProcessing}
                 className="flex-1 bg-[#6544E4] hover:bg-[#5A3DD0]"
               >
-                <Check className="mr-2 h-4 w-4" />
-                Approve Request
+                {isProcessing ? (
+                  <Loader className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Check className="mr-2 h-4 w-4" />
+                )}
+                {isProcessing ? "Processing..." : "Approve Request"}
               </Button>
             </div>
           )}
@@ -492,9 +243,41 @@ const SponsorBundleDetails = () => {
 
         {/* Right section - Activity log */}
         <div>
-          <ActivityLog activities={bundle.activityLog} />
+          <ActivityLog activities={request.activityLog || []} />
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Cancellation</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to cancel this request? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmDelete}
+              disabled={isDeleting}
+              className="bg-red-600 text-white hover:bg-red-700 focus:ring-red-600"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader className="mr-2 h-4 w-4 animate-spin" />
+                  Cancelling...
+                </>
+              ) : (
+                "Confirm"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

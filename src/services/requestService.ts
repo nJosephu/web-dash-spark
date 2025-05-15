@@ -10,6 +10,11 @@ export interface Bill {
   type: string;
   priority: "HIGH" | "MEDIUM" | "LOW";
   status: "PENDING" | "APPROVED" | "REJECTED" | "PAID";
+  provider?: {
+    id?: string;
+    name: string;
+  };
+  note?: string;
 }
 
 export interface User {
@@ -28,6 +33,7 @@ export interface Request {
   bills: Bill[];
   requester: User;
   supporter?: User;
+  totalAmount?: number;
 }
 
 export interface RequestsResponse {
