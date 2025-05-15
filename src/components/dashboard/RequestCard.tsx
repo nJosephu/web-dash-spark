@@ -80,34 +80,39 @@ const RequestCard = ({
   }).format(amount);
 
   return (
-    <div className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm">
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center space-x-2">
-          <span className="text-sm text-gray-600">{displayId}</span>
+    <div className="p-4 bg-white rounded-lg border border-gray-100">
+      {/* Header with ID and status */}
+      <div className="flex justify-between items-center mb-4">
+        <div className="text-gray-500 text-sm flex items-center">
+          {displayId}
         </div>
-        <Badge className={`${getStatusColor(status)}`}>
+        <Badge className={`font-medium ${getStatusColor(status)}`}>
           {status}
         </Badge>
       </div>
 
-      <h3 className="text-lg font-medium mb-3">{title}</h3>
+      {/* Title */}
+      <h3 className="font-medium text-lg mb-4">{title}</h3>
 
-      <div className="space-y-2 mb-4">
-        <div className="flex justify-between items-center">
-          <span className="text-sm text-gray-500">Amount</span>
+      {/* Details */}
+      <div className="space-y-3 mb-4">
+        <div className="flex justify-between">
+          <span className="text-gray-500 text-sm">Amount</span>
           <span className="font-medium">{formattedAmount}</span>
         </div>
-        
-        <div className="flex justify-between items-center">
-          <span className="text-sm text-gray-500">Due date</span>
+
+        <div className="flex justify-between">
+          <span className="text-gray-500 text-sm">
+            {isBeneficiary ? "Due date" : "Date"}
+          </span>
           <span>{formatDate(date)}</span>
         </div>
-        
+
         <div className="flex justify-between items-center">
-          <span className="text-sm text-gray-500">
+          <span className="text-gray-500 text-sm">
             {isBeneficiary ? "Sponsor" : "Requester"}
           </span>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-2">
             <Avatar className="h-6 w-6">
               {requester.avatar ? (
                 <AvatarImage src={requester.avatar} alt={requester.name} />
@@ -116,29 +121,30 @@ const RequestCard = ({
                 {getInitials(requester.name)}
               </AvatarFallback>
             </Avatar>
-            <span className="text-sm">{requester.name}</span>
+            <span>{requester.name}</span>
           </div>
         </div>
       </div>
 
-      <div className="flex items-center justify-between mt-3">
+      {/* Actions */}
+      <div className="mt-4 space-y-2">
         <Button
           asChild
-          className="bg-[#6544E4] hover:bg-[#5A3DD0] text-white px-4 py-2"
+          className="bg-[#6544E4] hover:bg-[#5A3DD0] text-white w-full justify-center"
         >
-          <Link to={detailsLink}>
+          <Link to={detailsLink} className="flex items-center justify-center">
             View details
             <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </Button>
 
         {status === "PENDING" && (
-          <div className="flex space-x-2">
+          <div className="flex gap-2">
             {onCancel && (
               <Button 
                 onClick={() => onCancel(id)} 
                 variant="outline" 
-                className="text-red-500 border-red-200 hover:bg-red-50"
+                className="text-red-500 border-red-200 hover:bg-red-50 flex-1 justify-center"
               >
                 Cancel
               </Button>
@@ -147,7 +153,7 @@ const RequestCard = ({
               <Button 
                 onClick={() => onRemind(id)} 
                 variant="outline"
-                className="text-yellow-500 border-yellow-200 hover:bg-yellow-50"
+                className="text-yellow-500 border-yellow-200 hover:bg-yellow-50 flex-1 justify-center"
               >
                 Remind
               </Button>
