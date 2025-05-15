@@ -52,7 +52,7 @@ const SponsorDashboard = () => {
         </p>
       </div>
 
-      <div className="bg-black rounded-lg p-6 mb-6">
+      <div className="bg-slate-900 rounded-lg p-6 mb-6">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between">
           <div>
             <h2 className="text-xl text-white font-medium mb-2">
