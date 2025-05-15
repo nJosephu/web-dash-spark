@@ -1,4 +1,3 @@
-
 import { Tag } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -30,7 +29,7 @@ const StatCard = ({
   };
 
   return (
-    <div className="p-4 rounded-lg border border-gray-200">
+    <div className="p-4 rounded-lg bg-white">
       <div className="flex items-start gap-2">
         <div
           className={cn(
