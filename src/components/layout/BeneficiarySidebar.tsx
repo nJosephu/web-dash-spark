@@ -25,6 +25,7 @@ interface SidebarProps {
 const BeneficiarySidebar = ({ className }: SidebarProps) => {
   const location = useLocation();
   const isMobile = useIsMobile();
+  const isTablet = !isMobile && window.innerWidth < 1024; // Detect tablet size
   const [open, setOpen] = useState(false);
 
   const sidebarItems = [
@@ -93,7 +94,7 @@ const BeneficiarySidebar = ({ className }: SidebarProps) => {
 
   // Close sidebar on link click
   const handleLinkClick = () => {
-    if (isMobile) {
+    if (isMobile || isTablet) {
       setOpen(false);
     }
   };
@@ -157,7 +158,7 @@ const BeneficiarySidebar = ({ className }: SidebarProps) => {
     </div>
   );
 
-  if (isMobile) {
+  if (isMobile || isTablet) {
     return (
       <>
         <Sheet open={open} onOpenChange={setOpen}>
@@ -181,7 +182,7 @@ const BeneficiarySidebar = ({ className }: SidebarProps) => {
   return (
     <aside
       className={cn(
-        "w-64 hidden md:flex flex-col bg-[#1A1F2C] text-white h-full fixed left-0 top-0 z-50",
+        "w-64 hidden lg:flex flex-col bg-[#1A1F2C] text-white h-full fixed left-0 top-0 z-50",
         className
       )}
     >

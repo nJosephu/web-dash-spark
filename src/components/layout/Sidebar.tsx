@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile, useIsMobileOrTablet } from "@/hooks/use-mobile";
 import logo from "../../images/logo2kpurple.png";
 import LogoutConfirmation from "../auth/LogoutConfirmation";
 
@@ -24,7 +24,7 @@ interface SidebarProps {
 
 const Sidebar = ({ className }: SidebarProps) => {
   const location = useLocation();
-  const isMobile = useIsMobile();
+  const isMobileOrTablet = useIsMobileOrTablet();
 
   const sidebarItems = [
     {
@@ -128,7 +128,7 @@ const Sidebar = ({ className }: SidebarProps) => {
     </div>
   );
 
-  if (isMobile) {
+  if (isMobileOrTablet) {
     return (
       <>
         <Sheet>
@@ -152,7 +152,7 @@ const Sidebar = ({ className }: SidebarProps) => {
   return (
     <aside
       className={cn(
-        "w-64 hidden md:flex flex-col bg-[#1A1F2C] text-white h-full fixed left-0 top-0 z-50",
+        "w-64 hidden lg:flex flex-col bg-[#1A1F2C] text-white h-full fixed left-0 top-0 z-50",
         className
       )}
     >

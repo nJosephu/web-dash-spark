@@ -1,3 +1,4 @@
+
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutGrid,
@@ -15,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import logo from "../../images/logo2kpurple.png";
 import LogoutConfirmation from "../auth/LogoutConfirmation";
+import { useState } from "react";
 
 interface SidebarProps {
   className?: string;
@@ -23,6 +25,8 @@ interface SidebarProps {
 const SponsorSidebar = ({ className }: SidebarProps) => {
   const location = useLocation();
   const isMobile = useIsMobile();
+  const isTablet = !isMobile && window.innerWidth < 1024; // Detect tablet size
+  const [open, setOpen] = useState(false);
 
   const sidebarItems = [
     {
@@ -84,6 +88,13 @@ const SponsorSidebar = ({ className }: SidebarProps) => {
     return false;
   };
 
+  // Close sidebar on link click
+  const handleLinkClick = () => {
+    if (isMobile || isTablet) {
+      setOpen(false);
+    }
+  };
+
   const SidebarContent = () => (
     <div className="flex flex-col h-full bg-[#1A1F2C] text-white">
       <div className="p-4 flex items-center gap-2">
@@ -95,6 +106,7 @@ const SponsorSidebar = ({ className }: SidebarProps) => {
           <Link
             key={item.title}
             to={item.path}
+            onClick={handleLinkClick}
             className={cn(
               "flex items-center gap-3 px-4 py-3 rounded-md transition-colors",
               isItemActive(item.path)
@@ -114,6 +126,7 @@ const SponsorSidebar = ({ className }: SidebarProps) => {
             <Link
               key={item.title}
               to={item.path}
+              onClick={handleLinkClick}
               className={cn(
                 "flex items-center gap-3 px-4 py-3 rounded-md transition-colors",
                 location.pathname === item.path
@@ -141,10 +154,10 @@ const SponsorSidebar = ({ className }: SidebarProps) => {
     </div>
   );
 
-  if (isMobile) {
+  if (isMobile || isTablet) {
     return (
       <>
-        <Sheet>
+        <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <Button
               variant="ghost"
@@ -165,7 +178,7 @@ const SponsorSidebar = ({ className }: SidebarProps) => {
   return (
     <aside
       className={cn(
-        "w-64 hidden md:flex flex-col bg-[#1A1F2C] text-white h-full fixed left-0 top-0 z-50",
+        "w-64 hidden lg:flex flex-col bg-[#1A1F2C] text-white h-full fixed left-0 top-0 z-50",
         className
       )}
     >
