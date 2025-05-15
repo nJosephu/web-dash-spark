@@ -10,7 +10,7 @@ import BundleSummary from "@/components/bundle/BundleSummary";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Check, X, Loader } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { useRequest } from "@/hooks/useRequest";
@@ -55,7 +55,10 @@ const SponsorBundleDetails = () => {
 
     // Simulate API call with timeout (replace with actual API call)
     setTimeout(() => {
-      toast.success("Request approved successfully");
+      toast({
+        title: "Success",
+        description: "Request approved successfully",
+      });
       setIsProcessing(false);
       // After successful operation, navigate back to requests list
       navigate("/dashboard/sponsor/requests");
