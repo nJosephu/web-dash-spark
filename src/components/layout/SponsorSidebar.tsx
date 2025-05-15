@@ -1,3 +1,4 @@
+
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutGrid,
@@ -8,6 +9,7 @@ import {
   Settings,
   SwitchCamera,
   Menu,
+  Wallet,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -37,6 +39,11 @@ const SponsorSidebar = ({ className }: SidebarProps) => {
       title: "Fund requests",
       icon: FileText,
       path: "/dashboard/sponsor/requests",
+    },
+    {
+      title: "Wallet & Token",
+      icon: Wallet,
+      path: "/dashboard/sponsor/wallet",
     },
     // {
     //   title: "Beneficiaries",

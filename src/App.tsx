@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -38,6 +39,7 @@ import SponsorBeneficiaries from "./pages/sponsor/Beneficiaries";
 import SponsorBillsPaid from "./pages/sponsor/BillsPaid";
 import SponsorSettings from "./pages/sponsor/Settings";
 import SponsorBundleDetails from "./pages/sponsor/SponsorBundleDetails";
+import WalletAndToken from "./pages/sponsor/WalletAndToken";
 
 import { useEffect, useState } from "react";
 import { AuthProvider, useAuth } from "./context/AuthContext";
@@ -211,6 +213,7 @@ const AppRoutes = () => {
           <Route index element={<SponsorDashboard />} />
           <Route path="requests" element={<SponsorIncomingRequests />} />
           <Route path="requests/:bundleId" element={<SponsorBundleDetails />} />
+          <Route path="wallet" element={<WalletAndToken />} />
           {/* <Route path="beneficiaries" element={<SponsorBeneficiaries />} /> */}
           {/* <Route path="bills-paid" element={<SponsorBillsPaid />} /> */}
           <Route path="settings" element={<SponsorSettings />} />
