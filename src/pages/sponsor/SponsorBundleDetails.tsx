@@ -116,7 +116,7 @@ const SponsorBundleDetails = () => {
     name: bill.billName,
     amount: formatCurrency(bill.amount),
     priority: bill.priority.toLowerCase() as "high" | "medium" | "low",
-    category: bill.type || (bill.provider?.name || "General"),
+    category: bill.type || (bill.provider ? bill.provider.name : "General"),
     duedates: bill.dueDate,
   }));
 
@@ -132,7 +132,7 @@ const SponsorBundleDetails = () => {
     ? request.bills.reduce((earliest, bill) => {
         if (!earliest) return bill.dueDate;
         return new Date(bill.dueDate) < new Date(earliest) ? bill.dueDate : earliest;
-      }, null)
+      }, null as string | null)
     : null;
 
   return (

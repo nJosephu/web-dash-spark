@@ -10,6 +10,9 @@ export interface Bill {
   type: string;
   priority: "HIGH" | "MEDIUM" | "LOW";
   status: "PENDING" | "APPROVED" | "REJECTED" | "PAID";
+  provider?: {
+    name: string;
+  };
 }
 
 export interface User {
