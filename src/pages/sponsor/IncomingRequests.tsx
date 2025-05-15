@@ -159,27 +159,31 @@ const SponsorIncomingRequests = () => {
       </div>
 
       <div className="bg-white rounded-lg p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row justify-end items-end sm:items-center gap-4 mb-4">
-          <div className="relative w-full sm:w-auto">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-            <Input
-              placeholder="Search requests..."
-              className="pl-9 w-full sm:w-64"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+        <div className="fflex flex-col md:flex-row justify-between gap-4 mb-6">
+          <h2 className="text-lg font-medium">Sent Requests</h2>
+
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="relative w-full sm:w-auto">
+              <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Search requests..."
+                className="pl-9 w-full sm:w-64"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-full sm:w-40">
+                <SelectValue placeholder="All Requests" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Requests</SelectItem>
+                <SelectItem value="approved">Approved</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="rejected">Rejected</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-full sm:w-40">
-              <SelectValue placeholder="All Requests" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Requests</SelectItem>
-              <SelectItem value="approved">Approved</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="rejected">Rejected</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
 
         {filteredRequests.length > 0 ? (

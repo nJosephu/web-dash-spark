@@ -149,7 +149,7 @@ const Requests = () => {
       {/* Sent Requests */}
       <div className="bg-white rounded-lg p-4 sm:p-6">
         <div className="flex flex-col md:flex-row justify-between gap-4 mb-6">
-          <h2 className="text-lg font-medium mb-4">Sent Requests</h2>
+          <h2 className="text-lg font-medium">Sent Requests</h2>
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <div className="relative w-full md:w-64">
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
