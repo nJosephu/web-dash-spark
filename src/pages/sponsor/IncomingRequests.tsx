@@ -74,7 +74,7 @@ const SponsorIncomingRequests = () => {
           <Skeleton className="h-24" />
         </div>
 
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+        <div className="flex flex-col sm:flex-row justify-end items-start sm:items-center gap-4 mb-4">
           <div className="relative w-full sm:w-auto">
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
             <Input
@@ -159,7 +159,7 @@ const SponsorIncomingRequests = () => {
       </div>
 
       <div className="bg-white rounded-lg p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row justify-between items-end sm:items-center gap-4 mb-4">
+        <div className="flex flex-col sm:flex-row justify-end items-end sm:items-center gap-4 mb-4">
           <div className="relative w-full sm:w-auto">
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
             <Input
