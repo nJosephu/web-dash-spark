@@ -1,3 +1,4 @@
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,7 +9,7 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { formatRelativeDate } from "@/utils/dateUtils";
 
-interface RequestSponsor {
+interface RequestRequester {
   name: string;
   avatar?: string;
 }
@@ -20,7 +21,7 @@ interface RequestCardProps {
   amount: number;
   date: string;
   status: "PENDING" | "APPROVED" | "REJECTED" | "CANCELLED";
-  sponsor: RequestSponsor;
+  requester: RequestRequester;
   priority?: "HIGH" | "MEDIUM" | "LOW";
   onCancel?: (id: string) => void;
   onRemind?: (id: string) => void;
@@ -33,7 +34,7 @@ const RequestCard = ({
   amount,
   date,
   status,
-  sponsor,
+  requester,
   priority,
   onCancel,
   onRemind,
@@ -151,19 +152,19 @@ const RequestCard = ({
             </div>
           </div>
 
-          {/* Sponsor */}
+          {/* Changed from Sponsor to Requester */}
           <div className="flex justify-between items-center">
-            <span className="text-xs text-gray-500">Sponsor</span>
+            <span className="text-xs text-gray-500">Requester</span>
             <div className="flex items-center gap-1.5">
               <Avatar className="h-5 w-5">
-                {sponsor.avatar ? (
-                  <AvatarImage src={sponsor.avatar} alt={sponsor.name} />
+                {requester.avatar ? (
+                  <AvatarImage src={requester.avatar} alt={requester.name} />
                 ) : null}
                 <AvatarFallback className="text-xs bg-gray-100 text-gray-500">
-                  {getInitials(sponsor.name)}
+                  {getInitials(requester.name)}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-xs">{sponsor.name}</span>
+              <span className="text-xs">{requester.name}</span>
             </div>
           </div>
         </div>

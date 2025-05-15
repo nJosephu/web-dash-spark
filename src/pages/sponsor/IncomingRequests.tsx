@@ -190,7 +190,7 @@ const SponsorIncomingRequests = () => {
                     amount={request.totalAmount}
                     date={request.createdAt}
                     status={request.status}
-                    sponsor={request.supporter || { name: "N/A" }}
+                    requester={request.requester}
                     priority={request.bills[0]?.priority || "MEDIUM"}
                   />
                 </Card>
@@ -227,7 +227,7 @@ const SponsorIncomingRequests = () => {
                     amount={request.totalAmount}
                     date={request.createdAt}
                     status={request.status}
-                    sponsor={request.supporter || { name: "N/A" }}
+                    requester={request.requester}
                     priority={request.bills[0]?.priority || "MEDIUM"}
                   />
                 </Card>
@@ -261,7 +261,7 @@ const SponsorIncomingRequests = () => {
                     amount={request.totalAmount}
                     date={request.createdAt}
                     status={request.status}
-                    sponsor={request.supporter || { name: "N/A" }}
+                    requester={request.requester}
                     priority={request.bills[0]?.priority || "MEDIUM"}
                   />
                 </Card>
@@ -295,7 +295,7 @@ const SponsorIncomingRequests = () => {
                     amount={request.totalAmount}
                     date={request.createdAt}
                     status={request.status}
-                    sponsor={request.supporter || { name: "N/A" }}
+                    requester={request.requester}
                     priority={request.bills[0]?.priority || "MEDIUM"}
                   />
                 </Card>
