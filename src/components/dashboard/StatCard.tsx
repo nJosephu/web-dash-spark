@@ -29,7 +29,7 @@ const StatCard = ({
   };
 
   return (
-    <div className="p-4 rounded-lg bg-white">
+    <div className="p-4 sm:p-6 rounded-lg bg-white">
       <div className="flex items-start gap-2">
         <div
           className={cn(
