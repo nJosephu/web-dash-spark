@@ -1,11 +1,7 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import TopNav from "@/components/layout/TopNav";
-import { useRequest } from "@/hooks/useRequest";
-import { useBillOperations } from "@/hooks/useBillOperations";
-import { useAuth } from "@/context/AuthContext";
-import { format, parseISO } from "date-fns";
 
 // Import components
 import BundleHeader from "@/components/bundle/BundleHeader";
@@ -14,135 +10,439 @@ import BundleItems from "@/components/bundle/BundleItems";
 import BundleSummary from "@/components/bundle/BundleSummary";
 import ActivityLog from "@/components/bundle/ActivityLog";
 import { Button } from "@/components/ui/button";
-import { Check, X, Trash2 } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { toast } from "sonner";
-import { 
-  AlertDialog, 
-  AlertDialogAction, 
-  AlertDialogCancel, 
-  AlertDialogContent, 
-  AlertDialogDescription, 
-  AlertDialogFooter, 
-  AlertDialogHeader, 
-  AlertDialogTitle 
-} from "@/components/ui/alert-dialog";
-import { Card } from "@/components/ui/card";
+
+// Import types
+import { Bundle } from "@/types/bundleTypes";
+import { useAuth } from "@/context/AuthContext";
+
+// Using the same mock data structure as the original BundleDetails component
+const mockBundles: Record<string, Bundle> = {
+  "REQ-001": {
+    id: "U2K-001289",
+    title: "Rent Payment",
+    amount: "₦120,000",
+    date: "2025-04-25",
+    status: "approved",
+    sponsor: {
+      name: "John Doe",
+      avatar: "",
+    },
+    priority: "high",
+    description: "Monthly rent payment for apartment",
+    items: [
+      {
+        name: "Rent",
+        amount: "₦120,000",
+        priority: "high",
+        category: "Accommodation",
+      },
+      {
+        name: "Rent",
+        amount: "₦120,000",
+        priority: "high",
+        category: "Accommodation",
+      },
+    ],
+    activityLog: [
+      {
+        type: "created",
+        message: "Bundle was created",
+        timestamp: "2025-04-20T10:30:00",
+        user: {
+          name: "You",
+        },
+        completed: true,
+      },
+      {
+        type: "sent",
+        message: "Bundle was sent to John Doe",
+        timestamp: "2025-04-20T10:35:00",
+        user: {
+          name: "System",
+        },
+        completed: true,
+      },
+      {
+        type: "viewed",
+        message: "John Doe viewed the bundle",
+        timestamp: "2025-04-21T14:22:00",
+        user: {
+          name: "John Doe",
+        },
+        completed: true,
+      },
+      {
+        type: "approved",
+        message: "Bundle was approved",
+        timestamp: "2025-04-22T09:15:00",
+        user: {
+          name: "John Doe",
+        },
+        completed: true,
+      },
+      {
+        type: "completed",
+        message: "Payment was processed",
+        timestamp: "2025-04-23T11:30:00",
+        user: {
+          name: "System",
+        },
+        completed: true,
+      },
+    ],
+  },
+  "REQ-002": {
+    id: "U2K-001290",
+    title: "Electricity Bill",
+    amount: "₦45,000",
+    date: "2025-04-22",
+    status: "pending",
+    sponsor: {
+      name: "Jane Smith",
+      avatar: "",
+    },
+    priority: "medium",
+    description: "Monthly electricity bill payment",
+    items: [
+      {
+        name: "Electricity",
+        amount: "₦45,000",
+        priority: "medium",
+        category: "Utilities",
+      },
+    ],
+    activityLog: [
+      {
+        type: "created",
+        message: "Bundle was created",
+        timestamp: "2025-04-18T08:30:00",
+        user: {
+          name: "You",
+        },
+        completed: true,
+      },
+      {
+        type: "sent",
+        message: "Bundle was sent to Jane Smith",
+        timestamp: "2025-04-18T08:35:00",
+        user: {
+          name: "System",
+        },
+        completed: true,
+      },
+      {
+        type: "viewed",
+        message: "Jane Smith viewed the bundle",
+        timestamp: "2025-04-19T10:15:00",
+        user: {
+          name: "Jane Smith",
+        },
+        completed: true,
+      },
+      {
+        type: "pending",
+        message: "Awaiting sponsor approval",
+        timestamp: "2025-04-19T10:20:00",
+        user: {
+          name: "System",
+        },
+        completed: false,
+      },
+    ],
+  },
+  "REQ-003": {
+    id: "U2K-001291",
+    title: "Water Bill",
+    amount: "₦15,000",
+    date: "2025-04-18",
+    status: "rejected",
+    sponsor: {
+      name: "Mike Johnson",
+      avatar: "",
+    },
+    priority: "low",
+    description: "Monthly water bill payment",
+    items: [
+      {
+        name: "Water",
+        amount: "₦15,000",
+        priority: "low",
+        category: "Utilities",
+      },
+    ],
+    activityLog: [
+      {
+        type: "created",
+        message: "Bundle was created",
+        timestamp: "2025-04-15T14:30:00",
+        user: {
+          name: "You",
+        },
+        completed: true,
+      },
+      {
+        type: "sent",
+        message: "Bundle was sent to Mike Johnson",
+        timestamp: "2025-04-15T14:35:00",
+        user: {
+          name: "System",
+        },
+        completed: true,
+      },
+      {
+        type: "viewed",
+        message: "Mike Johnson viewed the bundle",
+        timestamp: "2025-04-16T09:22:00",
+        user: {
+          name: "Mike Johnson",
+        },
+        completed: true,
+      },
+      {
+        type: "rejected",
+        message: "Bundle was rejected: Not in budget this month",
+        timestamp: "2025-04-16T10:15:00",
+        user: {
+          name: "Mike Johnson",
+        },
+        completed: true,
+      },
+    ],
+  },
+  "REQ-004": {
+    id: "U2K-001292",
+    title: "Internet Payment",
+    amount: "₦25,000",
+    date: "2025-04-15",
+    status: "approved",
+    sponsor: {
+      name: "Mike Johnson",
+      avatar: "",
+    },
+    priority: "medium",
+    description: "Monthly internet subscription",
+    items: [
+      {
+        name: "Internet",
+        amount: "₦25,000",
+        priority: "medium",
+        category: "Utilities",
+      },
+    ],
+    activityLog: [
+      {
+        type: "created",
+        message: "Bundle was created",
+        timestamp: "2025-04-10T10:30:00",
+        user: {
+          name: "You",
+        },
+        completed: true,
+      },
+      {
+        type: "sent",
+        message: "Bundle was sent to Mike Johnson",
+        timestamp: "2025-04-10T10:35:00",
+        user: {
+          name: "System",
+        },
+        completed: true,
+      },
+      {
+        type: "viewed",
+        message: "Mike Johnson viewed the bundle",
+        timestamp: "2025-04-12T14:22:00",
+        user: {
+          name: "Mike Johnson",
+        },
+        completed: true,
+      },
+      {
+        type: "approved",
+        message: "Bundle was approved",
+        timestamp: "2025-04-12T15:15:00",
+        user: {
+          name: "Mike Johnson",
+        },
+        completed: true,
+      },
+      {
+        type: "completed",
+        message: "Payment was processed",
+        timestamp: "2025-04-13T11:30:00",
+        user: {
+          name: "System",
+        },
+        completed: true,
+      },
+    ],
+  },
+  "REQ-005": {
+    id: "U2K-001293",
+    title: "School Fees",
+    amount: "₦180,000",
+    date: "2025-04-10",
+    status: "pending",
+    sponsor: {
+      name: "Sarah Williams",
+      avatar: "",
+    },
+    priority: "high",
+    description: "Semester school fees payment",
+    items: [
+      {
+        name: "Tuition",
+        amount: "₦150,000",
+        priority: "high",
+        category: "Education",
+      },
+      {
+        name: "Books",
+        amount: "₦30,000",
+        priority: "medium",
+        category: "Education",
+      },
+    ],
+    activityLog: [
+      {
+        type: "created",
+        message: "Bundle was created",
+        timestamp: "2025-04-05T16:30:00",
+        user: {
+          name: "You",
+        },
+        completed: true,
+      },
+      {
+        type: "sent",
+        message: "Bundle was sent to Sarah Williams",
+        timestamp: "2025-04-05T16:35:00",
+        user: {
+          name: "System",
+        },
+        completed: true,
+      },
+      {
+        type: "viewed",
+        message: "Sarah Williams viewed the bundle",
+        timestamp: "2025-04-07T09:22:00",
+        user: {
+          name: "Sarah Williams",
+        },
+        completed: true,
+      },
+      {
+        type: "pending",
+        message: "Awaiting sponsor approval",
+        timestamp: "2025-04-07T09:30:00",
+        user: {
+          name: "System",
+        },
+        completed: false,
+      },
+    ],
+  },
+};
 
 const SponsorBundleDetails = () => {
-  const { requestId } = useParams<{ requestId: string }>();
+  const { bundleId } = useParams<{ bundleId: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
-  
-  // State variables for confirmations
-  const [isDeleteRequestDialogOpen, setIsDeleteRequestDialogOpen] = useState(false);
-  const [billToDelete, setBillToDelete] = useState<string | null>(null);
+  const [bundle, setBundle] = useState<Bundle | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  // Fetch request data
-  const {
-    request,
-    isLoading,
-    error,
-    formatCurrency,
-    formatDate,
-    cancelRequest,
-    isDeleting: isDeletingRequest
-  } = useRequest(requestId);
-
-  // Bill operations
-  const { deleteBill, isDeletingBill } = useBillOperations(requestId || "");
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#6544E4] mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading request details...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error || !request) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Card className="p-6 max-w-md">
-          <h2 className="text-xl font-bold mb-4">Error</h2>
-          <p className="text-gray-600 mb-4">Failed to load request details. Please try again.</p>
-          <div className="flex justify-between">
-            <Button variant="outline" onClick={() => navigate("/dashboard/sponsor/requests")}>
-              Back to Requests
-            </Button>
-            <Button onClick={() => window.location.reload()}>Retry</Button>
-          </div>
-        </Card>
-      </div>
-    );
-  }
-
-  // Handle approve request
-  const handleApproveRequest = () => {
-    toast.success("This feature is coming soon!");
-    // Placeholder for the approve request API call
-  };
-
-  // Handle bill deletion
-  const handleDeleteBill = (billId: string) => {
-    setBillToDelete(billId);
-  };
-
-  const confirmDeleteBill = () => {
-    if (billToDelete) {
-      deleteBill(billToDelete);
-      setBillToDelete(null);
+  useEffect(() => {
+    // Get bundle data and add debug logging
+    console.log("SponsorBundleDetails - Bundle ID:", bundleId);
+    
+    if (bundleId && mockBundles[bundleId]) {
+      console.log("SponsorBundleDetails - Found bundle data for ID:", bundleId);
+      setBundle(mockBundles[bundleId]);
+      document.title = `${mockBundles[bundleId].title} | Sponsor View | Urgent2kay`;
+    } else {
+      console.log("SponsorBundleDetails - No bundle found for ID:", bundleId);
+      console.log("Available bundle IDs:", Object.keys(mockBundles));
+      navigate("/dashboard/sponsor/requests");
     }
+  }, [bundleId, navigate]);
+
+  // Handling approve/reject actions
+  const handleApproveBundle = () => {
+    if (!bundle) return;
+    
+    setIsProcessing(true);
+    
+    // Simulate API call with timeout
+    setTimeout(() => {
+      // Update bundle status - use a literal type that matches the Bundle interface
+      const updatedBundle: Bundle = {
+        ...bundle,
+        status: "approved" as const, // Explicitly set as a literal type
+        activityLog: [
+          ...bundle.activityLog,
+          {
+            type: "approved",
+            message: "Bundle was approved by you",
+            timestamp: new Date().toISOString(),
+            user: {
+              name: user?.name || "You",
+            },
+            completed: true,
+          }
+        ]
+      };
+      
+      setBundle(updatedBundle);
+      toast.success("Bundle approved successfully");
+      setIsProcessing(false);
+    }, 1000);
   };
 
-  // Handle request cancellation
-  const handleCancelRequest = () => {
-    setIsDeleteRequestDialogOpen(true);
+  const handleRejectBundle = () => {
+    if (!bundle) return;
+    
+    setIsProcessing(true);
+    
+    // Simulate API call with timeout
+    setTimeout(() => {
+      // Update bundle status - use a literal type that matches the Bundle interface
+      const updatedBundle: Bundle = {
+        ...bundle,
+        status: "rejected" as const, // Explicitly set as a literal type
+        activityLog: [
+          ...bundle.activityLog,
+          {
+            type: "rejected",
+            message: "Bundle was rejected by you",
+            timestamp: new Date().toISOString(),
+            user: {
+              name: user?.name || "You",
+            },
+            completed: true,
+          }
+        ]
+      };
+      
+      setBundle(updatedBundle);
+      toast.success("Bundle rejected");
+      setIsProcessing(false);
+    }, 1000);
   };
 
-  const confirmCancelRequest = () => {
-    if (requestId) {
-      cancelRequest();
-      setIsDeleteRequestDialogOpen(false);
-      // Navigation is handled in the useRequest hook on success
-    }
-  };
-
-  // Format data for BundleItems component
-  const bundleItems = request.bills.map((bill) => ({
-    id: bill.id,
-    name: bill.billName,
-    amount: formatCurrency(bill.amount),
-    priority: bill.priority.toLowerCase() as "high" | "medium" | "low",
-    category: bill.type || (bill.provider ? bill.provider.name : "General"),
-    duedates: bill.dueDate,
-  }));
-
-  // Format data for BundleSummary component
-  const sponsor = {
-    name: request.supporter?.name || "No Sponsor",
-    email: request.supporter?.email,
-    avatar: "",
-  };
-
-  // Get earliest due date from bills
-  const earliestDueDate = request.bills.length > 0 
-    ? request.bills.reduce((earliest, bill) => {
-        if (!earliest) return bill.dueDate;
-        return new Date(bill.dueDate) < new Date(earliest) ? bill.dueDate : earliest;
-      }, null as string | null)
-    : null;
+  if (!bundle) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="max-w-[100vw] overflow-x-hidden p-4 pt-0 md:p-6 md:pt-0">
       {/* Bundle header with navigation and action buttons */}
       <BundleHeader
-        id={`REQ-${requestId?.substring(0, 3) || ""}`}
-        title={request.name}
-        date={request.createdAt}
-        status={request.formattedStatus}
+        id={bundle.id}
+        title={bundle.title}
+        date={bundle.date}
+        status={bundle.status}
       />
 
       {/* Bundle content */}
@@ -151,84 +451,36 @@ const SponsorBundleDetails = () => {
         <div className="md:col-span-2 space-y-6">
           {/* Stats cards */}
           <StatCards
-            amount={request.formattedAmount}
-            date={earliestDueDate ? formatDate(earliestDueDate) : "N/A"}
-            priority={request.bills.length > 0 ? request.bills[0].priority.toLowerCase() as "high" | "medium" | "low" : "medium"}
+            amount={bundle.amount}
+            date={bundle.date}
+            priority={bundle.priority}
           />
 
-          {/* Bundle items with delete buttons */}
-          <Card className="border">
-            <div className="p-4 border-b">
-              <h3 className="font-medium">Bundle Items</h3>
-            </div>
-            <div className="p-4">
-              {request.bills.length === 0 ? (
-                <p className="text-gray-500 text-center p-4">No bills associated with this request.</p>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {request.bills.map((bill) => (
-                    <div
-                      key={bill.id}
-                      className="flex justify-between items-center p-3 bg-gray-50 rounded-md border border-gray-100"
-                    >
-                      <div className="flex flex-col">
-                        <span className="font-medium">{bill.billName}</span>
-                        <span className="text-xs text-gray-500">{bill.type || (bill.provider?.name || "General")}</span>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className={`px-2 py-0.5 rounded-full text-xs ${
-                            bill.priority === "HIGH" ? "bg-red-100 text-red-800" : 
-                            bill.priority === "MEDIUM" ? "bg-yellow-100 text-yellow-800" : 
-                            "bg-blue-100 text-blue-800"
-                          }`}>
-                            {bill.priority}
-                          </span>
-                          <span className="text-xs text-gray-500">
-                            Due: {formatDate(bill.dueDate)}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">{formatCurrency(bill.amount)}</span>
-                        <Button 
-                          variant="outline"
-                          size="sm"
-                          className="border-red-200 text-red-600 hover:bg-red-50"
-                          onClick={() => handleDeleteBill(bill.id)}
-                          disabled={isDeletingBill}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </Card>
+          {/* Bundle items */}
+          <BundleItems items={bundle.items} />
 
           {/* Bundle summary */}
           <BundleSummary
-            description={request.notes || "No description provided."}
-            sponsor={sponsor}
-            amount={request.formattedAmount}
-            createdAt={request.createdAt}
-            dueDate={earliestDueDate}
+            description={bundle.description}
+            sponsor={bundle.sponsor}
+            amount={bundle.amount}
           />
 
           {/* Sponsor-specific action buttons */}
-          {request.formattedStatus === "pending" && (
+          {bundle.status === "pending" && (
             <div className="flex gap-4 mt-6">
               <Button 
-                onClick={handleCancelRequest}
-                disabled={isDeletingRequest}
+                onClick={handleRejectBundle}
+                disabled={isProcessing}
                 variant="outline" 
                 className="flex-1 border-red-200 text-red-600 hover:bg-red-50"
               >
                 <X className="mr-2 h-4 w-4" />
-                Cancel Request
+                Reject Request
               </Button>
               <Button 
-                onClick={handleApproveRequest}
+                onClick={handleApproveBundle}
+                disabled={isProcessing}
                 className="flex-1 bg-[#6544E4] hover:bg-[#5A3DD0]"
               >
                 <Check className="mr-2 h-4 w-4" />
@@ -240,57 +492,9 @@ const SponsorBundleDetails = () => {
 
         {/* Right section - Activity log */}
         <div>
-          <ActivityLog activities={request.activityLog} />
+          <ActivityLog activities={bundle.activityLog} />
         </div>
       </div>
-
-      {/* Delete Bill Confirmation Dialog */}
-      <AlertDialog open={billToDelete !== null} onOpenChange={() => setBillToDelete(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this bill? This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDeleteBill} className="bg-red-600 text-white hover:bg-red-700">
-              {isDeletingBill ? (
-                <>
-                  <span className="animate-spin mr-2">⏳</span> Deleting...
-                </>
-              ) : (
-                "Confirm"
-              )}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      {/* Cancel Request Confirmation Dialog */}
-      <AlertDialog open={isDeleteRequestDialogOpen} onOpenChange={setIsDeleteRequestDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Confirm Cancellation</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to cancel this request? This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmCancelRequest} className="bg-red-600 text-white hover:bg-red-700">
-              {isDeletingRequest ? (
-                <>
-                  <span className="animate-spin mr-2">⏳</span> Cancelling...
-                </>
-              ) : (
-                "Confirm"
-              )}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 };
