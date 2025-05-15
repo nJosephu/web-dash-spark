@@ -1,10 +1,9 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { 
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -35,16 +34,17 @@ const Requests = () => {
   } = useRequests();
 
   // Filter requests based on search query and status filter
-  const filteredRequests = requests.filter(request => {
+  const filteredRequests = requests.filter((request) => {
     // Search filter
-    const matchesSearch = !searchQuery.trim() || 
+    const matchesSearch =
+      !searchQuery.trim() ||
       request.name.toLowerCase().includes(searchQuery.toLowerCase());
-    
+
     // Status filter
-    const matchesStatus = 
-      statusFilter === "all" || 
+    const matchesStatus =
+      statusFilter === "all" ||
       request.status.toLowerCase() === statusFilter.toLowerCase();
-    
+
     return matchesSearch && matchesStatus;
   });
 
@@ -55,7 +55,9 @@ const Requests = () => {
         <div className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-2xl font-medium">My Requests</h1>
-            <p className="text-gray-500">Manage and track all your bill requests</p>
+            <p className="text-gray-500">
+              Manage and track all your bill requests
+            </p>
           </div>
           <Button disabled className="bg-[#6544E4]">
             <Plus className="mr-2" size={16} />
@@ -99,7 +101,9 @@ const Requests = () => {
         <div className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-2xl font-medium">My Requests</h1>
-            <p className="text-gray-500">Manage and track all your bill requests</p>
+            <p className="text-gray-500">
+              Manage and track all your bill requests
+            </p>
           </div>
           <Button className="bg-[#6544E4]">
             <Plus className="mr-2" size={16} />
@@ -121,13 +125,15 @@ const Requests = () => {
   }
 
   return (
-    <div className="container">
+    <div className="container p-0">
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-medium">My Requests</h1>
-          <p className="text-gray-500">Manage and track all your bill requests</p>
+          <p className="text-gray-500">
+            Manage and track all your bill requests
+          </p>
         </div>
-        <Button 
+        <Button
           className="bg-[#6544E4] hover:bg-[#5A3DD0]"
           onClick={() => navigate("/dashboard/beneficiary/create-request")}
         >
@@ -138,29 +144,29 @@ const Requests = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <StatCard 
-          title="Total Requests" 
-          value={requestsCount.toString()} 
-          color="purple" 
-          colortag="white" 
+        <StatCard
+          title="Total Requests"
+          value={requestsCount.toString()}
+          color="purple"
+          colortag="white"
         />
-        <StatCard 
-          title="Approved Requests" 
-          value={approvedRequests.toString()} 
-          color="green" 
-          colortag="black" 
+        <StatCard
+          title="Approved Requests"
+          value={approvedRequests.toString()}
+          color="green"
+          colortag="black"
         />
-        <StatCard 
-          title="Pending Requests" 
-          value={pendingRequests.toString()} 
-          color="yellow" 
-          colortag="black" 
+        <StatCard
+          title="Pending Requests"
+          value={pendingRequests.toString()}
+          color="yellow"
+          colortag="black"
         />
-        <StatCard 
-          title="Rejected Requests" 
-          value={rejectedRequests.toString()} 
-          color="red" 
-          colortag="white" 
+        <StatCard
+          title="Rejected Requests"
+          value={rejectedRequests.toString()}
+          color="red"
+          colortag="white"
         />
       </div>
 
