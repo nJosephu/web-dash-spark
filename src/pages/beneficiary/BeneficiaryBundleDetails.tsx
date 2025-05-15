@@ -71,7 +71,7 @@ const BeneficiaryBundleDetails = () => {
         user: {
           name: request.requester?.name || "You",
         },
-        completed: true,
+        completed: true, // Add the completed property
       },
     ];
 
@@ -105,6 +105,7 @@ const BeneficiaryBundleDetails = () => {
           user: {
             name: request.supporter?.name || "Supporter",
           },
+          completed: false, // Add the completed property as false for pending items
         });
       }
     });
