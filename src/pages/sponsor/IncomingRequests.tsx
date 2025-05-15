@@ -1,324 +1,194 @@
 
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
-import { Search, RefreshCw } from "lucide-react";
-import RequestCard from "@/components/dashboard/RequestCard";
-import { useSponsorRequests } from "@/hooks/useSponsorRequests";
-import { Request } from "@/services/requestService";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
+import { 
+  Card, 
+  CardContent, 
+  CardHeader, 
+  CardTitle 
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useSponsorRequests } from "@/hooks/useSponsorRequests";
 
-// Define request status type for type safety
-type RequestStatus = "PENDING" | "APPROVED" | "REJECTED" | "CANCELLED";
+const IncomingRequests = () => {
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  
+  const { requests, isLoading } = useSponsorRequests();
 
-const SponsorIncomingRequests = () => {
-  const [activeTab, setActiveTab] = useState<string>("all");
-  const [searchQuery, setSearchQuery] = useState<string>("");
-
-  // Fetch requests using our custom hook
-  const { requests, isLoading, error, refetch } = useSponsorRequests();
-
-  // Filter requests based on search query and tab
-  const filteredRequests = requests.filter((request) => {
-    // Filter by search query
-    if (
-      searchQuery &&
-      !request.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      !request.requester.name.toLowerCase().includes(searchQuery.toLowerCase())
-    ) {
+  // Filter requests based on status and search term
+  const filteredRequests = requests.filter(request => {
+    // Status filter
+    if (statusFilter !== "all" && request.status !== statusFilter) {
       return false;
     }
-
-    // Filter by tab
-    if (activeTab === "pending" && request.status !== "PENDING") return false;
-    if (activeTab === "approved" && request.status !== "APPROVED") return false;
-    if (activeTab === "rejected" && request.status !== "REJECTED") return false;
-
+    
+    // Search filter - check if search term exists in name, requester name, or ID
+    if (searchTerm && !request.name.toLowerCase().includes(searchTerm.toLowerCase()) && 
+        !request.requester.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        !request.displayId.toLowerCase().includes(searchTerm.toLowerCase())) {
+      return false;
+    }
+    
     return true;
   });
 
-  // Loading UI
-  if (isLoading) {
-    return (
-      <div>
-        <div className="mb-6">
-          <h1 className="text-2xl font-medium">Fund Requests</h1>
-          <p className="text-gray-500">
-            Manage and review incoming requests from beneficiaries
-          </p>
-        </div>
-
-        <Tabs defaultValue="all" className="mb-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-            <TabsList>
-              <TabsTrigger value="all">All Requests</TabsTrigger>
-              <TabsTrigger value="pending">Pending</TabsTrigger>
-              <TabsTrigger value="approved">Approved</TabsTrigger>
-              <TabsTrigger value="rejected">Rejected</TabsTrigger>
-            </TabsList>
-
-            <div className="relative w-full sm:w-auto">
-              <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Search requests..."
-                className="pl-9 w-full sm:w-64"
-                disabled
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-            {[...Array(6)].map((_, index) => (
-              <Card key={index} className="overflow-hidden">
-                <div className="p-4 border-b border-gray-100">
-                  <Skeleton className="h-6 w-24" />
-                </div>
-                <div className="p-4">
-                  <Skeleton className="h-5 w-full mb-4" />
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <Skeleton className="h-4 w-20" />
-                      <Skeleton className="h-4 w-24" />
-                    </div>
-                    <div className="flex justify-between">
-                      <Skeleton className="h-4 w-20" />
-                      <Skeleton className="h-4 w-32" />
-                    </div>
-                    <div className="flex justify-between">
-                      <Skeleton className="h-4 w-20" />
-                      <Skeleton className="h-4 w-28" />
-                    </div>
-                    <Skeleton className="h-9 w-full mt-4" />
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </Tabs>
-      </div>
-    );
-  }
-
-  // Error UI
-  if (error) {
-    return (
-      <div>
-        <div className="mb-6">
-          <h1 className="text-2xl font-medium">Fund Requests</h1>
-          <p className="text-gray-500">
-            Manage and review incoming requests from beneficiaries
-          </p>
-        </div>
-
-        <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6">
-          <p className="font-medium">Error loading requests</p>
-          <p className="text-sm mt-1">
-            {error instanceof Error ? error.message : "Failed to load requests. Please try again."}
-          </p>
-          <Button 
-            onClick={() => refetch()}
-            variant="outline" 
-            className="mt-3 text-red-600 border-red-200 hover:bg-red-50"
-          >
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Try again
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  // Format currency
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-NG', {
+      style: 'currency',
+      currency: 'NGN',
+      minimumFractionDigits: 0,
+    }).format(amount);
+  };
+  
+  // Format date
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  };
+  
+  // Get initials from name
+  const getInitials = (name: string) => {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase();
+  };
 
   return (
-    <div>
+    <div className="p-4 md:p-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-medium">Fund Requests</h1>
-        <p className="text-gray-500">
-          Manage and review incoming requests from beneficiaries
-        </p>
+        <h1 className="text-2xl font-bold">Fund Requests</h1>
+        <p className="text-gray-500">Manage and review incoming requests from beneficiaries</p>
       </div>
 
-      <Tabs
-        defaultValue="all"
-        value={activeTab}
-        onValueChange={setActiveTab}
-        className="mb-6"
-      >
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-          <TabsList>
-            <TabsTrigger value="all">All Requests</TabsTrigger>
-            <TabsTrigger value="pending">Pending</TabsTrigger>
-            <TabsTrigger value="approved">Approved</TabsTrigger>
-            <TabsTrigger value="rejected">Rejected</TabsTrigger>
-          </TabsList>
-
-          <div className="relative w-full sm:w-auto">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-            <Input
-              placeholder="Search requests..."
-              className="pl-9 w-full sm:w-64"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
+      {/* Filters */}
+      <div className="flex flex-col md:flex-row gap-4 mb-6">
+        <div className="flex-1">
+          <Select defaultValue="all" onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-full md:w-[180px]">
+              <SelectValue placeholder="All requests" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All requests</SelectItem>
+              <SelectItem value="PENDING">Pending</SelectItem>
+              <SelectItem value="APPROVED">Approved</SelectItem>
+              <SelectItem value="REJECTED">Rejected</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-
-        <div className="flex flex-col sm:flex-row gap-3 mb-6">
-          <Button
-            variant="outline"
-            className="w-full sm:w-auto"
-            onClick={() => {
-              setSearchQuery("");
-              setActiveTab("all");
-            }}
-          >
+        <div className="flex-1 md:flex-[2]">
+          <Input 
+            placeholder="Search requests..." 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div>
+          <Button variant="outline" onClick={() => {
+            setStatusFilter("all");
+            setSearchTerm("");
+          }}>
             Clear filters
           </Button>
         </div>
+      </div>
 
-        <TabsContent value="all" className="mt-0">
-          {filteredRequests.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredRequests.map((request) => (
-                <Card key={request.id} className="p-0 overflow-hidden">
-                  <RequestCard
-                    id={request.id}
-                    displayId={request.displayId}
-                    title={request.name}
-                    amount={request.totalAmount}
-                    date={request.createdAt}
-                    status={request.status}
-                    sponsor={request.supporter || { name: "N/A" }}
-                    priority={request.bills[0]?.priority || "MEDIUM"}
-                  />
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <p className="text-gray-500">No requests match your filters</p>
-              {searchQuery || activeTab !== "all" ? (
+      {/* Requests */}
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="border animate-pulse">
+              <div className="h-[200px] bg-gray-100"></div>
+            </Card>
+          ))}
+        </div>
+      ) : filteredRequests.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredRequests.map((request) => (
+            <Card key={request.id} className="border overflow-hidden">
+              <CardHeader className="pb-2">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <span className="text-sm text-gray-500">{request.displayId}</span>
+                    <CardTitle className="text-lg">{request.name}</CardTitle>
+                  </div>
+                  <Badge className={
+                    request.status === "PENDING" ? "bg-yellow-500 text-white" :
+                    request.status === "APPROVED" ? "bg-green-500 text-white" :
+                    "bg-red-500 text-white"
+                  }>
+                    {request.status}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <div className="flex justify-between items-center mb-4">
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">Amount</div>
+                    <div className="font-bold text-lg">{formatCurrency(request.totalAmount)}</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xs text-gray-500 mb-1">Date</div>
+                    <div className="font-semibold">{formatDate(request.createdAt)}</div>
+                  </div>
+                </div>
+                
+                <div className="flex justify-between items-center mb-4">
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">Requester</div>
+                    <div className="flex items-center gap-2">
+                      <Avatar className="h-6 w-6 bg-[#6544E4]">
+                        <AvatarFallback>{getInitials(request.requester.name)}</AvatarFallback>
+                      </Avatar>
+                      <span className="font-medium">{request.requester.name}</span>
+                    </div>
+                  </div>
+                </div>
+                
                 <Button 
-                  variant="link" 
-                  onClick={() => {
-                    setSearchQuery("");
-                    setActiveTab("all");
-                  }}
-                  className="mt-2"
+                  className="w-full mt-2 bg-[#6544E4] hover:bg-[#5A3DD0]" 
+                  asChild
                 >
-                  Clear all filters
+                  <Link to={`/dashboard/sponsor/request/${request.id}`}>View details</Link>
                 </Button>
-              ) : null}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <Card className="border p-8 text-center">
+          <div className="mb-4">
+            <div className="bg-gray-100 rounded-full h-16 w-16 flex items-center justify-center mx-auto">
+              <svg className="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
             </div>
-          )}
-        </TabsContent>
-
-        <TabsContent value="pending" className="mt-0">
-          {filteredRequests.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredRequests.map((request) => (
-                <Card key={request.id} className="p-0 overflow-hidden">
-                  <RequestCard
-                    id={request.id}
-                    displayId={request.displayId}
-                    title={request.name}
-                    amount={request.totalAmount}
-                    date={request.createdAt}
-                    status={request.status}
-                    sponsor={request.supporter || { name: "N/A" }}
-                    priority={request.bills[0]?.priority || "MEDIUM"}
-                  />
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <p className="text-gray-500">No pending requests found</p>
-              {searchQuery ? (
-                <Button 
-                  variant="link" 
-                  onClick={() => setSearchQuery("")}
-                  className="mt-2"
-                >
-                  Clear search
-                </Button>
-              ) : null}
-            </div>
-          )}
-        </TabsContent>
-
-        <TabsContent value="approved" className="mt-0">
-          {filteredRequests.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredRequests.map((request) => (
-                <Card key={request.id} className="p-0 overflow-hidden">
-                  <RequestCard
-                    id={request.id}
-                    displayId={request.displayId}
-                    title={request.name}
-                    amount={request.totalAmount}
-                    date={request.createdAt}
-                    status={request.status}
-                    sponsor={request.supporter || { name: "N/A" }}
-                    priority={request.bills[0]?.priority || "MEDIUM"}
-                  />
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <p className="text-gray-500">No approved requests found</p>
-              {searchQuery ? (
-                <Button 
-                  variant="link" 
-                  onClick={() => setSearchQuery("")}
-                  className="mt-2"
-                >
-                  Clear search
-                </Button>
-              ) : null}
-            </div>
-          )}
-        </TabsContent>
-
-        <TabsContent value="rejected" className="mt-0">
-          {filteredRequests.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredRequests.map((request) => (
-                <Card key={request.id} className="p-0 overflow-hidden">
-                  <RequestCard
-                    id={request.id}
-                    displayId={request.displayId}
-                    title={request.name}
-                    amount={request.totalAmount}
-                    date={request.createdAt}
-                    status={request.status}
-                    sponsor={request.supporter || { name: "N/A" }}
-                    priority={request.bills[0]?.priority || "MEDIUM"}
-                  />
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <p className="text-gray-500">No rejected requests found</p>
-              {searchQuery ? (
-                <Button 
-                  variant="link" 
-                  onClick={() => setSearchQuery("")}
-                  className="mt-2"
-                >
-                  Clear search
-                </Button>
-              ) : null}
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
+          </div>
+          <h3 className="text-lg font-medium mb-2">No requests found</h3>
+          <p className="text-gray-500 mb-4">There are no requests matching your filters.</p>
+          <Button variant="outline" onClick={() => {
+            setStatusFilter("all");
+            setSearchTerm("");
+          }}>
+            Clear filters
+          </Button>
+        </Card>
+      )}
     </div>
   );
 };
 
-export default SponsorIncomingRequests;
+export default IncomingRequests;

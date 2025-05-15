@@ -146,6 +146,10 @@ export const useRequest = (requestId: string | undefined) => {
       toast.success("Request cancelled successfully");
       queryClient.invalidateQueries({ queryKey: ["request", requestId] });
       queryClient.invalidateQueries({ queryKey: ["requests"] });
+      
+      // Navigate back to the requests page
+      const userRole = user?.role === "BENEFACTOR" ? "sponsor" : "beneficiary";
+      navigate(`/dashboard/${userRole}/requests`);
     },
     onError: (error: Error) => {
       toast.error(`Failed to cancel request: ${error.message}`);
@@ -161,7 +165,10 @@ export const useRequest = (requestId: string | undefined) => {
     onSuccess: () => {
       toast.success("Request deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["requests"] });
-      navigate("/dashboard/beneficiary/requests");
+      
+      // Navigate back to the requests page
+      const userRole = user?.role === "BENEFACTOR" ? "sponsor" : "beneficiary";
+      navigate(`/dashboard/${userRole}/requests`);
     },
     onError: (error: Error) => {
       toast.error(`Failed to delete request: ${error.message}`);
@@ -197,8 +204,8 @@ export const useRequest = (requestId: string | undefined) => {
     error,
     refetch,
     cancelRequest: cancelRequestMutation.mutate,
+    isDeleting: deleteRequestMutation.isPending || cancelRequestMutation.isPending,
     deleteRequest: deleteRequestMutation.mutate,
-    isDeleting: deleteRequestMutation.isPending,
     sendReminder: sendReminderMutation.mutate,
     // Summary data
     billsCount,
