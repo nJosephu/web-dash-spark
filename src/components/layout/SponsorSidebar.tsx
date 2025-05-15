@@ -1,4 +1,3 @@
-
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutGrid,
@@ -39,16 +38,16 @@ const SponsorSidebar = ({ className }: SidebarProps) => {
       icon: FileText,
       path: "/dashboard/sponsor/requests",
     },
-    {
-      title: "Beneficiaries",
-      icon: Users,
-      path: "/dashboard/sponsor/beneficiaries",
-    },
-    {
-      title: "Bills paid",
-      icon: Receipt,
-      path: "/dashboard/sponsor/bills-paid",
-    },
+    // {
+    //   title: "Beneficiaries",
+    //   icon: Users,
+    //   path: "/dashboard/sponsor/beneficiaries",
+    // },
+    // {
+    //   title: "Bills paid",
+    //   icon: Receipt,
+    //   path: "/dashboard/sponsor/bills-paid",
+    // },
   ];
 
   const bottomItems = [
@@ -67,24 +66,27 @@ const SponsorSidebar = ({ className }: SidebarProps) => {
   // Helper function to determine if an item is active
   const isItemActive = (path: string): boolean => {
     const currentPath = location.pathname;
-    
+
     // For the dashboard, only match the exact path
     if (path === "/dashboard/sponsor") {
       return currentPath === "/dashboard/sponsor";
     }
-    
+
     // For other routes, check if the current path starts with the given path
-    // But make sure it's a proper match (e.g., /dashboard/sponsor/requests should match /dashboard/sponsor/requests, 
+    // But make sure it's a proper match (e.g., /dashboard/sponsor/requests should match /dashboard/sponsor/requests,
     // but not /dashboard/sponsor/requests/123)
     if (currentPath === path) {
       return true;
     }
-    
+
     // Handle bundle details pages
-    if (path === "/dashboard/sponsor/requests" && currentPath.startsWith("/dashboard/sponsor/requests/")) {
+    if (
+      path === "/dashboard/sponsor/requests" &&
+      currentPath.startsWith("/dashboard/sponsor/requests/")
+    ) {
       return true;
     }
-    
+
     return false;
   };
 
@@ -138,7 +140,7 @@ const SponsorSidebar = ({ className }: SidebarProps) => {
               <span>{item.title}</span>
             </Link>
           ))}
-          
+
           {/* Logout button with confirmation */}
           <LogoutConfirmation>
             <button
