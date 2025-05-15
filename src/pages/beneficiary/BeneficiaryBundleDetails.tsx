@@ -44,7 +44,6 @@ const BeneficiaryBundleDetails = () => {
     approvedBills,
     pendingBills,
     rejectedBills,
-    formatDate,
   } = useRequest(bundleId);
 
   useEffect(() => {
@@ -58,61 +57,12 @@ const BeneficiaryBundleDetails = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [request]);
 
-  // Generate activity log data from request information
-  const getActivityLogData = () => {
-    if (!request) return [];
+  // Handle cancel request
+  const handleCancelRequest = () => {
+    if (!request) return;
 
-    const activities = [
-      {
-        type: "created",
-        message: `Request "${request.name}" was created`,
-        timestamp: request.createdAt,
-        user: {
-          name: request.requester?.name || "You",
-        },
-        completed: true, // Add the completed property
-      },
-    ];
-
-    // Add activity entries based on bill status
-    request.bills.forEach((bill) => {
-      if (bill.status === "APPROVED") {
-        activities.push({
-          type: "approved",
-          message: `Bill "${bill.billName}" was approved`,
-          timestamp: request.createdAt, // Using request date since we don't have approval date
-          user: {
-            name: request.supporter?.name || "Supporter",
-          },
-          completed: true,
-        });
-      } else if (bill.status === "REJECTED") {
-        activities.push({
-          type: "rejected",
-          message: `Bill "${bill.billName}" was rejected`,
-          timestamp: request.createdAt, // Using request date since we don't have rejection date
-          user: {
-            name: request.supporter?.name || "Supporter",
-          },
-          completed: true,
-        });
-      } else {
-        activities.push({
-          type: "pending",
-          message: `Bill "${bill.billName}" is awaiting approval`,
-          timestamp: request.createdAt,
-          user: {
-            name: request.supporter?.name || "Supporter",
-          },
-          completed: false, // Add the completed property as false for pending items
-        });
-      }
-    });
-
-    // Sort activities by timestamp, newest first
-    return activities.sort(
-      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-    );
+    toast.loading("Cancelling request...");
+    cancelRequest();
   };
 
   // Handle delete request
@@ -247,70 +197,63 @@ const BeneficiaryBundleDetails = () => {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
-        <div className="md:col-span-4">
-          {/* Bundle items */}
-          <BundleItems items={formattedBills} />
+      {/* Bundle items */}
+      <BundleItems items={formattedBills} />
 
-          {/* Bundle Summary */}
-          <div className="mt-6">
-            <BundleSummary
-              description={request.notes}
-              sponsor={{
-                name: request.supporter?.name || "No sponsor assigned",
-                email: request.supporter?.email,
-              }}
-              requester={{
-                name: request.requester?.name || "No requester information",
-                email: request.requester?.email,
-              }}
-              amount={
-                request.formattedAmount ||
-                new Intl.NumberFormat("en-NG", {
-                  style: "currency",
-                  currency: "NGN",
-                  currencyDisplay: "symbol",
-                  minimumFractionDigits: 0,
-                }).format(request.totalAmount || 0)
-              }
-              createdAt={request.createdAt}
-              dueDate={request.earliestDueDate}
-              showRequester={true}
-              showSponsor={true}
-            />
+      {/* Grid layout for Bundle Summary and Activity Log side by side */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        {/* Bundle summary */}
+        <div>
+          <BundleSummary
+            description={request.notes}
+            sponsor={{
+              name: request.supporter?.name || "No sponsor assigned",
+              email: request.supporter?.email,
+            }}
+            amount={
+              request.formattedAmount ||
+              new Intl.NumberFormat("en-NG", {
+                style: "currency",
+                currency: "NGN",
+                currencyDisplay: "symbol",
+                minimumFractionDigits: 0,
+              }).format(request.totalAmount || 0)
+            }
+            createdAt={request.createdAt}
+            dueDate={request.earliestDueDate}
+          />
+        </div>
+
+        {/* Activity log */}
+        <div>
+          <ActivityLog activities={request.activityLog || []} />
+        </div>
+
+        {/* Beneficiary-specific action buttons */}
+        {componentStatus === "pending" && (
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Button
+              onClick={handleSendReminder}
+              className="w-full bg-[#6544E4] hover:bg-[#5A3DD0]"
+            >
+              <Bell className="mr-2 h-4 w-4" />
+              Send Reminder
+            </Button>
+            <Button
+              onClick={handleDeleteRequest}
+              variant="outline"
+              className="w-full border-red-200 text-red-600 hover:bg-red-50"
+              disabled={isDeleting}
+            >
+              {isDeleting ? (
+                <Loader className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <X className="mr-2 h-4 w-4" />
+              )}
+              {isDeleting ? "Deleting..." : "Delete Request"}
+            </Button>
           </div>
-
-          {/* Beneficiary-specific action buttons */}
-          {componentStatus === "pending" && (
-            <div className="flex flex-col sm:flex-row gap-4 mt-6">
-              <Button
-                onClick={handleSendReminder}
-                className="w-full bg-[#6544E4] hover:bg-[#5A3DD0]"
-              >
-                <Bell className="mr-2 h-4 w-4" />
-                Send Reminder
-              </Button>
-              <Button
-                onClick={handleDeleteRequest}
-                variant="outline"
-                className="w-full border-red-200 text-red-600 hover:bg-red-50"
-                disabled={isDeleting}
-              >
-                {isDeleting ? (
-                  <Loader className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <X className="mr-2 h-4 w-4" />
-                )}
-                {isDeleting ? "Deleting..." : "Delete Request"}
-              </Button>
-            </div>
-          )}
-        </div>
-
-        {/* Activity Log */}
-        <div className="md:col-span-2">
-          <ActivityLog activities={getActivityLogData()} />
-        </div>
+        )}
       </div>
 
       {/* Delete Confirmation Dialog */}

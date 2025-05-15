@@ -4,24 +4,32 @@ import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import requestService, { Request, Bill } from "@/services/requestService";
 import { format, parseISO } from "date-fns";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface FormattedRequest extends Request {
   formattedId: string;
   totalAmount: number;
   formattedStatus: "pending" | "approved" | "rejected";
   formattedAmount: string;
+  activityLog: ActivityLogItem[];
   earliestDueDate?: string;
+}
+
+interface ActivityLogItem {
+  type: string;
+  message: string;
+  timestamp: string;
+  user?: {
+    name: string;
+    avatar?: string;
+  };
+  completed?: boolean;
 }
 
 export const useRequest = (requestId: string | undefined) => {
   const { user, token } = useAuth();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const location = useLocation();
-  
-  // Determine if we're in the sponsor or beneficiary view
-  const isSponsorView = location.pathname.includes("/dashboard/sponsor");
 
   // Helper function to format currency
   const formatCurrency = (amount: number): string => {
@@ -80,6 +88,32 @@ export const useRequest = (requestId: string | undefined) => {
           | "approved"
           | "rejected";
 
+        // Create activity log
+        const activityLog: ActivityLogItem[] = [
+          {
+            type: "created",
+            message: `Request "${requestData.name}" created`,
+            timestamp: requestData.createdAt,
+            user: {
+              name: requestData.requester.name,
+            },
+            completed: true,
+          },
+        ];
+
+        // Add bill entries to activity log
+        requestData.bills.forEach((bill) => {
+          activityLog.push({
+            type: bill.status.toLowerCase(),
+            message: `Bill "${bill.billName}" ${bill.status.toLowerCase()}`,
+            timestamp: bill.dueDate,
+            user: {
+              name: "System",
+            },
+            completed: bill.status !== "PENDING",
+          });
+        });
+
         // Find earliest due date
         const earliestDueDate = getEarliestDueDate(requestData.bills);
 
@@ -90,6 +124,7 @@ export const useRequest = (requestId: string | undefined) => {
           totalAmount,
           formattedStatus,
           formattedAmount: formatCurrency(totalAmount),
+          activityLog,
           earliestDueDate,
         };
 
@@ -126,13 +161,7 @@ export const useRequest = (requestId: string | undefined) => {
     onSuccess: () => {
       toast.success("Request deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["requests"] });
-      
-      // Navigate to the correct path based on user role
-      const redirectPath = isSponsorView 
-        ? "/dashboard/sponsor/requests" 
-        : "/dashboard/beneficiary/requests";
-      
-      navigate(redirectPath);
+      navigate("/dashboard/beneficiary/requests");
     },
     onError: (error: Error) => {
       toast.error(`Failed to delete request: ${error.message}`);
@@ -179,7 +208,5 @@ export const useRequest = (requestId: string | undefined) => {
     // Helper functions
     formatCurrency,
     formatDate,
-    // View info
-    isSponsorView,
   };
 };
