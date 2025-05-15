@@ -20,8 +20,6 @@ interface RequestCardProps {
   date: string;
   status: "PENDING" | "APPROVED" | "REJECTED" | "CANCELLED";
   requester: RequestRequester;
-  onCancel?: (id: string) => void;
-  onRemind?: (id: string) => void;
   isBeneficiary?: boolean;
 }
 
@@ -33,8 +31,6 @@ const RequestCard = ({
   date,
   status,
   requester,
-  onCancel,
-  onRemind,
   isBeneficiary = true,
 }: RequestCardProps) => {
   // Determine correct link based on role
@@ -127,7 +123,7 @@ const RequestCard = ({
       </div>
 
       {/* Actions */}
-      <div className="mt-4 space-y-2">
+      <div className="mt-4">
         <Button
           asChild
           className="bg-[#6544E4] hover:bg-[#5A3DD0] text-white w-full justify-center"
@@ -137,29 +133,6 @@ const RequestCard = ({
             <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </Button>
-
-        {status === "PENDING" && (
-          <div className="flex gap-2">
-            {onCancel && (
-              <Button 
-                onClick={() => onCancel(id)} 
-                variant="outline" 
-                className="text-red-500 border-red-200 hover:bg-red-50 flex-1 justify-center"
-              >
-                Cancel
-              </Button>
-            )}
-            {onRemind && (
-              <Button 
-                onClick={() => onRemind(id)} 
-                variant="outline"
-                className="text-yellow-500 border-yellow-200 hover:bg-yellow-50 flex-1 justify-center"
-              >
-                Remind
-              </Button>
-            )}
-          </div>
-        )}
       </div>
     </div>
   );

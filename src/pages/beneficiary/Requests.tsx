@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { Search, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Select,
   SelectContent,
@@ -13,29 +12,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "sonner";
 import RequestCard from "@/components/dashboard/RequestCard";
 import { useRequests } from "@/hooks/useRequests";
 import StatCard from "@/components/dashboard/StatCard";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { Card } from "@/components/ui/card";
 
 const Requests = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
-  const [isReminderDialogOpen, setIsReminderDialogOpen] = useState(false);
-  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<string>("all");
   const navigate = useNavigate();
 
   // Use our custom hook to get requests data and operations
@@ -44,8 +28,6 @@ const Requests = () => {
     isLoading,
     error,
     refetch,
-    cancelRequest,
-    sendReminder,
     requestsCount,
     approvedRequests,
     pendingRequests,
@@ -60,35 +42,11 @@ const Requests = () => {
     
     // Status filter
     const matchesStatus = 
-      activeTab === "all" || 
-      request.status.toLowerCase() === activeTab.toLowerCase();
+      statusFilter === "all" || 
+      request.status.toLowerCase() === statusFilter.toLowerCase();
     
     return matchesSearch && matchesStatus;
   });
-
-  const handleCancelRequest = (requestId: string) => {
-    setSelectedRequestId(requestId);
-    setIsCancelDialogOpen(true);
-  };
-
-  const handleSendReminder = (requestId: string) => {
-    setSelectedRequestId(requestId);
-    setIsReminderDialogOpen(true);
-  };
-
-  const handleConfirmCancel = () => {
-    if (selectedRequestId) {
-      cancelRequest(selectedRequestId);
-      setIsCancelDialogOpen(false);
-    }
-  };
-
-  const handleConfirmReminder = () => {
-    if (selectedRequestId) {
-      sendReminder(selectedRequestId);
-      setIsReminderDialogOpen(false);
-    }
-  };
 
   // Rendering the loading state
   if (isLoading) {
@@ -233,169 +191,29 @@ const Requests = () => {
           </Select>
         </div>
 
-        <Tabs 
-          defaultValue="all" 
-          value={activeTab}
-          onValueChange={setActiveTab}
-          className="mb-6"
-        >
-          <TabsList className="mb-4">
-            <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="pending">Pending</TabsTrigger>
-            <TabsTrigger value="approved">Approved</TabsTrigger>
-            <TabsTrigger value="rejected">Rejected</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="all">
-            {filteredRequests.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredRequests.map((request) => (
-                  <Card key={request.id} className="p-0 overflow-hidden">
-                    <RequestCard
-                      id={request.id}
-                      displayId={`REQ-${request.id.substring(0, 3)}`}
-                      title={request.name}
-                      amount={request.totalAmount || 0}
-                      date={request.createdAt}
-                      status={request.status}
-                      requester={request.requester}
-                      onCancel={handleCancelRequest}
-                      onRemind={handleSendReminder}
-                      isBeneficiary={true}
-                    />
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-8 bg-gray-50 rounded-lg">
-                <p className="text-gray-500">No requests found</p>
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="pending">
-            {filteredRequests.filter(r => r.status === "PENDING").length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredRequests
-                  .filter(r => r.status === "PENDING")
-                  .map((request) => (
-                    <Card key={request.id} className="p-0 overflow-hidden">
-                      <RequestCard
-                        key={request.id}
-                        id={request.id}
-                        displayId={`REQ-${request.id.substring(0, 3)}`}
-                        title={request.name}
-                        amount={request.totalAmount || 0}
-                        date={request.createdAt}
-                        status={request.status}
-                        requester={request.requester}
-                        onCancel={handleCancelRequest}
-                        onRemind={handleSendReminder}
-                        isBeneficiary={true}
-                      />
-                    </Card>
-                  ))}
-              </div>
-            ) : (
-              <div className="text-center py-8 bg-gray-50 rounded-lg">
-                <p className="text-gray-500">No pending requests found</p>
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="approved">
-            {filteredRequests.filter(r => r.status === "APPROVED").length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredRequests
-                  .filter(r => r.status === "APPROVED")
-                  .map((request) => (
-                    <Card key={request.id} className="p-0 overflow-hidden">
-                      <RequestCard
-                        key={request.id}
-                        id={request.id}
-                        displayId={`REQ-${request.id.substring(0, 3)}`}
-                        title={request.name}
-                        amount={request.totalAmount || 0}
-                        date={request.createdAt}
-                        status={request.status}
-                        requester={request.requester}
-                        isBeneficiary={true}
-                      />
-                    </Card>
-                  ))}
-              </div>
-            ) : (
-              <div className="text-center py-8 bg-gray-50 rounded-lg">
-                <p className="text-gray-500">No approved requests found</p>
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="rejected">
-            {filteredRequests.filter(r => r.status === "REJECTED").length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredRequests
-                  .filter(r => r.status === "REJECTED")
-                  .map((request) => (
-                    <Card key={request.id} className="p-0 overflow-hidden">
-                      <RequestCard
-                        key={request.id}
-                        id={request.id}
-                        displayId={`REQ-${request.id.substring(0, 3)}`}
-                        title={request.name}
-                        amount={request.totalAmount || 0}
-                        date={request.createdAt}
-                        status={request.status}
-                        requester={request.requester}
-                        isBeneficiary={true}
-                      />
-                    </Card>
-                  ))}
-              </div>
-            ) : (
-              <div className="text-center py-8 bg-gray-50 rounded-lg">
-                <p className="text-gray-500">No rejected requests found</p>
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
+        {filteredRequests.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredRequests.map((request) => (
+              <Card key={request.id} className="p-0 overflow-hidden">
+                <RequestCard
+                  id={request.id}
+                  displayId={`REQ-${request.id.substring(0, 3)}`}
+                  title={request.name}
+                  amount={request.totalAmount || 0}
+                  date={request.createdAt}
+                  status={request.status}
+                  requester={request.requester}
+                  isBeneficiary={true}
+                />
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8 bg-gray-50 rounded-lg">
+            <p className="text-gray-500">No requests found</p>
+          </div>
+        )}
       </div>
-
-      {/* Cancel Confirmation Dialog */}
-      <AlertDialog open={isCancelDialogOpen} onOpenChange={setIsCancelDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Cancel Request</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to cancel this request? This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>No, keep it</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmCancel}>
-              Yes, cancel it
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      {/* Reminder Confirmation Dialog */}
-      <AlertDialog open={isReminderDialogOpen} onOpenChange={setIsReminderDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Send Reminder</AlertDialogTitle>
-            <AlertDialogDescription>
-              Send a reminder to your sponsor about this payment request?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmReminder}>
-              Send Reminder
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 };

@@ -2,22 +2,28 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Search, RefreshCw } from "lucide-react";
 import RequestCard from "@/components/dashboard/RequestCard";
 import { useSponsorRequests } from "@/hooks/useSponsorRequests";
 import { Skeleton } from "@/components/ui/skeleton";
 import StatCard from "@/components/dashboard/StatCard";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const SponsorIncomingRequests = () => {
-  const [activeTab, setActiveTab] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
 
   // Fetch requests using our custom hook
   const { requests, isLoading, error, refetch, requestsCount, approvedRequests, pendingRequests, rejectedRequests } = useSponsorRequests();
 
-  // Filter requests based on search query and tab
+  // Filter requests based on search query and status filter
   const filteredRequests = requests.filter((request) => {
     // Filter by search query
     if (
@@ -28,10 +34,12 @@ const SponsorIncomingRequests = () => {
       return false;
     }
 
-    // Filter by tab
-    if (activeTab === "pending" && request.status !== "PENDING") return false;
-    if (activeTab === "approved" && request.status !== "APPROVED") return false;
-    if (activeTab === "rejected" && request.status !== "REJECTED") return false;
+    // Filter by status
+    if (statusFilter === "pending" && request.status !== "PENDING") return false;
+    if (statusFilter === "approved" && request.status !== "APPROVED") return false;
+    if (statusFilter === "rejected" && request.status !== "REJECTED") return false;
+    if (statusFilter !== "all" && statusFilter !== "pending" && 
+        statusFilter !== "approved" && statusFilter !== "rejected") return true;
 
     return true;
   });
@@ -55,33 +63,24 @@ const SponsorIncomingRequests = () => {
           <Skeleton className="h-24" />
         </div>
 
-        <Tabs defaultValue="all" className="mb-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-            <TabsList>
-              <TabsTrigger value="all">All Requests</TabsTrigger>
-              <TabsTrigger value="pending">Pending</TabsTrigger>
-              <TabsTrigger value="approved">Approved</TabsTrigger>
-              <TabsTrigger value="rejected">Rejected</TabsTrigger>
-            </TabsList>
-
-            <div className="relative w-full sm:w-auto">
-              <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Search requests..."
-                className="pl-9 w-full sm:w-64"
-                disabled
-              />
-            </div>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+          <div className="relative w-full sm:w-auto">
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+            <Input
+              placeholder="Search requests..."
+              className="pl-9 w-full sm:w-64"
+              disabled
+            />
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-            {[...Array(6)].map((_, index) => (
-              <Card key={index} className="overflow-hidden">
-                <Skeleton className="h-64" />
-              </Card>
-            ))}
-          </div>
-        </Tabs>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+          {[...Array(6)].map((_, index) => (
+            <Card key={index} className="overflow-hidden">
+              <Skeleton className="h-64" />
+            </Card>
+          ))}
+        </div>
       </div>
     );
   }
@@ -152,183 +151,76 @@ const SponsorIncomingRequests = () => {
         />
       </div>
 
-      <Tabs
-        defaultValue="all"
-        value={activeTab}
-        onValueChange={setActiveTab}
-        className="mb-6"
-      >
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-          <TabsList>
-            <TabsTrigger value="all">All Requests</TabsTrigger>
-            <TabsTrigger value="pending">Pending</TabsTrigger>
-            <TabsTrigger value="approved">Approved</TabsTrigger>
-            <TabsTrigger value="rejected">Rejected</TabsTrigger>
-          </TabsList>
-
-          <div className="relative w-full sm:w-auto">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-            <Input
-              placeholder="Search requests..."
-              className="pl-9 w-full sm:w-64"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+        <div className="relative w-full sm:w-auto">
+          <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+          <Input
+            placeholder="Search requests..."
+            className="pl-9 w-full sm:w-64"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-full sm:w-40">
+            <SelectValue placeholder="All Requests" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Requests</SelectItem>
+            <SelectItem value="approved">Approved</SelectItem>
+            <SelectItem value="pending">Pending</SelectItem>
+            <SelectItem value="rejected">Rejected</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
-        <div className="flex flex-col sm:flex-row gap-3 mb-6">
-          <Button
-            variant="outline"
-            className="w-full sm:w-auto"
-            onClick={() => {
-              setSearchQuery("");
-              setActiveTab("all");
-            }}
-          >
-            Clear filters
-          </Button>
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        <Button
+          variant="outline"
+          className="w-full sm:w-auto"
+          onClick={() => {
+            setSearchQuery("");
+            setStatusFilter("all");
+          }}
+        >
+          Clear filters
+        </Button>
+      </div>
+
+      {filteredRequests.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredRequests.map((request) => (
+            <Card key={request.id} className="p-0 overflow-hidden">
+              <RequestCard
+                id={request.id}
+                displayId={`REQ-${request.id.substring(0, 3)}`}
+                title={request.name}
+                amount={request.totalAmount}
+                date={request.createdAt}
+                status={request.status}
+                requester={request.requester}
+                isBeneficiary={false}
+              />
+            </Card>
+          ))}
         </div>
-
-        <TabsContent value="all" className="mt-0">
-          {filteredRequests.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredRequests.map((request) => (
-                <Card key={request.id} className="p-0 overflow-hidden">
-                  <RequestCard
-                    id={request.id}
-                    displayId={`REQ-${request.id.substring(0, 3)}`}
-                    title={request.name}
-                    amount={request.totalAmount}
-                    date={request.createdAt}
-                    status={request.status}
-                    requester={request.requester}
-                    isBeneficiary={false}
-                  />
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <p className="text-gray-500">No requests match your filters</p>
-              {searchQuery || activeTab !== "all" ? (
-                <Button 
-                  variant="link" 
-                  onClick={() => {
-                    setSearchQuery("");
-                    setActiveTab("all");
-                  }}
-                  className="mt-2"
-                >
-                  Clear all filters
-                </Button>
-              ) : null}
-            </div>
-          )}
-        </TabsContent>
-
-        <TabsContent value="pending" className="mt-0">
-          {filteredRequests.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredRequests.map((request) => (
-                <Card key={request.id} className="p-0 overflow-hidden">
-                  <RequestCard
-                    id={request.id}
-                    displayId={`REQ-${request.id.substring(0, 3)}`}
-                    title={request.name}
-                    amount={request.totalAmount}
-                    date={request.createdAt}
-                    status={request.status}
-                    requester={request.requester}
-                    isBeneficiary={false}
-                  />
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <p className="text-gray-500">No pending requests found</p>
-              {searchQuery ? (
-                <Button 
-                  variant="link" 
-                  onClick={() => setSearchQuery("")}
-                  className="mt-2"
-                >
-                  Clear search
-                </Button>
-              ) : null}
-            </div>
-          )}
-        </TabsContent>
-
-        <TabsContent value="approved" className="mt-0">
-          {filteredRequests.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredRequests.map((request) => (
-                <Card key={request.id} className="p-0 overflow-hidden">
-                  <RequestCard
-                    id={request.id}
-                    displayId={`REQ-${request.id.substring(0, 3)}`}
-                    title={request.name}
-                    amount={request.totalAmount}
-                    date={request.createdAt}
-                    status={request.status}
-                    requester={request.requester}
-                    isBeneficiary={false}
-                  />
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <p className="text-gray-500">No approved requests found</p>
-              {searchQuery ? (
-                <Button 
-                  variant="link" 
-                  onClick={() => setSearchQuery("")}
-                  className="mt-2"
-                >
-                  Clear search
-                </Button>
-              ) : null}
-            </div>
-          )}
-        </TabsContent>
-
-        <TabsContent value="rejected" className="mt-0">
-          {filteredRequests.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredRequests.map((request) => (
-                <Card key={request.id} className="p-0 overflow-hidden">
-                  <RequestCard
-                    id={request.id}
-                    displayId={`REQ-${request.id.substring(0, 3)}`}
-                    title={request.name}
-                    amount={request.totalAmount}
-                    date={request.createdAt}
-                    status={request.status}
-                    requester={request.requester}
-                    isBeneficiary={false}
-                  />
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center p-6 bg-gray-50 rounded-lg">
-              <p className="text-gray-500">No rejected requests found</p>
-              {searchQuery ? (
-                <Button 
-                  variant="link" 
-                  onClick={() => setSearchQuery("")}
-                  className="mt-2"
-                >
-                  Clear search
-                </Button>
-              ) : null}
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
+      ) : (
+        <div className="text-center p-6 bg-gray-50 rounded-lg">
+          <p className="text-gray-500">No requests match your filters</p>
+          {searchQuery || statusFilter !== "all" ? (
+            <Button 
+              variant="link" 
+              onClick={() => {
+                setSearchQuery("");
+                setStatusFilter("all");
+              }}
+              className="mt-2"
+            >
+              Clear all filters
+            </Button>
+          ) : null}
+        </div>
+      )}
     </div>
   );
 };
