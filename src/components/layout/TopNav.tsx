@@ -1,4 +1,3 @@
-
 import {
   LayoutGrid,
   FileText,
@@ -42,48 +41,50 @@ const TopNav = ({ userName }: TopNavProps) => {
 
   // Add cache control meta tag to prevent back button issues
   useEffect(() => {
-    const metaTag = document.createElement('meta');
-    metaTag.setAttribute('http-equiv', 'Cache-Control');
-    metaTag.setAttribute('content', 'no-cache, no-store, must-revalidate');
+    const metaTag = document.createElement("meta");
+    metaTag.setAttribute("http-equiv", "Cache-Control");
+    metaTag.setAttribute("content", "no-cache, no-store, must-revalidate");
     document.head.appendChild(metaTag);
-    
+
     // Check authentication status on component mount
     const verifyAuthState = () => {
-      const sessionToken = sessionStorage.getItem('token');
-      const sessionUser = sessionStorage.getItem('user');
-      
+      const sessionToken = sessionStorage.getItem("token");
+      const sessionUser = sessionStorage.getItem("user");
+
       console.log("TopNav - Verifying auth state:", {
         hasToken: !!sessionToken,
         hasUser: !!sessionUser,
         path: location.pathname,
-        isProtectedRoute: location.pathname.includes('/dashboard')
+        isProtectedRoute: location.pathname.includes("/dashboard"),
       });
     };
-    
+
     verifyAuthState();
-    
+
     // Add event listener for popstate (back/forward button)
     const handlePopState = () => {
       console.log("TopNav - Browser navigation detected, verifying auth state");
       verifyAuthState();
-      
+
       // If navigating to dashboard but not authenticated, redirect to login
-      if (location.pathname.includes('/dashboard')) {
-        const sessionToken = sessionStorage.getItem('token');
-        const sessionUser = sessionStorage.getItem('user');
-        
+      if (location.pathname.includes("/dashboard")) {
+        const sessionToken = sessionStorage.getItem("token");
+        const sessionUser = sessionStorage.getItem("user");
+
         if (!sessionToken || !sessionUser) {
-          console.log("TopNav - Unauthenticated access attempt via browser navigation, redirecting to login");
-          navigate('/login', { replace: true });
+          console.log(
+            "TopNav - Unauthenticated access attempt via browser navigation, redirecting to login"
+          );
+          navigate("/login", { replace: true });
         }
       }
     };
-    
-    window.addEventListener('popstate', handlePopState);
-    
+
+    window.addEventListener("popstate", handlePopState);
+
     return () => {
       document.head.removeChild(metaTag);
-      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener("popstate", handlePopState);
     };
   }, [navigate, location.pathname]);
 
