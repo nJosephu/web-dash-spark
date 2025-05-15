@@ -1,3 +1,4 @@
+
 import {
   LayoutGrid,
   FileText,
@@ -7,6 +8,7 @@ import {
   Settings,
   LogOut,
   Package,
+  Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -96,6 +98,14 @@ const TopNav = ({ userName }: TopNavProps) => {
       return {
         title: "Bundle Details",
         icon: <Package size={18} className="text-gray-700" />,
+      };
+    }
+
+    // Check for wallet page
+    if (path.includes("/sponsor/wallet")) {
+      return {
+        title: "Wallet & Token",
+        icon: <Wallet size={18} className="text-gray-700" />,
       };
     }
 
