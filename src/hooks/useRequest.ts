@@ -11,19 +11,7 @@ interface FormattedRequest extends Request {
   totalAmount: number;
   formattedStatus: "pending" | "approved" | "rejected";
   formattedAmount: string;
-  activityLog: ActivityLogItem[];
   earliestDueDate?: string;
-}
-
-interface ActivityLogItem {
-  type: string;
-  message: string;
-  timestamp: string;
-  user?: {
-    name: string;
-    avatar?: string;
-  };
-  completed?: boolean;
 }
 
 export const useRequest = (requestId: string | undefined) => {
@@ -88,32 +76,6 @@ export const useRequest = (requestId: string | undefined) => {
           | "approved"
           | "rejected";
 
-        // Create activity log
-        const activityLog: ActivityLogItem[] = [
-          {
-            type: "created",
-            message: `Request "${requestData.name}" created`,
-            timestamp: requestData.createdAt,
-            user: {
-              name: requestData.requester.name,
-            },
-            completed: true,
-          },
-        ];
-
-        // Add bill entries to activity log
-        requestData.bills.forEach((bill) => {
-          activityLog.push({
-            type: bill.status.toLowerCase(),
-            message: `Bill "${bill.billName}" ${bill.status.toLowerCase()}`,
-            timestamp: bill.dueDate,
-            user: {
-              name: "System",
-            },
-            completed: bill.status !== "PENDING",
-          });
-        });
-
         // Find earliest due date
         const earliestDueDate = getEarliestDueDate(requestData.bills);
 
@@ -124,7 +86,6 @@ export const useRequest = (requestId: string | undefined) => {
           totalAmount,
           formattedStatus,
           formattedAmount: formatCurrency(totalAmount),
-          activityLog,
           earliestDueDate,
         };
 

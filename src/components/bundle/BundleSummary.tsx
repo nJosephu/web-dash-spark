@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -10,9 +11,16 @@ interface Sponsor {
   email?: string;
 }
 
+interface Requester {
+  name: string;
+  avatar?: string;
+  email?: string;
+}
+
 interface BundleSummaryProps {
   description?: string;
   sponsor: Sponsor;
+  requester?: Requester;
   amount: string;
   createdAt?: string;
   dueDate?: string;
@@ -21,6 +29,7 @@ interface BundleSummaryProps {
 const BundleSummary: React.FC<BundleSummaryProps> = ({
   description,
   sponsor,
+  requester,
   amount,
   createdAt,
   dueDate,
@@ -63,24 +72,32 @@ const BundleSummary: React.FC<BundleSummaryProps> = ({
             </div>
           )}
 
-          {/* {dueDate && (
-            <div>
-              <h4 className="text-sm font-medium text-gray-500 mb-2">
-                Due Date
-              </h4>
-              <div className="flex items-center">
-                <Calendar className="h-4 w-4 mr-2 text-gray-400" />
-                <span>{formatDate(dueDate)}</span>
-              </div>
-            </div>
-          )} */}
-
           <div>
             <h4 className="text-sm font-medium text-gray-500 mb-2">
               Description
             </h4>
             <p>{description || "No description provided."}</p>
           </div>
+
+          {requester && (
+            <div>
+              <h4 className="text-sm font-medium text-gray-500 mb-2">Requester</h4>
+              <div className="flex items-center gap-2">
+                <Avatar>
+                  {requester.avatar ? (
+                    <AvatarImage src={requester.avatar} alt={requester.name} />
+                  ) : null}
+                  <AvatarFallback>{getInitials(requester.name)}</AvatarFallback>
+                </Avatar>
+                <div>
+                  <div>{requester.name}</div>
+                  {requester.email && (
+                    <div className="text-sm text-gray-500">{requester.email}</div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
           <div>
             <h4 className="text-sm font-medium text-gray-500 mb-2">Sponsor</h4>

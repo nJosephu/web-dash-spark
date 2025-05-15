@@ -7,7 +7,6 @@ import BundleHeader from "@/components/bundle/BundleHeader";
 import StatCards from "@/components/bundle/StatCards";
 import BundleItems from "@/components/bundle/BundleItems";
 import BundleSummary from "@/components/bundle/BundleSummary";
-import ActivityLog from "@/components/bundle/ActivityLog";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Check, X, Loader } from "lucide-react";
@@ -195,9 +194,9 @@ const SponsorBundleDetails = () => {
       </Card>
 
       {/* Bundle content */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Left section - Bundle information */}
-        <div className="md:col-span-2 space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
+        {/* Bundle information */}
+        <div className="space-y-6">
           {/* Bundle items */}
           <BundleItems items={formattedBills} showDeleteButton={componentStatus === "pending"} />
 
@@ -207,6 +206,10 @@ const SponsorBundleDetails = () => {
             sponsor={{
               name: request.supporter?.name || "No sponsor assigned",
               email: request.supporter?.email,
+            }}
+            requester={{
+              name: request.requester?.name || "No requester information",
+              email: request.requester?.email,
             }}
             amount={request.formattedAmount}
             createdAt={request.createdAt}
@@ -239,11 +242,6 @@ const SponsorBundleDetails = () => {
               </Button>
             </div>
           )}
-        </div>
-
-        {/* Right section - Activity log */}
-        <div>
-          <ActivityLog activities={request.activityLog || []} />
         </div>
       </div>
 

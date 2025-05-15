@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -6,7 +7,6 @@ import BundleHeader from "@/components/bundle/BundleHeader";
 import StatCards from "@/components/bundle/StatCards";
 import BundleItems from "@/components/bundle/BundleItems";
 import BundleSummary from "@/components/bundle/BundleSummary";
-import ActivityLog from "@/components/bundle/ActivityLog";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Bell, X, Loader } from "lucide-react";
@@ -200,61 +200,57 @@ const BeneficiaryBundleDetails = () => {
       {/* Bundle items */}
       <BundleItems items={formattedBills} />
 
-      {/* Grid layout for Bundle Summary and Activity Log side by side */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        {/* Bundle summary */}
-        <div>
-          <BundleSummary
-            description={request.notes}
-            sponsor={{
-              name: request.supporter?.name || "No sponsor assigned",
-              email: request.supporter?.email,
-            }}
-            amount={
-              request.formattedAmount ||
-              new Intl.NumberFormat("en-NG", {
-                style: "currency",
-                currency: "NGN",
-                currencyDisplay: "symbol",
-                minimumFractionDigits: 0,
-              }).format(request.totalAmount || 0)
-            }
-            createdAt={request.createdAt}
-            dueDate={request.earliestDueDate}
-          />
-        </div>
-
-        {/* Activity log */}
-        <div>
-          <ActivityLog activities={request.activityLog || []} />
-        </div>
-
-        {/* Beneficiary-specific action buttons */}
-        {componentStatus === "pending" && (
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Button
-              onClick={handleSendReminder}
-              className="w-full bg-[#6544E4] hover:bg-[#5A3DD0]"
-            >
-              <Bell className="mr-2 h-4 w-4" />
-              Send Reminder
-            </Button>
-            <Button
-              onClick={handleDeleteRequest}
-              variant="outline"
-              className="w-full border-red-200 text-red-600 hover:bg-red-50"
-              disabled={isDeleting}
-            >
-              {isDeleting ? (
-                <Loader className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <X className="mr-2 h-4 w-4" />
-              )}
-              {isDeleting ? "Deleting..." : "Delete Request"}
-            </Button>
-          </div>
-        )}
+      {/* Bundle Summary */}
+      <div className="mt-6">
+        <BundleSummary
+          description={request.notes}
+          sponsor={{
+            name: request.supporter?.name || "No sponsor assigned",
+            email: request.supporter?.email,
+          }}
+          requester={{
+            name: request.requester?.name || "No requester information",
+            email: request.requester?.email,
+          }}
+          amount={
+            request.formattedAmount ||
+            new Intl.NumberFormat("en-NG", {
+              style: "currency",
+              currency: "NGN",
+              currencyDisplay: "symbol",
+              minimumFractionDigits: 0,
+            }).format(request.totalAmount || 0)
+          }
+          createdAt={request.createdAt}
+          dueDate={request.earliestDueDate}
+        />
       </div>
+
+      {/* Beneficiary-specific action buttons */}
+      {componentStatus === "pending" && (
+        <div className="flex flex-col sm:flex-row gap-4 mt-6">
+          <Button
+            onClick={handleSendReminder}
+            className="w-full bg-[#6544E4] hover:bg-[#5A3DD0]"
+          >
+            <Bell className="mr-2 h-4 w-4" />
+            Send Reminder
+          </Button>
+          <Button
+            onClick={handleDeleteRequest}
+            variant="outline"
+            className="w-full border-red-200 text-red-600 hover:bg-red-50"
+            disabled={isDeleting}
+          >
+            {isDeleting ? (
+              <Loader className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <X className="mr-2 h-4 w-4" />
+            )}
+            {isDeleting ? "Deleting..." : "Delete Request"}
+          </Button>
+        </div>
+      )}
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog
