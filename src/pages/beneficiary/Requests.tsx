@@ -1,5 +1,5 @@
+
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Search, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,11 +15,11 @@ import RequestCard from "@/components/dashboard/RequestCard";
 import { useRequests } from "@/hooks/useRequests";
 import StatCard from "@/components/dashboard/StatCard";
 import { Card } from "@/components/ui/card";
+import CreateBundleSheet from "@/components/dashboard/CreateBundleSheet";
 
 const Requests = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const navigate = useNavigate();
 
   // Use our custom hook to get requests data and operations
   const {
@@ -109,13 +109,14 @@ const Requests = () => {
             Manage and track all your bill requests
           </p>
         </div>
-        <Button
-          className="bg-[#6544E4] hover:bg-[#5A3DD0]"
-          onClick={() => navigate("/dashboard/beneficiary/create-request")}
-        >
-          <Plus className="mr-2" size={16} />
-          Create Request
-        </Button>
+        <CreateBundleSheet
+          trigger={
+            <Button className="bg-[#6544E4] hover:bg-[#5A3DD0]">
+              <Plus className="mr-2" size={16} />
+              Create Request
+            </Button>
+          }
+        />
       </div>
 
       {/* Stats Cards */}
