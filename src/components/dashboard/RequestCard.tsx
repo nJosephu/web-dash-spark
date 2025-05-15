@@ -77,7 +77,7 @@ const RequestCard = ({
   return (
     <div className="p-4 bg-white rounded-lg border border-gray-200">
       {/* Header with ID and status */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-start gap-3 items-center mb-4">
         <div className="text-gray-500 text-sm flex items-center">
           {displayId}
         </div>
