@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -276,6 +275,8 @@ const BeneficiaryBundleDetails = () => {
               }
               createdAt={request.createdAt}
               dueDate={request.earliestDueDate}
+              showRequester={true}
+              showSponsor={true}
             />
           </div>
 

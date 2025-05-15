@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -209,6 +208,8 @@ const SponsorBundleDetails = () => {
             amount={request.formattedAmount}
             createdAt={request.createdAt}
             dueDate={request.earliestDueDate}
+            showRequester={true}
+            showSponsor={false}
           />
 
           {/* Sponsor-specific action buttons */}
