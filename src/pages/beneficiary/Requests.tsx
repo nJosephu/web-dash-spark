@@ -103,7 +103,7 @@ const Requests = () => {
 
   return (
     <div className="container p-0">
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
         <div>
           <p className="text-gray-500">
             Manage and track all your bill requests
