@@ -4,7 +4,7 @@ import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import requestService, { Request, Bill } from "@/services/requestService";
 import { format, parseISO } from "date-fns";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface FormattedRequest extends Request {
   formattedId: string;
@@ -18,6 +18,10 @@ export const useRequest = (requestId: string | undefined) => {
   const { user, token } = useAuth();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Determine if we're in the sponsor or beneficiary view
+  const isSponsorView = location.pathname.includes("/dashboard/sponsor");
 
   // Helper function to format currency
   const formatCurrency = (amount: number): string => {
@@ -122,7 +126,13 @@ export const useRequest = (requestId: string | undefined) => {
     onSuccess: () => {
       toast.success("Request deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["requests"] });
-      navigate("/dashboard/beneficiary/requests");
+      
+      // Navigate to the correct path based on user role
+      const redirectPath = isSponsorView 
+        ? "/dashboard/sponsor/requests" 
+        : "/dashboard/beneficiary/requests";
+      
+      navigate(redirectPath);
     },
     onError: (error: Error) => {
       toast.error(`Failed to delete request: ${error.message}`);
@@ -169,5 +179,7 @@ export const useRequest = (requestId: string | undefined) => {
     // Helper functions
     formatCurrency,
     formatDate,
+    // View info
+    isSponsorView,
   };
 };

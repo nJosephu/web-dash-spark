@@ -12,6 +12,7 @@ import { formatRelativeDate } from "@/utils/dateUtils";
 interface RequestRequester {
   name: string;
   avatar?: string;
+  email?: string;
 }
 
 interface RequestCardProps {
@@ -126,7 +127,7 @@ const RequestCard = ({
             )} text-xs font-medium capitalize`}
             variant="outline"
           >
-            {status}
+            {status.toLowerCase()}
           </Badge>
         </div>
       </div>
@@ -143,7 +144,7 @@ const RequestCard = ({
             <span className="text-sm font-semibold">{formattedAmount}</span>
           </div>
 
-          {/* Changed from "Due date" to "Date" and using request creation date */}
+          {/* Date */}
           <div className="flex justify-between items-center">
             <span className="text-xs text-gray-500">Date</span>
             <div className="flex items-center text-xs">
@@ -152,9 +153,11 @@ const RequestCard = ({
             </div>
           </div>
 
-          {/* Changed from Sponsor to Requester */}
+          {/* Show Requester for Sponsor view, otherwise show nothing or sponsor info */}
           <div className="flex justify-between items-center">
-            <span className="text-xs text-gray-500">Requester</span>
+            <span className="text-xs text-gray-500">
+              {isSponsor ? "Requester" : "From"}
+            </span>
             <div className="flex items-center gap-1.5">
               <Avatar className="h-5 w-5">
                 {requester.avatar ? (
@@ -182,26 +185,7 @@ const RequestCard = ({
             </Link>
           </Button>
 
-          {/* Cancel and Remind - shown only if not approved and only for beneficiaries */}
-          {/* {!isSponsor && status === "PENDING" && (
-            <div className="flex gap-2">
-              <Button
-                onClick={handleCancel}
-                variant="outline"
-                className="flex-1 text-red-600 border-red-200 hover:bg-red-50 h-9 text-xs rounded-md"
-              >
-                <X className="h-3.5 w-3.5 mr-1" />
-                Cancel
-              </Button>
-              <Button
-                onClick={handleRemind}
-                variant="outline"
-                className="flex-1 text-[#6544E4] border-[#6544E4] hover:bg-[#6544E4]/10 h-9 text-xs rounded-md"
-              >
-                Remind
-              </Button>
-            </div>
-          )} */}
+          {/* Cancel and Remind buttons would be added here if needed */}
         </div>
       </CardContent>
     </Card>

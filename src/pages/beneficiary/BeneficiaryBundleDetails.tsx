@@ -57,14 +57,6 @@ const BeneficiaryBundleDetails = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [request]);
 
-  // Handle cancel request
-  const handleCancelRequest = () => {
-    if (!request) return;
-
-    toast.loading("Cancelling request...");
-    cancelRequest();
-  };
-
   // Handle delete request
   const handleDeleteRequest = () => {
     if (!request) return;

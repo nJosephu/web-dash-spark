@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -12,7 +13,6 @@ import { Check, X, Loader } from "lucide-react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
-import { format, parseISO } from "date-fns";
 import { useRequest } from "@/hooks/useRequest";
 import {
   AlertDialog,
@@ -40,22 +40,12 @@ const SponsorBundleDetails = () => {
     cancelRequest,
     deleteRequest,
     isDeleting,
-    sendReminder,
     billsCount,
     approvedBills,
     pendingBills,
     rejectedBills,
     formatCurrency,
   } = useRequest(bundleId);
-
-  // Format the date using date-fns
-  const formatDate = (dateString: string) => {
-    try {
-      return format(parseISO(dateString), "MMM dd, yyyy");
-    } catch (error) {
-      return "Invalid Date";
-    }
-  };
 
   // Handle approve/reject actions
   const handleApproveRequest = () => {
