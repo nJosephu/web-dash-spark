@@ -1,7 +1,13 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
 import RoleProtectedRoute from "./components/RoleProtectedRoute";
 import BeneficiaryLayout from "./components/layout/BeneficiaryLayout";
 import SponsorLayout from "./components/layout/SponsorLayout";
@@ -43,49 +49,51 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
-    console.log("ProtectedRoute - Initial auth state:", { 
-      isAuthenticated, 
-      isLoading, 
-      location: window.location.pathname 
+    console.log("ProtectedRoute - Initial auth state:", {
+      isAuthenticated,
+      isLoading,
+      location: window.location.pathname,
     });
-    
+
     // Add a small delay to ensure sessionStorage is populated
     const timeoutId = setTimeout(() => {
       // Double-check authentication status using the token in sessionStorage
-      const sessionToken = sessionStorage.getItem('token');
-      const sessionUser = sessionStorage.getItem('user');
-      
+      const sessionToken = sessionStorage.getItem("token");
+      const sessionUser = sessionStorage.getItem("user");
+
       console.log("ProtectedRoute - Checking sessionStorage:", {
         hasToken: !!sessionToken,
         hasUser: !!sessionUser,
-        tokenFirstChars: sessionToken ? `${sessionToken.substring(0, 5)}...` : "none"
+        tokenFirstChars: sessionToken
+          ? `${sessionToken.substring(0, 5)}...`
+          : "none",
       });
-      
+
       if (sessionUser) {
         try {
           const userData = JSON.parse(sessionUser);
           console.log("ProtectedRoute - User role:", {
             originalRole: userData.role,
-            mappedRole: mapRoleName(userData.role)
+            mappedRole: mapRoleName(userData.role),
           });
         } catch (e) {
           console.error("ProtectedRoute - Error parsing user data:", e);
         }
       }
-      
+
       const isSessionAuth = !!sessionToken && !!sessionUser;
       console.log("ProtectedRoute - Session auth check result:", isSessionAuth);
-      
+
       if (!isLoading && !isSessionAuth) {
         console.log("ProtectedRoute - Not authenticated, redirecting to login");
         // Force logout to clear any inconsistent state
         logout();
         navigate("/login", { replace: true });
       }
-      
+
       setCheckingAuth(false);
     }, 300); // Small delay to ensure sessionStorage is checked after it might be set
-    
+
     return () => clearTimeout(timeoutId);
   }, [isLoading, isAuthenticated, logout, navigate]);
 
@@ -99,11 +107,15 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }
 
   if (!isAuthenticated) {
-    console.log("ProtectedRoute - Not authenticated after checks, navigating to login");
+    console.log(
+      "ProtectedRoute - Not authenticated after checks, navigating to login"
+    );
     return <Navigate to="/login" replace />;
   }
 
-  console.log("ProtectedRoute - Authentication successful, rendering protected content");
+  console.log(
+    "ProtectedRoute - Authentication successful, rendering protected content"
+  );
   return <>{children}</>;
 };
 
@@ -111,15 +123,15 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 const DashboardRedirect = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     if (user) {
       const mappedRole = mapRoleName(user.role);
-      console.log("DashboardRedirect - Mapping role:", { 
-        originalRole: user.role, 
-        mappedRole 
+      console.log("DashboardRedirect - Mapping role:", {
+        originalRole: user.role,
+        mappedRole,
       });
-      
+
       if (mappedRole === "sponsor") {
         navigate("/dashboard/sponsor", { replace: true });
       } else {
@@ -129,7 +141,7 @@ const DashboardRedirect = () => {
       navigate("/login", { replace: true });
     }
   }, [user, navigate]);
-  
+
   return (
     <div className="flex items-center justify-center h-screen">
       Redirecting...
@@ -154,13 +166,13 @@ const AppRoutes = () => {
         <Route path="/logout" element={<Logout />} />
 
         {/* Dashboard redirect */}
-        <Route 
-          path="/dashboard" 
+        <Route
+          path="/dashboard"
           element={
             <ProtectedRoute>
               <DashboardRedirect />
             </ProtectedRoute>
-          } 
+          }
         />
 
         {/* Beneficiary Routes */}
@@ -176,7 +188,10 @@ const AppRoutes = () => {
         >
           <Route index element={<BeneficiaryDashboard />} />
           <Route path="requests" element={<BeneficiaryRequests />} />
-          <Route path="requests/:bundleId" element={<BeneficiaryBundleDetails />} />
+          <Route
+            path="requests/:bundleId"
+            element={<BeneficiaryBundleDetails />}
+          />
           <Route path="sponsors" element={<BeneficiarySponsors />} />
           <Route path="bill-history" element={<BeneficiaryBillHistory />} />
           <Route path="settings" element={<BeneficiarySettings />} />
@@ -196,8 +211,8 @@ const AppRoutes = () => {
           <Route index element={<SponsorDashboard />} />
           <Route path="requests" element={<SponsorIncomingRequests />} />
           <Route path="requests/:bundleId" element={<SponsorBundleDetails />} />
-          <Route path="beneficiaries" element={<SponsorBeneficiaries />} />
-          <Route path="bills-paid" element={<SponsorBillsPaid />} />
+          {/* <Route path="beneficiaries" element={<SponsorBeneficiaries />} /> */}
+          {/* <Route path="bills-paid" element={<SponsorBillsPaid />} /> */}
           <Route path="settings" element={<SponsorSettings />} />
         </Route>
 
@@ -216,9 +231,12 @@ const App = () => {
     // Small timeout to ensure sessionStorage is checked
     setTimeout(() => {
       // Check if we have auth data in sessionStorage
-      const token = sessionStorage.getItem('token');
-      const user = sessionStorage.getItem('user');
-      console.log("Initial app load auth check:", { hasToken: !!token, hasUser: !!user });
+      const token = sessionStorage.getItem("token");
+      const user = sessionStorage.getItem("user");
+      console.log("Initial app load auth check:", {
+        hasToken: !!token,
+        hasUser: !!user,
+      });
       setLoading(false);
     }, 100);
   }, []);
