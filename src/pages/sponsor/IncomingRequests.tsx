@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -132,7 +131,7 @@ const SponsorIncomingRequests = () => {
       </div>
 
       {/* Stats Cards - Updated for responsiveness */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 bg-white rounded-lg p-4">
         <StatCard
           title="Total Requests"
           value={requestsCount.toString()}
@@ -159,7 +158,7 @@ const SponsorIncomingRequests = () => {
         />
       </div>
 
-      <div className="bg-white rounded-lg p-4 sm:p-6">
+      <div className="bg-white rounded-lg p-4">
         <div className="flex flex-col md:flex-row justify-between gap-4 mb-6">
           <h2 className="text-lg font-medium">Sent Requests</h2>
 
