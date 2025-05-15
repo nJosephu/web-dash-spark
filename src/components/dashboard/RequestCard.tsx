@@ -1,4 +1,3 @@
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -76,7 +75,7 @@ const RequestCard = ({
   }).format(amount);
 
   return (
-    <div className="p-4 bg-white rounded-lg border border-gray-100">
+    <div className="p-4 bg-white rounded-lg border border-gray-200">
       {/* Header with ID and status */}
       <div className="flex justify-between items-center mb-4">
         <div className="text-gray-500 text-sm flex items-center">
