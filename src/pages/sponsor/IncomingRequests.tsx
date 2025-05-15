@@ -158,63 +158,65 @@ const SponsorIncomingRequests = () => {
         />
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-between items-end sm:items-center gap-4 mb-4">
-        <div className="relative w-full sm:w-auto">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-          <Input
-            placeholder="Search requests..."
-            className="pl-9 w-full sm:w-64"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+      <div className="bg-white rounded-lg p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row justify-between items-end sm:items-center gap-4 mb-4">
+          <div className="relative w-full sm:w-auto">
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+            <Input
+              placeholder="Search requests..."
+              className="pl-9 w-full sm:w-64"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-full sm:w-40">
+              <SelectValue placeholder="All Requests" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Requests</SelectItem>
+              <SelectItem value="approved">Approved</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+              <SelectItem value="rejected">Rejected</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-full sm:w-40">
-            <SelectValue placeholder="All Requests" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Requests</SelectItem>
-            <SelectItem value="approved">Approved</SelectItem>
-            <SelectItem value="pending">Pending</SelectItem>
-            <SelectItem value="rejected">Rejected</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
 
-      {filteredRequests.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredRequests.map((request) => (
-            <Card key={request.id} className="p-0 overflow-hidden">
-              <RequestCard
-                id={request.id}
-                displayId={`REQ-${request.id.substring(0, 3)}`}
-                title={request.name}
-                amount={request.totalAmount}
-                date={request.createdAt}
-                status={request.status}
-                requester={request.requester}
-                isBeneficiary={false}
-              />
-            </Card>
-          ))}
-        </div>
-      ) : (
-        <div className="text-center p-6 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">No requests match your filters</p>
-          {searchQuery || statusFilter !== "all" ? (
-            <Button
-              variant="link"
-              onClick={() => {
-                setSearchQuery("");
-                setStatusFilter("all");
-              }}
-              className="mt-2"
-            >
-              Clear all filters
-            </Button>
-          ) : null}
-        </div>
-      )}
+        {filteredRequests.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredRequests.map((request) => (
+              <Card key={request.id} className="p-0 overflow-hidden">
+                <RequestCard
+                  id={request.id}
+                  displayId={`REQ-${request.id.substring(0, 3)}`}
+                  title={request.name}
+                  amount={request.totalAmount}
+                  date={request.createdAt}
+                  status={request.status}
+                  requester={request.requester}
+                  isBeneficiary={false}
+                />
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center p-6 bg-gray-50 rounded-lg">
+            <p className="text-gray-500">No requests match your filters</p>
+            {searchQuery || statusFilter !== "all" ? (
+              <Button
+                variant="link"
+                onClick={() => {
+                  setSearchQuery("");
+                  setStatusFilter("all");
+                }}
+                className="mt-2"
+              >
+                Clear all filters
+              </Button>
+            ) : null}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
