@@ -80,8 +80,8 @@ const RequestCard = ({
   }).format(amount);
 
   return (
-    <div className="p-4 bg-white rounded-lg border border-gray-200">
-      <div className="flex items-center justify-between mb-4">
+    <div className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm">
+      <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-2">
           <span className="text-sm text-gray-600">{displayId}</span>
         </div>
@@ -90,7 +90,7 @@ const RequestCard = ({
         </Badge>
       </div>
 
-      <h3 className="text-lg font-medium mb-4">{title}</h3>
+      <h3 className="text-lg font-medium mb-3">{title}</h3>
 
       <div className="space-y-2 mb-4">
         <div className="flex justify-between items-center">
@@ -99,20 +99,20 @@ const RequestCard = ({
         </div>
         
         <div className="flex justify-between items-center">
-          <span className="text-sm text-gray-500">Date</span>
+          <span className="text-sm text-gray-500">Due date</span>
           <span>{formatDate(date)}</span>
         </div>
         
         <div className="flex justify-between items-center">
           <span className="text-sm text-gray-500">
-            {isBeneficiary ? "Requester" : "Sponsor"}
+            {isBeneficiary ? "Sponsor" : "Requester"}
           </span>
-          <div className="flex items-center space-x-1">
-            <Avatar className="h-5 w-5">
+          <div className="flex items-center space-x-2">
+            <Avatar className="h-6 w-6">
               {requester.avatar ? (
                 <AvatarImage src={requester.avatar} alt={requester.name} />
               ) : null}
-              <AvatarFallback className="text-xs">
+              <AvatarFallback className="text-xs bg-gray-200">
                 {getInitials(requester.name)}
               </AvatarFallback>
             </Avatar>
@@ -121,7 +121,7 @@ const RequestCard = ({
         </div>
       </div>
 
-      <div className="flex items-center justify-between mt-4">
+      <div className="flex items-center justify-between mt-3">
         <Button
           asChild
           className="bg-[#6544E4] hover:bg-[#5A3DD0] text-white px-4 py-2"

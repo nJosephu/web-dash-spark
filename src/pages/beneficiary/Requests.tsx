@@ -27,6 +27,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Card } from "@/components/ui/card";
 
 const Requests = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -34,6 +35,7 @@ const Requests = () => {
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
   const [isReminderDialogOpen, setIsReminderDialogOpen] = useState(false);
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<string>("all");
   const navigate = useNavigate();
 
   // Use our custom hook to get requests data and operations
@@ -58,8 +60,8 @@ const Requests = () => {
     
     // Status filter
     const matchesStatus = 
-      statusFilter === "all" || 
-      request.status.toLowerCase() === statusFilter.toLowerCase();
+      activeTab === "all" || 
+      request.status.toLowerCase() === activeTab.toLowerCase();
     
     return matchesSearch && matchesStatus;
   });
@@ -231,7 +233,12 @@ const Requests = () => {
           </Select>
         </div>
 
-        <Tabs defaultValue="all" className="mb-6">
+        <Tabs 
+          defaultValue="all" 
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="mb-6"
+        >
           <TabsList className="mb-4">
             <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="pending">Pending</TabsTrigger>
@@ -243,19 +250,20 @@ const Requests = () => {
             {filteredRequests.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {filteredRequests.map((request) => (
-                  <RequestCard
-                    key={request.id}
-                    id={request.id}
-                    displayId={`REQ-${request.id.substring(0, 3)}`}
-                    title={request.name}
-                    amount={request.totalAmount || 0}
-                    date={request.createdAt}
-                    status={request.status}
-                    requester={request.requester}
-                    onCancel={handleCancelRequest}
-                    onRemind={handleSendReminder}
-                    isBeneficiary={true}
-                  />
+                  <Card key={request.id} className="p-0 overflow-hidden">
+                    <RequestCard
+                      id={request.id}
+                      displayId={`REQ-${request.id.substring(0, 3)}`}
+                      title={request.name}
+                      amount={request.totalAmount || 0}
+                      date={request.createdAt}
+                      status={request.status}
+                      requester={request.requester}
+                      onCancel={handleCancelRequest}
+                      onRemind={handleSendReminder}
+                      isBeneficiary={true}
+                    />
+                  </Card>
                 ))}
               </div>
             ) : (
@@ -271,19 +279,21 @@ const Requests = () => {
                 {filteredRequests
                   .filter(r => r.status === "PENDING")
                   .map((request) => (
-                    <RequestCard
-                      key={request.id}
-                      id={request.id}
-                      displayId={`REQ-${request.id.substring(0, 3)}`}
-                      title={request.name}
-                      amount={request.totalAmount || 0}
-                      date={request.createdAt}
-                      status={request.status}
-                      requester={request.requester}
-                      onCancel={handleCancelRequest}
-                      onRemind={handleSendReminder}
-                      isBeneficiary={true}
-                    />
+                    <Card key={request.id} className="p-0 overflow-hidden">
+                      <RequestCard
+                        key={request.id}
+                        id={request.id}
+                        displayId={`REQ-${request.id.substring(0, 3)}`}
+                        title={request.name}
+                        amount={request.totalAmount || 0}
+                        date={request.createdAt}
+                        status={request.status}
+                        requester={request.requester}
+                        onCancel={handleCancelRequest}
+                        onRemind={handleSendReminder}
+                        isBeneficiary={true}
+                      />
+                    </Card>
                   ))}
               </div>
             ) : (
@@ -299,17 +309,19 @@ const Requests = () => {
                 {filteredRequests
                   .filter(r => r.status === "APPROVED")
                   .map((request) => (
-                    <RequestCard
-                      key={request.id}
-                      id={request.id}
-                      displayId={`REQ-${request.id.substring(0, 3)}`}
-                      title={request.name}
-                      amount={request.totalAmount || 0}
-                      date={request.createdAt}
-                      status={request.status}
-                      requester={request.requester}
-                      isBeneficiary={true}
-                    />
+                    <Card key={request.id} className="p-0 overflow-hidden">
+                      <RequestCard
+                        key={request.id}
+                        id={request.id}
+                        displayId={`REQ-${request.id.substring(0, 3)}`}
+                        title={request.name}
+                        amount={request.totalAmount || 0}
+                        date={request.createdAt}
+                        status={request.status}
+                        requester={request.requester}
+                        isBeneficiary={true}
+                      />
+                    </Card>
                   ))}
               </div>
             ) : (
@@ -325,17 +337,19 @@ const Requests = () => {
                 {filteredRequests
                   .filter(r => r.status === "REJECTED")
                   .map((request) => (
-                    <RequestCard
-                      key={request.id}
-                      id={request.id}
-                      displayId={`REQ-${request.id.substring(0, 3)}`}
-                      title={request.name}
-                      amount={request.totalAmount || 0}
-                      date={request.createdAt}
-                      status={request.status}
-                      requester={request.requester}
-                      isBeneficiary={true}
-                    />
+                    <Card key={request.id} className="p-0 overflow-hidden">
+                      <RequestCard
+                        key={request.id}
+                        id={request.id}
+                        displayId={`REQ-${request.id.substring(0, 3)}`}
+                        title={request.name}
+                        amount={request.totalAmount || 0}
+                        date={request.createdAt}
+                        status={request.status}
+                        requester={request.requester}
+                        isBeneficiary={true}
+                      />
+                    </Card>
                   ))}
               </div>
             ) : (
