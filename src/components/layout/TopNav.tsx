@@ -189,7 +189,7 @@ const TopNav = ({ userName }: TopNavProps) => {
   const pageInfo = getPageInfo();
 
   return (
-    <div className="sticky top-0 z-30 flex justify-between items-center py-4 px-4 pl-16 md:pr-6 mb-6 border-b border-gray-100 bg-white">
+    <div className="sticky top-0 z-30 flex justify-between items-center py-4 px-4 pl-16 md:pr-6 lg:px-6 lg:pl-6 mb-6 border-b border-gray-100 bg-white">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem className="text-sm md:text-base font-medium text-gray-800 flex items-center gap-2">
