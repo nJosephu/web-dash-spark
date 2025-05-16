@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Receipt, FileText, CheckCircle, Clock, AlertCircle, Tag, BadgeCheck } from "lucide-react";
+import { Receipt } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import StatCard from "@/components/dashboard/StatCard";
 import DonutChart from "@/components/dashboard/DonutChart";
@@ -140,25 +140,21 @@ const SponsorDashboard = () => {
                 title="Total Requests" 
                 value={requestsCount.toString()} 
                 color="purple" 
-                icon={FileText}
               />
               <StatCard 
                 title="Approved Requests" 
                 value={approvedRequests.toString()} 
                 color="green" 
-                icon={CheckCircle}
               />
               <StatCard 
                 title="Pending Requests" 
                 value={pendingRequests.toString()} 
                 color="yellow" 
-                icon={Clock}
               />
               <StatCard 
                 title="Rejected Requests" 
                 value={rejectedRequests.toString()} 
                 color="red" 
-                icon={AlertCircle}
               />
             </div>
           )}
