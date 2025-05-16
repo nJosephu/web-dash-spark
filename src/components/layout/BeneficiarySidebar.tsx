@@ -9,6 +9,7 @@ import {
   Settings,
   SwitchCamera,
   Menu,
+  Wallet,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -48,6 +49,11 @@ const BeneficiarySidebar = ({ className }: SidebarProps) => {
       title: "Bill history",
       icon: Receipt,
       path: "/dashboard/beneficiary/bill-history",
+    },
+    {
+      title: "Web3 Wallet",
+      icon: Wallet,
+      path: "/dashboard/beneficiary/web3-wallet",
     },
   ];
 

@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -32,6 +31,7 @@ import BeneficiarySponsors from "./pages/beneficiary/Sponsors";
 import BeneficiaryBillHistory from "./pages/beneficiary/BillHistory";
 import BeneficiarySettings from "./pages/beneficiary/Settings";
 import BeneficiaryBundleDetails from "./pages/beneficiary/BeneficiaryBundleDetails";
+import BeneficiaryWeb3Wallet from "./pages/beneficiary/Web3Wallet";
 
 import SponsorDashboard from "./pages/sponsor/Dashboard";
 import SponsorIncomingRequests from "./pages/sponsor/IncomingRequests";
@@ -197,6 +197,7 @@ const AppRoutes = () => {
           <Route path="sponsors" element={<BeneficiarySponsors />} />
           <Route path="bill-history" element={<BeneficiaryBillHistory />} />
           <Route path="settings" element={<BeneficiarySettings />} />
+          <Route path="web3-wallet" element={<BeneficiaryWeb3Wallet />} />
         </Route>
 
         {/* Sponsor Routes */}
