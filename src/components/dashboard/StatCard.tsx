@@ -1,4 +1,5 @@
-import { Tag } from "lucide-react";
+
+import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface StatCardProps {
@@ -6,6 +7,7 @@ interface StatCardProps {
   value: string;
   color: "green" | "purple" | "red" | "yellow";
   colortag?: "white" | "black";
+  icon?: LucideIcon;
 }
 
 const StatCard = ({
@@ -13,6 +15,7 @@ const StatCard = ({
   value,
   color,
   colortag = "white",
+  icon: Icon,
 }: StatCardProps) => {
   // Define dot colors for different card types
   const getDotColor = () => {
@@ -37,7 +40,7 @@ const StatCard = ({
             getDotColor()
           )}
         >
-          <Tag className={`w-[16px] h-[16px] text-${colortag}`}></Tag>
+          {Icon ? <Icon className={`w-[16px] h-[16px] text-${colortag}`} /> : null}
         </div>
         <div className="flex-1">
           <span className="text-sm text-gray-600">{title}</span>
