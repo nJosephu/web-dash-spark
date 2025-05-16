@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import {
   Card,
@@ -26,8 +25,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const Sponsors = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const { sponsors, isLoading, sponsorCount, totalFunded } = useRequestSponsors();
-  
+  const { sponsors, isLoading, sponsorCount, totalFunded } =
+    useRequestSponsors();
+
   useEffect(() => {
     document.title = "My Sponsors | Urgent2kay";
   }, []);
@@ -66,9 +66,7 @@ const Sponsors = () => {
     <>
       <div className="mb-6">
         <h1 className="text-2xl font-medium">My Sponsors</h1>
-        <p className="text-gray-500">
-          People who have funded your requests
-        </p>
+        <p className="text-gray-500">People you've sent funding requests to</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
@@ -113,8 +111,9 @@ const Sponsors = () => {
               <Skeleton className="h-8 w-24" />
             ) : (
               <div className="text-2xl font-bold text-green-600">
-                ₦{sponsorCount > 0 
-                  ? Math.round(totalFunded / sponsorCount).toLocaleString() 
+                ₦
+                {sponsorCount > 0
+                  ? Math.round(totalFunded / sponsorCount).toLocaleString()
                   : 0}
               </div>
             )}
@@ -128,7 +127,7 @@ const Sponsors = () => {
             <div>
               <CardTitle>All Sponsors</CardTitle>
               <CardDescription>
-                People who have funded your requests
+                People you've sent funding requests to
               </CardDescription>
             </div>
             <div className="relative w-full md:w-64">
@@ -165,7 +164,7 @@ const Sponsors = () => {
                 <TableHeader className="bg-[#F5F5F5]">
                   <TableRow>
                     <TableHead>Sponsor</TableHead>
-                    <TableHead>Requests Funded</TableHead>
+                    <TableHead>Funding Requests Sent</TableHead>
                     <TableHead>Total Amount</TableHead>
                     <TableHead>Last Activity</TableHead>
                   </TableRow>
@@ -182,7 +181,9 @@ const Sponsors = () => {
                           </Avatar>
                           <div>
                             <div className="font-medium">{sponsor.name}</div>
-                            <div className="text-sm text-gray-500">{sponsor.email || "No email available"}</div>
+                            <div className="text-sm text-gray-500">
+                              {sponsor.email || "No email available"}
+                            </div>
                           </div>
                         </div>
                       </TableCell>
@@ -191,7 +192,9 @@ const Sponsors = () => {
                           {sponsor.requestsCount}
                         </Badge>
                       </TableCell>
-                      <TableCell>₦{sponsor.totalAmount.toLocaleString()}</TableCell>
+                      <TableCell>
+                        ₦{sponsor.totalAmount.toLocaleString()}
+                      </TableCell>
                       <TableCell>{formatDate(sponsor.lastActivity)}</TableCell>
                     </TableRow>
                   ))}
@@ -203,8 +206,8 @@ const Sponsors = () => {
               <FileText className="mx-auto h-10 w-10 text-gray-400 mb-3" />
               <h3 className="text-lg font-medium mb-1">No sponsors found</h3>
               <p className="text-gray-500 mb-4">
-                {searchQuery 
-                  ? "No sponsors match your search query." 
+                {searchQuery
+                  ? "No sponsors match your search query."
                   : "You don't have any sponsors yet. Create requests to get funded."}
               </p>
               <Button className="bg-[#6544E4] hover:bg-[#5A3DD0]">
