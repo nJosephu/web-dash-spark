@@ -48,7 +48,7 @@ const Requests = () => {
   });
 
   // Rendering the loading state
-  if (true) {
+  if (isLoading) {
     return (
       <div className="container p-0">
         <div className="flex justify-between items-center mb-6"></div>
