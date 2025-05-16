@@ -111,7 +111,8 @@ const BeneficiaryBundleDetails = () => {
 
     // Sort activities by timestamp, newest first
     return activities.sort(
-      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+      (a, b) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
     );
   };
 
@@ -247,13 +248,13 @@ const BeneficiaryBundleDetails = () => {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
-        <div className="md:col-span-4">
-          {/* Bundle items */}
-          <BundleItems items={formattedBills} />
+      {/* Bundle items */}
+      <BundleItems items={formattedBills} />
 
+      <div className="grid grid-cols-1 md:grid-cols-6 gap-6 mt-6">
+        <div className="md:col-span-4">
           {/* Bundle Summary */}
-          <div className="mt-6">
+          <div>
             <BundleSummary
               description={request.notes}
               sponsor={{
@@ -279,38 +280,36 @@ const BeneficiaryBundleDetails = () => {
               showSponsor={true}
             />
           </div>
-
-          {/* Beneficiary-specific action buttons */}
-          {componentStatus === "pending" && (
-            <div className="flex flex-col sm:flex-row gap-4 mt-6">
-              <Button
-                onClick={handleSendReminder}
-                className="w-full bg-[#6544E4] hover:bg-[#5A3DD0]"
-              >
-                <Bell className="mr-2 h-4 w-4" />
-                Send Reminder
-              </Button>
-              <Button
-                onClick={handleDeleteRequest}
-                variant="outline"
-                className="w-full border-red-200 text-red-600 hover:bg-red-50"
-                disabled={isDeleting}
-              >
-                {isDeleting ? (
-                  <Loader className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <X className="mr-2 h-4 w-4" />
-                )}
-                {isDeleting ? "Deleting..." : "Delete Request"}
-              </Button>
-            </div>
-          )}
         </div>
-
         {/* Activity Log */}
         <div className="md:col-span-2">
           <ActivityLog activities={getActivityLogData()} />
         </div>
+        {/* Beneficiary-specific action buttons */}
+        {componentStatus === "pending" && (
+          <div className="flex flex-col sm:flex-row gap-4 md:col-span-4">
+            <Button
+              onClick={handleSendReminder}
+              className="w-full bg-[#6544E4] hover:bg-[#5A3DD0]"
+            >
+              <Bell className="mr-2 h-4 w-4" />
+              Send Reminder
+            </Button>
+            <Button
+              onClick={handleDeleteRequest}
+              variant="outline"
+              className="w-full border-red-200 text-red-600 hover:bg-red-50"
+              disabled={isDeleting}
+            >
+              {isDeleting ? (
+                <Loader className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <X className="mr-2 h-4 w-4" />
+              )}
+              {isDeleting ? "Deleting..." : "Delete Request"}
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Delete Confirmation Dialog */}
