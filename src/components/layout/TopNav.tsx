@@ -101,10 +101,17 @@ const TopNav = ({ userName }: TopNavProps) => {
       };
     }
 
-    // Check for wallet page
+    // Check for wallet pages
     if (path.includes("/sponsor/wallet")) {
       return {
         title: "Wallet & Token",
+        icon: <Wallet size={18} className="text-gray-700" />,
+      };
+    }
+
+    if (path.includes("/beneficiary/web3-wallet")) {
+      return {
+        title: "Web3 Wallet",
         icon: <Wallet size={18} className="text-gray-700" />,
       };
     }
