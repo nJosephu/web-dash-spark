@@ -58,11 +58,12 @@ const SponsorSidebar = ({ className }: SidebarProps) => {
   ];
 
   const bottomItems = [
-    {
-      title: "Switch to beneficiary",
-      icon: SwitchCamera,
-      path: "/switch",
-    },
+    // Commented out switch role link
+    // {
+    //   title: "Switch to beneficiary",
+    //   icon: SwitchCamera,
+    //   path: "/switch",
+    // },
     {
       title: "Settings",
       icon: Settings,
