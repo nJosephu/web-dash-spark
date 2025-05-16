@@ -65,7 +65,6 @@ const Sponsors = () => {
   return (
     <>
       <div className="mb-6">
-        <h1 className="text-2xl font-medium">My Sponsors</h1>
         <p className="text-gray-500">People you've sent funding requests to</p>
       </div>
 
@@ -87,7 +86,7 @@ const Sponsors = () => {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
-              Total Funded
+              Total Funding Requested
             </CardTitle>
           </CardHeader>
           <CardContent>
