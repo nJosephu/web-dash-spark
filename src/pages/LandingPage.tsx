@@ -43,7 +43,7 @@ const LandingPage = () => {
     <div className="min-h-screen flex flex-col">
       {/* Header - now fixed with backdrop effect when scrolled */}
       <header
-        className={`fixed top-0 z-50 w-full px-4 py-4 md:px-[170px] md:py-6 flex items-center justify-between transition-all duration-300 ${
+        className={`fixed top-0 z-50 w-full px-4 py-4 md:px-[154px] md:py-6 flex items-center justify-between transition-all duration-300 ${
           isScrolled
             ? "bg-white/90 backdrop-blur-md shadow-sm"
             : "bg-transparent"
