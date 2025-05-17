@@ -10,7 +10,7 @@ const BeneficiaryLayout = () => {
   const userName = user?.name || "User";
 
   return (
-    <div className="flex min-h-screen bg-black">
+    <div className="flex min-h-screen">
       <BeneficiarySidebar />
 
       <div className="flex-1 w-full md:ml-0 lg:ml-64">
