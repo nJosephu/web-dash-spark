@@ -55,15 +55,15 @@ const LandingPage = () => {
         <div className="flex items-center gap-2 md:gap-4">
           <Link to="/login">
             <Button
-              variant="outline"
+              variant="ghost"
               className="font-medium text-gray-700 transition-all hover:scale-105"
             >
               Log In
             </Button>
           </Link>
           <Link to="/role-selection">
-            <Button className="bg-[#6544E4] hover:bg-[#5A3DD0] text-white px-8 py-6 rounded-lg text-lg transition-all hover:scale-105">
-              Get Started <ArrowRight className="ml-2" />
+            <Button className="bg-[#6544E4] hover:bg-[#5A3DD0] text-white transition-all hover:scale-105">
+              Get Started
             </Button>
           </Link>
         </div>
@@ -96,7 +96,7 @@ const LandingPage = () => {
               size="lg"
               className="bg-[#6544E4] hover:bg-[#5A3DD0] text-white px-8 py-6 rounded-lg text-lg transition-all hover:scale-105"
             >
-              Get Started <ArrowRight className="ml-2" />
+              Get Started
             </Button>
           </Link>
         </div>
