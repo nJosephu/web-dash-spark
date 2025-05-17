@@ -55,7 +55,7 @@ const LandingPage = () => {
         <div className="flex items-center gap-2 md:gap-4">
           <Link to="/login">
             <Button
-              variant="ghost"
+              variant="outline"
               className="font-medium text-gray-700 transition-all hover:scale-105"
             >
               Log In
