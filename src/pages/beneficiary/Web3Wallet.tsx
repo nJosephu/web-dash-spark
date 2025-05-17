@@ -78,15 +78,15 @@ const Web3Wallet = () => {
   };
 
   return (
-    <div className="py-6 bg-black min-h-screen">
+    <div className="py-6">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white">Web3 Wallet</h1>
+        <h1 className="text-2xl font-bold">Web3 Wallet</h1>
       </div>
       
       {/* Stats cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {statsData.map((stat, index) => (
-          <Card key={index} className="bg-[#0A0A0A] text-white border border-gray-800 shadow-lg hover:shadow-xl transition-all duration-300">
+          <Card key={index} className="bg-[#1A1F2C] text-white border-none shadow-md">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center">
@@ -114,10 +114,10 @@ const Web3Wallet = () => {
       {/* Wallet and Request Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         {/* Wallet Section */}
-        <Card className="bg-[#0A0A0A] text-white border border-gray-800 shadow-lg">
+        <Card className="bg-[#1A1F2C] text-white border-none shadow-md">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-xl">Wallet</CardTitle>
-            <Button variant="outline" size="sm" className="bg-gray-900 border-gray-700 text-white hover:bg-gray-800">
+            <Button variant="outline" size="sm" className="bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
               <Plus className="h-4 w-4 mr-1" /> New wallet
             </Button>
           </CardHeader>
@@ -159,7 +159,7 @@ const Web3Wallet = () => {
                   strokeWidth="3"
                 />
               </svg>
-              <div className="absolute bottom-0 left-0 right-0 flex justify-between text-xs text-gray-500 px-2">
+              <div className="absolute bottom-0 left-0 right-0 flex justify-between text-xs text-gray-400 px-2">
                 <span>Jan</span>
                 <span>Mar</span>
                 <span>May</span>
@@ -167,7 +167,7 @@ const Web3Wallet = () => {
                 <span>Sep</span>
                 <span>Nov</span>
               </div>
-              <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-xs text-gray-500 py-2">
+              <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-xs text-gray-400 py-2">
                 <span>4K</span>
                 <span>2K</span>
                 <span>0</span>
@@ -177,7 +177,7 @@ const Web3Wallet = () => {
         </Card>
 
         {/* Create Request Section */}
-        <Card className="bg-[#0A0A0A] text-white border border-gray-800 shadow-lg">
+        <Card className="bg-[#1A1F2C] text-white border-none shadow-md">
           <CardHeader className="pb-2">
             <CardTitle className="text-xl">Create a new bill request</CardTitle>
           </CardHeader>
@@ -199,7 +199,7 @@ const Web3Wallet = () => {
       </div>
 
       {/* Request History Section */}
-      <Card className="bg-[#0A0A0A] text-white border border-gray-800 shadow-lg">
+      <Card className="bg-[#1A1F2C] text-white border-none shadow-md">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
             <CardTitle className="text-xl">Bill request history</CardTitle>
@@ -208,10 +208,10 @@ const Web3Wallet = () => {
                 <Search className="h-4 w-4 absolute left-2.5 top-2.5 text-gray-400" />
                 <Input 
                   placeholder="Search" 
-                  className="pl-9 bg-gray-900 border-gray-700 text-white h-9"
+                  className="pl-9 bg-gray-800 border-gray-700 text-white h-9"
                 />
               </div>
-              <Button variant="outline" size="sm" className="bg-gray-900 border-gray-700 text-white hover:bg-gray-800">
+              <Button variant="outline" size="sm" className="bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
                 <Filter className="h-4 w-4 mr-1" /> Filter by
               </Button>
               <Button variant="ghost" size="sm" className="text-[#6544E4]">
@@ -224,7 +224,7 @@ const Web3Wallet = () => {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-800">
+                <tr className="border-b border-gray-700">
                   <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">S/N</th>
                   <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Request</th>
                   <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Sponsor</th>
@@ -237,7 +237,7 @@ const Web3Wallet = () => {
               </thead>
               <tbody>
                 {requestHistoryData.map((item) => (
-                  <tr key={item.id} className="border-b border-gray-800 hover:bg-gray-900/30 transition-colors">
+                  <tr key={item.id} className="border-b border-gray-800">
                     <td className="py-4 text-sm">{item.id}</td>
                     <td className="py-4 text-sm">{item.request}</td>
                     <td className="py-4 text-sm">{item.sponsor}</td>
