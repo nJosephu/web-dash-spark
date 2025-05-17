@@ -55,8 +55,8 @@ const LandingPage = () => {
         <div className="flex items-center gap-2 md:gap-4">
           <Link to="/login">
             <Button
-              variant="ghost"
-              className="font-medium text-gray-700 transition-all hover:scale-105"
+              variant="outline"
+              className="font-medium text-[#1F2937] transition-all hover:scale-105"
             >
               Log In
             </Button>
