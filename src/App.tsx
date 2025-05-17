@@ -4,19 +4,13 @@ import { router } from "./routes/router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from "@/components/ui/toaster";
-import { useAuth } from "@/context/AuthContext";
-import { useEffect } from "react";
 import { Web3Provider } from '@/context/Web3Context';
 
 const queryClient = new QueryClient();
 
 function App() {
-  const { user } = useAuth();
-
-  useEffect(() => {
-    // We'll handle authentication check in AuthContext directly
-  }, []);
-
+  // Remove the useAuth hook from here since it's causing a circular dependency
+  
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
