@@ -6,6 +6,13 @@ import { useAuth } from './AuthContext';
 import { BLOCKCHAIN_CONFIG, U2K_TOKEN_ABI } from '@/config/blockchain';
 import { Web3State } from '@/types/blockchain';
 
+// Define ethereum on Window type
+declare global {
+  interface Window {
+    ethereum?: any;
+  }
+}
+
 const initialState: Web3State = {
   isConnected: false,
   address: null,

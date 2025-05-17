@@ -1,6 +1,7 @@
+
 import { RouterProvider } from "react-router-dom";
 import { router } from "./routes/router";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from "@/components/ui/toaster";
 import { useAuth } from "@/context/AuthContext";
@@ -10,11 +11,11 @@ import { Web3Provider } from '@/context/Web3Context';
 const queryClient = new QueryClient();
 
 function App() {
-  const { checkAuthentication } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
-    checkAuthentication();
-  }, [checkAuthentication]);
+    // We'll handle authentication check in AuthContext directly
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

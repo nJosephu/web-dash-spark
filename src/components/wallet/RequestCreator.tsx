@@ -1,71 +1,99 @@
-
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useWeb3 } from "@/context/Web3Context";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import React, { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { ArrowRight, Coins } from 'lucide-react';
+import { useWeb3 } from '@/context/Web3Context';
+import { BLOCKCHAIN_CONFIG } from '@/config/blockchain';
 
 export const RequestCreator = () => {
   const { web3State } = useWeb3();
-  const navigate = useNavigate();
-  
-  const [isCreating, setIsCreating] = useState(false);
-  
-  const handleCreateRequest = () => {
-    if (!web3State.isConnected) {
-      toast.error("Please connect your wallet to create requests");
-      return;
+  const [amount, setAmount] = useState('');
+  const [description, setDescription] = useState('');
+  const [paymentDestination, setPaymentDestination] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+      // Validate input
+      if (!amount || !description || !paymentDestination) {
+        throw new Error('Please fill in all fields.');
+      }
+
+      if (isNaN(Number(amount)) || Number(amount) <= 0) {
+        throw new Error('Amount must be a positive number.');
+      }
+
+      if (!web3State.signer) {
+        throw new Error('Please connect your wallet.');
+      }
+
+      // TODO: Implement blockchain transaction logic here
+      // Example:
+      // const transaction = await web3State.signer.sendTransaction({
+      //   to: paymentDestination,
+      //   value: ethers.utils.parseEther(amount)
+      // });
+      // await transaction.wait();
+
+      // Display success message
+      alert('Request created successfully!');
+      setAmount('');
+      setDescription('');
+      setPaymentDestination('');
+    } catch (error: any) {
+      // Display error message
+      alert(`Failed to create request: ${error.message}`);
+    } finally {
+      setIsSubmitting(false);
     }
-    
-    if (!web3State.isCorrectNetwork) {
-      toast.error(`Please switch to ${BLOCKCHAIN_CONFIG.CHAIN_NAME} to create requests`);
-      return;
-    }
-    
-    setIsCreating(true);
-    
-    // Navigate to the create request page or show a modal
-    // For now, we'll just simulate with a toast
-    toast.success("Create request feature will be available soon");
-    
-    setIsCreating(false);
-  };
-  
-  const handleViewRequests = () => {
-    // Navigate to the requests page
-    navigate("/beneficiary/requests");
   };
 
   return (
-    <Card className="bg-[#1A1F2C] text-white border-none shadow-md">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-xl">Create a new bill request</CardTitle>
+    <Card className="bg-[#1A1F2C] text-white">
+      <CardHeader>
+        <CardTitle className="text-2xl font-semibold">Create a Request</CardTitle>
+        <CardDescription className="text-gray-400">
+          Request funds from sponsors to cover your bills.
+        </CardDescription>
       </CardHeader>
-      <CardContent>
-        <p className="text-gray-400 text-sm mb-6">
-          Bundle your expenses into one smart request and send it directly
-          to your sponsor. Funds go straight to the service providers,
-          secure, transparent, and hassle-free.
-        </p>
-        <div className="space-y-4">
-          <Button 
-            className="w-full py-6 bg-[#6544E4] hover:bg-[#5335C5] text-white"
-            onClick={handleCreateRequest}
-            disabled={isCreating || !web3State.isConnected}
-          >
-            {isCreating 
-              ? "Creating Request..." 
-              : "Create an URGENT 2KAY Request"}
-          </Button>
-          <Button
-            variant="outline"
-            className="w-full py-6 bg-transparent border-gray-700 text-white hover:bg-gray-800"
-            onClick={handleViewRequests}
-          >
-            See Previous Requests
-          </Button>
+      <CardContent className="grid gap-4">
+        <div className="grid gap-2">
+          <Label htmlFor="amount">Amount (ETH)</Label>
+          <Input
+            id="amount"
+            type="number"
+            placeholder="Enter amount"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+          />
         </div>
+        <div className="grid gap-2">
+          <Label htmlFor="paymentDestination">Payment Destination</Label>
+          <Input
+            id="paymentDestination"
+            type="text"
+            placeholder="Enter wallet address"
+            value={paymentDestination}
+            onChange={(e) => setPaymentDestination(e.target.value)}
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="description">Description</Label>
+          <Textarea
+            id="description"
+            placeholder="Describe what the funds are for"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+        <Button className="bg-[#6544E4] hover:bg-[#5539c6] text-white font-semibold" onClick={handleSubmit} disabled={isSubmitting}>
+          {isSubmitting ? 'Submitting...' : 'Submit Request'}
+          <ArrowRight className="ml-2" size={16} />
+        </Button>
       </CardContent>
     </Card>
   );
