@@ -221,7 +221,7 @@ export default function BundleForm({
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="Utility">Utility</SelectItem>
-                  <SelectItem value="Rent">Airtime</SelectItem>
+                  <SelectItem value="Airtime">Airtime</SelectItem>
                   <SelectItem value="Other">Other</SelectItem>
                 </SelectContent>
               </Select>
