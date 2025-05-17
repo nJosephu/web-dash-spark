@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,6 +18,7 @@ import { mapRoleName } from "./utils/roleUtils";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import RoleSelection from "./pages/RoleSelection";
+import LandingPage from "./pages/LandingPage";
 import BeneficiarySignUp from "./pages/BeneficiarySignUp";
 import SponsorSignUp from "./pages/SponsorSignUp";
 import OAuthCallback from "./pages/OAuthCallback";
@@ -157,7 +159,7 @@ const AppRoutes = () => {
     <AuthProvider>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<RoleSelection />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/role-selection" element={<RoleSelection />} />
