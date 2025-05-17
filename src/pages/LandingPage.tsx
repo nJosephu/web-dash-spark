@@ -172,11 +172,11 @@ const LandingPage = () => {
             : "opacity-0 translate-y-10"
         }`}
       >
-        <div className="max-w-3xl mx-auto text-center">
+        <div className="max-w-3xl mx-auto text-center text-[#6544E4]">
           <h2 className="text-2xl md:text-3xl font-bold mb-3">
             Ready to Simplify Your Bill Payments?
           </h2>
-          <p className="text-gray-600 mb-8">
+          <p className="mb-8">
             Join the list of others that have simplified their collections with
             Urgent 2Kay
           </p>
