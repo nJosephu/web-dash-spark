@@ -1,188 +1,270 @@
 
-import React from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Bitcoin, Globe, Wallet } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
+import {
+  CircleDollarSign,
+  Filter,
+  Plus,
+  Search,
+  Wallet,
+  Eye,
+  EyeOff,
+} from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 const Web3Wallet = () => {
+  const { user } = useAuth();
+  const [isWalletConnected, setIsWalletConnected] = useState(true);
+  const [balanceVisible, setBalanceVisible] = useState(true);
+  
+  // Mock data - this would be replaced with real blockchain data
+  const statsData = [
+    { 
+      title: "Total bills Requested",
+      value: "0.070951 ETH",
+      increase: "16%",
+      increaseText: "Increase this month",
+      color: "bg-green-500",
+      icon: <CircleDollarSign className="h-4 w-4" />
+    },
+    { 
+      title: "Approved Bill Requests",
+      value: "0.006329 ETH",
+      increase: "16%",
+      increaseText: "Increase this month",
+      color: "bg-purple-500",
+      icon: <CircleDollarSign className="h-4 w-4" />
+    },
+    { 
+      title: "Rejected Bill Requests",
+      value: "0.000011 ETH",
+      increase: "16%",
+      increaseText: "Increase this month",
+      color: "bg-red-500",
+      icon: <CircleDollarSign className="h-4 w-4" />
+    },
+    { 
+      title: "Pending Bill Requests",
+      value: "0.000172 ETH",
+      increase: "16%",
+      increaseText: "Increase this month",
+      color: "bg-yellow-500",
+      icon: <CircleDollarSign className="h-4 w-4" />
+    },
+  ];
+
+  const requestHistoryData = [
+    {
+      id: "1",
+      request: "DSTV, Power bills",
+      sponsor: "Father",
+      status: "Completed",
+      priority: "High",
+      created: "Mar 21, 2025",
+      dueDate: "Apr 13, 2025",
+    }
+  ];
+
+  const toggleBalanceVisibility = () => {
+    setBalanceVisible(!balanceVisible);
+  };
+
+  const connectWallet = () => {
+    // This would integrate with an actual wallet like MetaMask
+    setIsWalletConnected(true);
+  };
+
   return (
     <div className="py-6">
-      <h1 className="text-2xl font-bold mb-6">Web3 Wallet</h1>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold">Web3 Wallet</h1>
+      </div>
       
-      <div className="grid gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Wallet className="h-5 w-5 text-[#6544E4]" />
-              Your Web3 Wallet
-            </CardTitle>
-            <CardDescription>
-              Connect and manage your decentralized wallet
-            </CardDescription>
+      {/* Stats cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {statsData.map((stat, index) => (
+          <Card key={index} className="bg-[#1A1F2C] text-white border-none shadow-md">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center">
+                  <div className={`p-1.5 rounded-full ${stat.color} mr-2`}>
+                    {stat.icon}
+                  </div>
+                  <p className="text-xs text-gray-400">{stat.title}</p>
+                </div>
+                <div className="flex items-center text-xs text-green-400">
+                  <span className="mr-1">{stat.increase}</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 17L17 7M17 7H8M17 7V16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+              <div className="mt-1">
+                <p className="text-xl font-bold">{stat.value}</p>
+                <p className="text-xs text-gray-400">{stat.increaseText}</p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Wallet and Request Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        {/* Wallet Section */}
+        <Card className="bg-[#1A1F2C] text-white border-none shadow-md">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-xl">Wallet</CardTitle>
+            <Button variant="outline" size="sm" className="bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
+              <Plus className="h-4 w-4 mr-1" /> New wallet
+            </Button>
           </CardHeader>
           <CardContent>
-            <div className="bg-[#F7F5FF] border border-[#E9E2FF] rounded-lg p-4 mb-4">
-              <p className="text-sm text-gray-600 mb-2">Wallet Address</p>
-              <p className="font-mono text-xs bg-white p-2 rounded border border-gray-200 break-all">
-                Not connected
-              </p>
+            <div className="mb-6">
+              <p className="text-sm text-gray-400 mb-2">My balance</p>
+              <div className="flex items-center">
+                <p className="text-3xl font-bold mr-2">
+                  {balanceVisible ? "$24,563.00" : "••••••••"}
+                </p>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="p-1 h-auto hover:bg-transparent"
+                  onClick={toggleBalanceVisibility}
+                >
+                  {balanceVisible ? 
+                    <EyeOff className="h-4 w-4 text-gray-400" /> : 
+                    <Eye className="h-4 w-4 text-gray-400" />
+                  }
+                </Button>
+              </div>
+              <p className="text-xs text-gray-400">You earned ETH USD balance this month</p>
             </div>
-            
-            <Button className="w-full bg-[#6544E4] hover:bg-[#5335C5]">
-              Connect Wallet
-            </Button>
+
+            {/* Chart - placeholder for now */}
+            <div className="h-32 w-full relative">
+              <svg viewBox="0 0 500 150" className="w-full h-full">
+                <path 
+                  d="M0,75 C50,50 100,100 150,75 C200,50 250,100 300,75 C350,50 400,100 450,75 C500,50 550,100 600,75" 
+                  fill="none" 
+                  stroke="#F87171" 
+                  strokeWidth="3"
+                />
+                <path 
+                  d="M0,100 C50,75 100,125 150,100 C200,75 250,125 300,100 C350,75 400,125 450,100 C500,75 550,125 600,100" 
+                  fill="none" 
+                  stroke="#60A5FA" 
+                  strokeWidth="3"
+                />
+              </svg>
+              <div className="absolute bottom-0 left-0 right-0 flex justify-between text-xs text-gray-400 px-2">
+                <span>Jan</span>
+                <span>Mar</span>
+                <span>May</span>
+                <span>Jul</span>
+                <span>Sep</span>
+                <span>Nov</span>
+              </div>
+              <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-xs text-gray-400 py-2">
+                <span>4K</span>
+                <span>2K</span>
+                <span>0</span>
+              </div>
+            </div>
           </CardContent>
         </Card>
-        
-        <Tabs defaultValue="tokens" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="tokens">Tokens</TabsTrigger>
-            <TabsTrigger value="nfts">NFTs</TabsTrigger>
-            <TabsTrigger value="history">History</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="tokens">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Your Tokens</CardTitle>
-                <CardDescription>
-                  View and manage your cryptocurrency tokens
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-3 bg-white border rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <Bitcoin className="h-8 w-8 text-orange-500" />
-                      <div>
-                        <p className="font-medium">Bitcoin</p>
-                        <p className="text-xs text-gray-500">BTC</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold">0.00 BTC</p>
-                      <p className="text-xs text-gray-500">$0.00 USD</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center justify-between p-3 bg-white border rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <div className="h-8 w-8 rounded-full bg-[#627EEA] flex items-center justify-center text-white font-bold text-xs">
-                        ETH
-                      </div>
-                      <div>
-                        <p className="font-medium">Ethereum</p>
-                        <p className="text-xs text-gray-500">ETH</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold">0.00 ETH</p>
-                      <p className="text-xs text-gray-500">$0.00 USD</p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button variant="outline" className="w-full">
-                  <Globe className="mr-2 h-4 w-4" />
-                  View All Tokens
-                </Button>
-              </CardFooter>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="nfts">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Your NFTs</CardTitle>
-                <CardDescription>
-                  Digital collectibles and assets
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-center h-40 border-2 border-dashed rounded-lg border-gray-300 bg-gray-50">
-                  <div className="text-center px-6">
-                    <p className="text-sm text-gray-500">
-                      Connect your wallet to view your NFT collection
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="history">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Transaction History</CardTitle>
-                <CardDescription>
-                  View your past transactions
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="bg-gray-50 rounded-lg p-6 text-center">
-                  <p className="text-sm text-gray-500">
-                    No transactions found. Connect your wallet to view your transaction history.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-        
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Web3 Benefits</CardTitle>
-            <CardDescription>
-              Advantages of using Web3 for bill payments
-            </CardDescription>
+
+        {/* Create Request Section */}
+        <Card className="bg-[#1A1F2C] text-white border-none shadow-md">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xl">Create a new bill request</CardTitle>
           </CardHeader>
           <CardContent>
+            <p className="text-gray-400 text-sm mb-6">
+              Bundle your expenses into one smart request and send it directly to your sponsor. 
+              Funds go straight to the service providers, secure, transparent, and hassle-free.
+            </p>
             <div className="space-y-4">
-              <div className="flex gap-3">
-                <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-600">
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-medium">Lower Transaction Fees</h3>
-                  <p className="text-sm text-gray-600">Save money with reduced transaction costs compared to traditional payment methods.</p>
-                </div>
-              </div>
-              
-              <div className="flex gap-3">
-                <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600">
-                    <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-medium">Enhanced Security</h3>
-                  <p className="text-sm text-gray-600">Blockchain technology provides increased security and transparency for all transactions.</p>
-                </div>
-              </div>
-              
-              <div className="flex gap-3">
-                <div className="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-purple-600">
-                    <path d="M12 22v-5" />
-                    <path d="M9 8V2" />
-                    <path d="M15 8V2" />
-                    <path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-medium">Global Accessibility</h3>
-                  <p className="text-sm text-gray-600">Access financial services from anywhere in the world without traditional banking limitations.</p>
-                </div>
-              </div>
+              <Button className="w-full py-6 bg-[#6544E4] hover:bg-[#5335C5] text-white">
+                Create an URGENT 2KAY Request
+              </Button>
+              <Button variant="outline" className="w-full py-6 bg-transparent border-gray-700 text-white hover:bg-gray-800">
+                See Previous Requests
+              </Button>
             </div>
           </CardContent>
         </Card>
       </div>
+
+      {/* Request History Section */}
+      <Card className="bg-[#1A1F2C] text-white border-none shadow-md">
+        <CardHeader className="pb-2">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-xl">Bill request history</CardTitle>
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <Search className="h-4 w-4 absolute left-2.5 top-2.5 text-gray-400" />
+                <Input 
+                  placeholder="Search" 
+                  className="pl-9 bg-gray-800 border-gray-700 text-white h-9"
+                />
+              </div>
+              <Button variant="outline" size="sm" className="bg-gray-800 border-gray-700 text-white hover:bg-gray-700">
+                <Filter className="h-4 w-4 mr-1" /> Filter by
+              </Button>
+              <Button variant="ghost" size="sm" className="text-[#6544E4]">
+                View all
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-700">
+                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">S/N</th>
+                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Request</th>
+                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Sponsor</th>
+                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Request status</th>
+                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Priority</th>
+                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Created</th>
+                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Due date</th>
+                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {requestHistoryData.map((item) => (
+                  <tr key={item.id} className="border-b border-gray-800">
+                    <td className="py-4 text-sm">{item.id}</td>
+                    <td className="py-4 text-sm">{item.request}</td>
+                    <td className="py-4 text-sm">{item.sponsor}</td>
+                    <td className="py-4 text-sm">
+                      <span className="px-2 py-1 bg-green-900/30 text-green-400 rounded-md text-xs">
+                        {item.status}
+                      </span>
+                    </td>
+                    <td className="py-4 text-sm">
+                      <span className="px-2 py-1 bg-red-900/30 text-red-400 rounded-md text-xs">
+                        {item.priority}
+                      </span>
+                    </td>
+                    <td className="py-4 text-sm">{item.created}</td>
+                    <td className="py-4 text-sm">{item.dueDate}</td>
+                    <td className="py-4 text-sm">
+                      <Button variant="link" className="text-[#6544E4] p-0 h-auto">
+                        View more info
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
