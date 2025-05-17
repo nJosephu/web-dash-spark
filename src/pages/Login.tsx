@@ -11,6 +11,7 @@ import { useAuth } from "@/context/AuthContext";
 import DashboardImage from "../images/signupDashboard.png";
 import googleIcon from "../images/google.png";
 import logo from "../images/logo2k.png";
+import logo2 from "../images/logo2kpurple.png";
 import authService from "@/services/authService";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -100,6 +101,11 @@ const Login = () => {
         <Card className="w-full max-w-md border-none shadow-none">
           <CardContent className="p-0">
             <div className=" mb-8">
+              <img
+                src={logo2}
+                alt="Urgent 2kay"
+                className="h-6 md:h-8 block md:hidden"
+              />
               <h2 className="text-3xl font-medium">Login</h2>
               <p className="mt-2">
                 Bundle your bills the easy way, all in one app
