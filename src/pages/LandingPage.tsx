@@ -198,25 +198,6 @@ const LandingPage = () => {
             <div className="mb-4 md:mb-0">
               <img src={logo2} alt="Urgent 2kay" className="h-6 md:h-8" />
             </div>
-            <div className="flex flex-wrap justify-center gap-4 md:gap-8">
-              <Button
-                variant="ghost"
-                className="text-white hover:text-white/80 hover:bg-white/10 transition-all"
-              >
-                Home
-              </Button>
-              <Button
-                variant="ghost"
-                className="text-white hover:text-white/80 hover:bg-white/10 transition-all"
-              >
-                Contact
-              </Button>
-              <Link to="/role-selection">
-                <Button className="bg-[#6544E4] hover:bg-[#5A3DD0] text-white transition-all hover:scale-105">
-                  Get Started
-                </Button>
-              </Link>
-            </div>
           </div>
           <div className="border-t border-gray-700 pt-4 flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-gray-400 mb-2 md:mb-0">
