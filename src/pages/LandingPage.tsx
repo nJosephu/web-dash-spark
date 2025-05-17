@@ -75,7 +75,7 @@ const LandingPage = () => {
 
       {/* Hero Section */}
       <section
-        className={`px-4 py-12 md:py-20 [background:linear-gradient(180deg,_#FFFFFF_0%,_#6544E4_100%)] flex-1 flex flex-col items-center text-center transition-all duration-1000 ease-in-out ${
+        className={`px-4 pt-12 md:pt-20 [background:linear-gradient(180deg,_#FFFFFF_0%,_#6544E4_100%)] flex-1 flex flex-col items-center text-center transition-all duration-1000 ease-in-out ${
           isPageLoaded
             ? "opacity-100 translate-y-0"
             : "opacity-0 translate-y-10"
@@ -83,10 +83,10 @@ const LandingPage = () => {
 `}
       >
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h1 className="text-3xl md:text-5xl font-bold text-[#1F2937] mb-4">
             Pay Bills Without Awkward Conversations
           </h1>
-          <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-[#1F2937] mb-8 max-w-3xl mx-auto">
             Create bills, share them, and get a timely collection from your
             sponsors. Collection made simple!
           </p>
@@ -101,7 +101,7 @@ const LandingPage = () => {
         </div>
 
         {/* Dashboard Preview */}
-        <div className="mt-12 md:mt-16 max-w-5xl mx-auto w-full shadow-2xl rounded-lg overflow-hidden transition-transform hover:scale-[1.01] duration-300">
+        <div className="mt-12 md:mt-16 max-w-5xl mx-auto w-full rounded-lg overflow-hidden transition-transform hover:scale-[1.01] duration-300">
           <img
             src={DashboardPage}
             alt="Dashboard Preview"
