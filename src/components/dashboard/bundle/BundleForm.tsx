@@ -92,23 +92,26 @@ export default function BundleForm({
 
       const response = await createBill(billData);
       console.log("Bill created with ID:", response.bill.id);
-      
+
       // Find provider name for display
-      const providerName = providers.find(p => p.id === data.serviceProvider)?.name || data.serviceProvider;
-      
+      const providerName =
+        providers.find((p) => p.id === data.serviceProvider)?.name ||
+        data.serviceProvider;
+
       // Add ID to the form data
       const formDataWithId = {
         ...data,
         id: response.bill.id, // Store the ID from the API response
       };
-      
+
       // Call the onSubmit callback with the form data and bill ID
       onSubmit(formDataWithId);
-      
+
       // Reset form
       resetForm();
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to create bill";
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to create bill";
       toast.error(`Error: ${errorMessage}`);
     } finally {
       setIsSubmitting(false);
@@ -132,23 +135,26 @@ export default function BundleForm({
 
       const response = await createBill(billData);
       console.log("Bill created with ID:", response.bill.id);
-      
+
       // Find provider name for display
-      const providerName = providers.find(p => p.id === data.serviceProvider)?.name || data.serviceProvider;
-      
+      const providerName =
+        providers.find((p) => p.id === data.serviceProvider)?.name ||
+        data.serviceProvider;
+
       // Add ID to the form data before passing it up
       const formDataWithId = {
         ...data,
         id: response.bill.id, // Store the ID from the API response
       };
-      
+
       // Call the onAddAnotherBill callback with the form data and bill ID
       onAddAnotherBill(formDataWithId, response.bill.id);
-      
+
       // Reset form
       resetForm();
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to create bill";
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to create bill";
       toast.error(`Error: ${errorMessage}`);
     } finally {
       setIsSubmitting(false);
@@ -161,7 +167,7 @@ export default function BundleForm({
     form.reset({
       ...defaultValues,
     });
-    
+
     // Explicitly clear specific fields to ensure they reset properly
     form.setValue("billName", "");
     form.setValue("billType", undefined);
@@ -170,7 +176,7 @@ export default function BundleForm({
     form.setValue("dueDate", undefined);
     form.setValue("notes", "");
     form.setValue("priority", "medium");
-    
+
     // Re-set the sponsor if there's a selected one
     if (selectedSponsorId) {
       form.setValue("sponsor", selectedSponsorId);
@@ -215,9 +221,7 @@ export default function BundleForm({
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="Utility">Utility</SelectItem>
-                  <SelectItem value="Rent">Rent</SelectItem>
-                  <SelectItem value="Subscription">Subscription</SelectItem>
-                  <SelectItem value="Debt">Debt</SelectItem>
+                  <SelectItem value="Rent">Airtime</SelectItem>
                   <SelectItem value="Other">Other</SelectItem>
                 </SelectContent>
               </Select>
@@ -234,15 +238,27 @@ export default function BundleForm({
               <FormLabel className="text-sm font-medium">
                 Service Provider <span className="text-red-500">*</span>
               </FormLabel>
-              <Select onValueChange={field.onChange} value={field.value} disabled={providersLoading}>
+              <Select
+                onValueChange={field.onChange}
+                value={field.value}
+                disabled={providersLoading}
+              >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder={providersLoading ? "Loading providers..." : "Select provider"} />
+                    <SelectValue
+                      placeholder={
+                        providersLoading
+                          ? "Loading providers..."
+                          : "Select provider"
+                      }
+                    />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
                   {providersLoading ? (
-                    <SelectItem value="loading" disabled>Loading providers...</SelectItem>
+                    <SelectItem value="loading" disabled>
+                      Loading providers...
+                    </SelectItem>
                   ) : providers.length > 0 ? (
                     providers.map((provider) => (
                       <SelectItem key={provider.id} value={provider.id}>
@@ -250,7 +266,9 @@ export default function BundleForm({
                       </SelectItem>
                     ))
                   ) : (
-                    <SelectItem value="none" disabled>No providers available</SelectItem>
+                    <SelectItem value="none" disabled>
+                      No providers available
+                    </SelectItem>
                   )}
                 </SelectContent>
               </Select>
@@ -309,13 +327,13 @@ export default function BundleForm({
                 Bill Amount (₦) <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
-                <Input 
-                  type="number" 
-                  inputMode="numeric" 
-                  placeholder="0.00" 
+                <Input
+                  type="number"
+                  inputMode="numeric"
+                  placeholder="0.00"
                   onChange={(e) => onChange(e.target.value)}
-                  value={value || ""} 
-                  {...restField} 
+                  value={value || ""}
+                  {...restField}
                 />
               </FormControl>
               <FormMessage className="text-red-500" />
