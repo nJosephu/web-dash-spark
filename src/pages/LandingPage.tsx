@@ -113,7 +113,7 @@ const LandingPage = () => {
       {/* How It Works Section */}
       <section
         ref={howItWorksSection.ref}
-        className={`px-4 py-16 md:py-24 bg-white transition-all duration-1000 ease-in-out ${
+        className={`px-4 py-16 md:py-36 bg-white transition-all duration-1000 ease-in-out ${
           howItWorksSection.isVisible
             ? "opacity-100 translate-y-0"
             : "opacity-0 translate-y-10"
@@ -165,7 +165,7 @@ const LandingPage = () => {
       {/* CTA Section */}
       <section
         ref={ctaSection.ref}
-        className={`px-4 py-16 md:py-20 bg-gradient-to-b from-[#f1edff] to-[#e9e1ff] transition-all duration-1000 ease-in-out ${
+        className={`px-4 py-16 md:py-36 bg-gradient-to-b from-[#f1edff] to-[#e9e1ff] transition-all duration-1000 ease-in-out ${
           ctaSection.isVisible
             ? "opacity-100 translate-y-0"
             : "opacity-0 translate-y-10"
