@@ -10,6 +10,7 @@ import { ArrowRight } from "lucide-react";
 const LandingPage = () => {
   const isMobile = useIsMobile();
   const [isPageLoaded, setIsPageLoaded] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const howItWorksSection = useScrollAnimation();
   const ctaSection = useScrollAnimation();
 
@@ -19,13 +20,34 @@ const LandingPage = () => {
       setIsPageLoaded(true);
     }, 100);
     
-    return () => clearTimeout(timer);
+    // Add scroll event listener to detect when page is scrolled
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      if (scrollPosition > 10) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    
+    window.addEventListener("scroll", handleScroll);
+    
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header */}
-      <header className="w-full px-4 py-4 md:px-8 md:py-6 flex items-center justify-between">
+      {/* Header - now fixed with backdrop effect when scrolled */}
+      <header 
+        className={`fixed top-0 z-50 w-full px-4 py-4 md:px-8 md:py-6 flex items-center justify-between transition-all duration-300 ${
+          isScrolled 
+            ? 'bg-white/90 backdrop-blur-md shadow-sm' 
+            : 'bg-transparent'
+        }`}
+      >
         <div className="flex items-center">
           <img src={logo} alt="Urgent 2kay" className="h-6 md:h-8" />
         </div>
@@ -42,6 +64,9 @@ const LandingPage = () => {
           </Link>
         </div>
       </header>
+      
+      {/* Added padding to account for fixed header */}
+      <div className={`pt-16 md:pt-24 ${isPageLoaded ? '' : 'invisible'}`}></div>
       
       {/* Hero Section */}
       <section 
