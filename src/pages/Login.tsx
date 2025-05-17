@@ -105,7 +105,7 @@ const Login = () => {
               <img
                 src={logo2}
                 alt="Urgent 2kay"
-                className="fixed top-5 left-1/2 transform -translate-x-1/2 md:static md:transform-none"
+                className="fixed top-5 left-1/2 transform -translate-x-1/2 md:static md:transform-none h-6 md:h-8 block md:hidden"
               />
               <h2 className="text-3xl font-medium">Login</h2>
               <p className="mt-2">
