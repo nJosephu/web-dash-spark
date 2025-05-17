@@ -1,6 +1,6 @@
 
-import { RouterProvider } from "react-router-dom";
-import { router } from "./routes/router";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { router } from "@/routes/router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from "@/components/ui/toaster";
@@ -13,12 +13,7 @@ function App() {
   
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <Web3Provider>
-          <RouterProvider router={router} />
-          <Toaster />
-        </Web3Provider>
-      </AuthProvider>
+      <RouterProvider router={router} />
     </QueryClientProvider>
   );
 }

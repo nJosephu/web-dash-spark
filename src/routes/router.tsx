@@ -1,5 +1,5 @@
 
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import LandingPage from "@/pages/LandingPage";
 import Login from "@/pages/Login";
 import SignUp from "@/pages/SignUp";
@@ -10,6 +10,9 @@ import SponsorSignUp from "@/pages/SponsorSignUp";
 import Logout from "@/pages/Logout";
 import OAuthCallback from "@/pages/OAuthCallback";
 import SwitchRole from "@/pages/SwitchRole";
+import { AuthProvider } from "@/context/AuthContext";
+import { Web3Provider } from "@/context/Web3Context";
+import { Toaster } from "@/components/ui/toaster";
 
 // Beneficiary pages
 import BeneficiaryLayout from "@/components/layout/BeneficiaryLayout";
@@ -31,119 +34,136 @@ import SponsorBundleDetails from "@/pages/sponsor/SponsorBundleDetails";
 import SponsorSettings from "@/pages/sponsor/Settings";
 import WalletAndToken from "@/pages/sponsor/WalletAndToken";
 
+// Root layout to wrap providers
+const RootLayout = () => {
+  return (
+    <AuthProvider>
+      <Web3Provider>
+        <Outlet />
+        <Toaster />
+      </Web3Provider>
+    </AuthProvider>
+  );
+};
+
 export const router = createBrowserRouter([
   {
-    path: "/",
-    element: <LandingPage />,
-  },
-  {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    path: "/signup",
-    element: <SignUp />,
-  },
-  {
-    path: "/role-selection",
-    element: <RoleSelection />,
-  },
-  {
-    path: "/signup/beneficiary",
-    element: <BeneficiarySignUp />,
-  },
-  {
-    path: "/signup/sponsor",
-    element: <SponsorSignUp />,
-  },
-  {
-    path: "/logout",
-    element: <Logout />,
-  },
-  {
-    path: "/oauth-callback",
-    element: <OAuthCallback />,
-  },
-  {
-    path: "/switch-role",
-    element: <SwitchRole />,
-  },
-  
-  // Beneficiary routes
-  {
-    path: "/beneficiary",
-    element: <BeneficiaryLayout />,
+    element: <RootLayout />,
     children: [
       {
-        path: "dashboard",
-        element: <Dashboard />,
+        path: "/",
+        element: <LandingPage />,
       },
       {
-        path: "requests",
-        element: <Requests />,
+        path: "/login",
+        element: <Login />,
       },
       {
-        path: "sponsors",
-        element: <Sponsors />,
+        path: "/signup",
+        element: <SignUp />,
       },
       {
-        path: "bill-history",
-        element: <BillHistory />,
+        path: "/role-selection",
+        element: <RoleSelection />,
       },
       {
-        path: "bundle/:bundleId",
-        element: <BeneficiaryBundleDetails />,
+        path: "/signup/beneficiary",
+        element: <BeneficiarySignUp />,
       },
       {
-        path: "settings",
-        element: <Settings />,
+        path: "/signup/sponsor",
+        element: <SponsorSignUp />,
       },
       {
-        path: "wallet",
-        element: <Web3Wallet />,
+        path: "/logout",
+        element: <Logout />,
+      },
+      {
+        path: "/oauth-callback",
+        element: <OAuthCallback />,
+      },
+      {
+        path: "/switch-role",
+        element: <SwitchRole />,
+      },
+      
+      // Beneficiary routes
+      {
+        path: "/beneficiary",
+        element: <BeneficiaryLayout />,
+        children: [
+          {
+            path: "dashboard",
+            element: <Dashboard />,
+          },
+          {
+            path: "requests",
+            element: <Requests />,
+          },
+          {
+            path: "sponsors",
+            element: <Sponsors />,
+          },
+          {
+            path: "bill-history",
+            element: <BillHistory />,
+          },
+          {
+            path: "bundle/:bundleId",
+            element: <BeneficiaryBundleDetails />,
+          },
+          {
+            path: "settings",
+            element: <Settings />,
+          },
+          {
+            path: "wallet",
+            element: <Web3Wallet />,
+          },
+        ],
+      },
+      
+      // Sponsor routes
+      {
+        path: "/sponsor",
+        element: <SponsorLayout />,
+        children: [
+          {
+            path: "dashboard",
+            element: <SponsorDashboard />,
+          },
+          {
+            path: "requests",
+            element: <IncomingRequests />,
+          },
+          {
+            path: "beneficiaries",
+            element: <Beneficiaries />,
+          },
+          {
+            path: "bills",
+            element: <BillsPaid />,
+          },
+          {
+            path: "bundle/:bundleId",
+            element: <SponsorBundleDetails />,
+          },
+          {
+            path: "settings",
+            element: <SponsorSettings />,
+          },
+          {
+            path: "wallet",
+            element: <WalletAndToken />,
+          },
+        ],
+      },
+      
+      // 404 page
+      {
+        path: "*",
+        element: <NotFound />,
       },
     ],
-  },
-  
-  // Sponsor routes
-  {
-    path: "/sponsor",
-    element: <SponsorLayout />,
-    children: [
-      {
-        path: "dashboard",
-        element: <SponsorDashboard />,
-      },
-      {
-        path: "requests",
-        element: <IncomingRequests />,
-      },
-      {
-        path: "beneficiaries",
-        element: <Beneficiaries />,
-      },
-      {
-        path: "bills",
-        element: <BillsPaid />,
-      },
-      {
-        path: "bundle/:bundleId",
-        element: <SponsorBundleDetails />,
-      },
-      {
-        path: "settings",
-        element: <SponsorSettings />,
-      },
-      {
-        path: "wallet",
-        element: <WalletAndToken />,
-      },
-    ],
-  },
-  
-  // 404 page
-  {
-    path: "*",
-    element: <NotFound />,
   },
 ]);
