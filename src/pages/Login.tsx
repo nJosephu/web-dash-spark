@@ -11,7 +11,8 @@ import { useAuth } from "@/context/AuthContext";
 import DashboardImage from "../images/signupDashboard.png";
 import googleIcon from "../images/google.png";
 import logo from "../images/logo2k.png";
-import logo2 from "../images/logo2kpurple.png";
+import logo2 from "../images/Logo.png";
+
 import authService from "@/services/authService";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -104,7 +105,7 @@ const Login = () => {
               <img
                 src={logo2}
                 alt="Urgent 2kay"
-                className="h-6 md:h-8 block md:hidden"
+                className="fixed top-5 left-1/2 transform -translate-x-1/2 md:static md:transform-none"
               />
               <h2 className="text-3xl font-medium">Login</h2>
               <p className="mt-2">
