@@ -33,27 +33,27 @@ const BeneficiarySidebar = ({ className }: SidebarProps) => {
     {
       title: "Dashboard",
       icon: LayoutGrid,
-      path: "/beneficiary/dashboard",
+      path: "/dashboard/beneficiary",
     },
     {
       title: "My requests",
       icon: FileText,
-      path: "/beneficiary/requests",
+      path: "/dashboard/beneficiary/requests",
     },
     {
       title: "Sponsors",
       icon: Users,
-      path: "/beneficiary/sponsors",
+      path: "/dashboard/beneficiary/sponsors",
     },
     {
       title: "Bill history",
       icon: Receipt,
-      path: "/beneficiary/bill-history",
+      path: "/dashboard/beneficiary/bill-history",
     },
     {
       title: "Web3 Wallet",
       icon: Wallet,
-      path: "/beneficiary/wallet",
+      path: "/dashboard/beneficiary/web3-wallet",
     },
   ];
 
@@ -67,7 +67,7 @@ const BeneficiarySidebar = ({ className }: SidebarProps) => {
     {
       title: "Settings",
       icon: Settings,
-      path: "/beneficiary/settings",
+      path: "/dashboard/beneficiary/settings",
     },
   ];
 
@@ -76,8 +76,8 @@ const BeneficiarySidebar = ({ className }: SidebarProps) => {
     const currentPath = location.pathname;
     
     // For the dashboard, only match the exact path
-    if (path === "/beneficiary/dashboard") {
-      return currentPath === "/beneficiary/dashboard";
+    if (path === "/dashboard/beneficiary") {
+      return currentPath === "/dashboard/beneficiary";
     }
     
     // For other routes, check if the current path starts with the given path
@@ -87,7 +87,7 @@ const BeneficiarySidebar = ({ className }: SidebarProps) => {
     }
     
     // Handle bundle details pages
-    if (path === "/beneficiary/requests" && currentPath.startsWith("/beneficiary/requests/")) {
+    if (path === "/dashboard/beneficiary/requests" && currentPath.startsWith("/dashboard/beneficiary/requests/")) {
       return true;
     }
     

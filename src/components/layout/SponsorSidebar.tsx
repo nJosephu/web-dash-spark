@@ -33,27 +33,27 @@ const SponsorSidebar = ({ className }: SidebarProps) => {
     {
       title: "Dashboard",
       icon: LayoutGrid,
-      path: "/sponsor/dashboard",
+      path: "/dashboard/sponsor",
     },
     {
       title: "Fund requests",
       icon: FileText,
-      path: "/sponsor/requests",
+      path: "/dashboard/sponsor/requests",
     },
     {
       title: "Wallet & Token",
       icon: Wallet,
-      path: "/sponsor/wallet",
+      path: "/dashboard/sponsor/wallet",
     },
     // {
     //   title: "Beneficiaries",
     //   icon: Users,
-    //   path: "/sponsor/beneficiaries",
+    //   path: "/dashboard/sponsor/beneficiaries",
     // },
     // {
     //   title: "Bills paid",
     //   icon: Receipt,
-    //   path: "/sponsor/bills",
+    //   path: "/dashboard/sponsor/bills-paid",
     // },
   ];
 
@@ -67,7 +67,7 @@ const SponsorSidebar = ({ className }: SidebarProps) => {
     {
       title: "Settings",
       icon: Settings,
-      path: "/sponsor/settings",
+      path: "/dashboard/sponsor/settings",
     },
   ];
 
@@ -76,21 +76,21 @@ const SponsorSidebar = ({ className }: SidebarProps) => {
     const currentPath = location.pathname;
 
     // For the dashboard, only match the exact path
-    if (path === "/sponsor/dashboard") {
-      return currentPath === "/sponsor/dashboard";
+    if (path === "/dashboard/sponsor") {
+      return currentPath === "/dashboard/sponsor";
     }
 
     // For other routes, check if the current path starts with the given path
-    // But make sure it's a proper match (e.g., /sponsor/requests should match /sponsor/requests,
-    // but not /sponsor/requests/123)
+    // But make sure it's a proper match (e.g., /dashboard/sponsor/requests should match /dashboard/sponsor/requests,
+    // but not /dashboard/sponsor/requests/123)
     if (currentPath === path) {
       return true;
     }
 
     // Handle bundle details pages
     if (
-      path === "/sponsor/requests" &&
-      currentPath.startsWith("/sponsor/requests/")
+      path === "/dashboard/sponsor/requests" &&
+      currentPath.startsWith("/dashboard/sponsor/requests/")
     ) {
       return true;
     }
