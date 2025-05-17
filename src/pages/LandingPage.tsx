@@ -43,7 +43,7 @@ const LandingPage = () => {
     <div className="min-h-screen flex flex-col">
       {/* Header - now fixed with backdrop effect when scrolled */}
       <header
-        className={`fixed top-0 z-50 w-full px-4 py-4 md:px-8 md:py-6 flex items-center justify-between transition-all duration-300 ${
+        className={`fixed top-0 z-50 w-full px-4 py-4 md:px-[170px] md:py-6 flex items-center justify-between transition-all duration-300 ${
           isScrolled
             ? "bg-white/90 backdrop-blur-md shadow-sm"
             : "bg-transparent"
@@ -128,7 +128,7 @@ const LandingPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
             {/* Step 1 */}
             <div className="flex flex-col items-center text-center transform transition-all duration-500 hover:scale-105">
-              <div className="text-2xl font-semibold text-[#6544E4] mb-3">
+              <div className="text-4xl font-semibold text-[#6544E4] mb-3">
                 01
               </div>
               <h3 className="text-xl font-bold mb-4">Create Your Bills</h3>
@@ -140,7 +140,7 @@ const LandingPage = () => {
 
             {/* Step 2 */}
             <div className="flex flex-col items-center text-center transform transition-all duration-500 hover:scale-105">
-              <div className="text-2xl font-semibold text-[#6544E4] mb-3">
+              <div className="text-4xl font-semibold text-[#6544E4] mb-3">
                 02
               </div>
               <h3 className="text-xl font-bold mb-4">Send to Sponsors</h3>
@@ -151,7 +151,7 @@ const LandingPage = () => {
 
             {/* Step 3 */}
             <div className="flex flex-col items-center text-center transform transition-all duration-500 hover:scale-105">
-              <div className="text-2xl font-semibold text-[#6544E4] mb-3">
+              <div className="text-4xl font-semibold text-[#6544E4] mb-3">
                 03
               </div>
               <h3 className="text-xl font-bold mb-4">Get Paid Directly</h3>
