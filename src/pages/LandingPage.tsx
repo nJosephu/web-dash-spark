@@ -56,7 +56,7 @@ const LandingPage = () => {
           <Link to="/login">
             <Button
               variant="outline"
-              className="font-medium text-[#1F2937] border border-[#6544E4] transition-all hover:scale-105"
+              className="font-medium text-[#6544E4] border border-[#6544E4] transition-all hover:scale-105"
             >
               Log In
             </Button>
