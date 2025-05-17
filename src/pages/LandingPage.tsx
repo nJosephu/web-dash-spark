@@ -101,7 +101,7 @@ const LandingPage = () => {
         </div>
 
         {/* Dashboard Preview */}
-        <div className="mt-12 md:mt-16 max-w-5xl mx-auto w-full rounded-lg overflow-hidden transition-transform hover:scale-[1.01] duration-300">
+        <div className="mt-12 md:mt-16 max-w-5xl mx-auto w-full shadow-2xl rounded-lg overflow-hidden transition-transform hover:scale-[1.01] duration-300">
           <img
             src={DashboardPage}
             alt="Dashboard Preview"
