@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import useScrollAnimation from "@/hooks/use-scroll-animation";
 import logo from "../images/Logo.png";
+import logo2 from "../images/logo2kpurple.png";
 import { ArrowRight } from "lucide-react";
 import DashboardPage from "../images/URGENT 2KAY App Screenshot.png";
 
@@ -127,7 +128,7 @@ const LandingPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
             {/* Step 1 */}
             <div className="flex flex-col items-center text-center transform transition-all duration-500 hover:scale-105">
-              <div className="text-xl font-semibold text-[#6544E4] mb-3">
+              <div className="text-2xl font-semibold text-[#6544E4] mb-3">
                 01
               </div>
               <h3 className="text-xl font-bold mb-4">Create Your Bills</h3>
@@ -139,7 +140,7 @@ const LandingPage = () => {
 
             {/* Step 2 */}
             <div className="flex flex-col items-center text-center transform transition-all duration-500 hover:scale-105">
-              <div className="text-xl font-semibold text-[#6544E4] mb-3">
+              <div className="text-2xl font-semibold text-[#6544E4] mb-3">
                 02
               </div>
               <h3 className="text-xl font-bold mb-4">Send to Sponsors</h3>
@@ -150,7 +151,7 @@ const LandingPage = () => {
 
             {/* Step 3 */}
             <div className="flex flex-col items-center text-center transform transition-all duration-500 hover:scale-105">
-              <div className="text-xl font-semibold text-[#6544E4] mb-3">
+              <div className="text-2xl font-semibold text-[#6544E4] mb-3">
                 03
               </div>
               <h3 className="text-xl font-bold mb-4">Get Paid Directly</h3>
@@ -165,7 +166,7 @@ const LandingPage = () => {
       {/* CTA Section */}
       <section
         ref={ctaSection.ref}
-        className={`px-4 py-16 md:py-36 bg-gradient-to-b from-[#f1edff] to-[#e9e1ff] transition-all duration-1000 ease-in-out ${
+        className={`px-4 py-16 md:py-36 bg-[#D3C7FE] transition-all duration-1000 ease-in-out ${
           ctaSection.isVisible
             ? "opacity-100 translate-y-0"
             : "opacity-0 translate-y-10"
@@ -195,7 +196,7 @@ const LandingPage = () => {
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center mb-8">
             <div className="mb-4 md:mb-0">
-              <img src={logo} alt="Urgent 2kay" className="h-6 md:h-8" />
+              <img src={logo2} alt="Urgent 2kay" className="h-6 md:h-8" />
             </div>
             <div className="flex flex-wrap justify-center gap-4 md:gap-8">
               <Button
