@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,6 +12,7 @@ import RoleProtectedRoute from "./components/RoleProtectedRoute";
 import BeneficiaryLayout from "./components/layout/BeneficiaryLayout";
 import SponsorLayout from "./components/layout/SponsorLayout";
 import { mapRoleName } from "./utils/roleUtils";
+import { Web3Provider } from "./context/Web3Context";
 
 // Pages
 import Login from "./pages/Login";
@@ -157,74 +157,76 @@ const DashboardRedirect = () => {
 const AppRoutes = () => {
   return (
     <AuthProvider>
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/role-selection" element={<RoleSelection />} />
-        <Route path="/beneficiary-signup" element={<BeneficiarySignUp />} />
-        <Route path="/sponsor-signup" element={<SponsorSignUp />} />
-        <Route path="/auth/callback" element={<OAuthCallback />} />
-        <Route path="/switch" element={<SwitchRole />} />
-        <Route path="/logout" element={<Logout />} />
+      <Web3Provider>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/role-selection" element={<RoleSelection />} />
+          <Route path="/beneficiary-signup" element={<BeneficiarySignUp />} />
+          <Route path="/sponsor-signup" element={<SponsorSignUp />} />
+          <Route path="/auth/callback" element={<OAuthCallback />} />
+          <Route path="/switch" element={<SwitchRole />} />
+          <Route path="/logout" element={<Logout />} />
 
-        {/* Dashboard redirect */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardRedirect />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Beneficiary Routes */}
-        <Route
-          path="/dashboard/beneficiary"
-          element={
-            <ProtectedRoute>
-              <RoleProtectedRoute allowedRole="beneficiary">
-                <BeneficiaryLayout />
-              </RoleProtectedRoute>
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<BeneficiaryDashboard />} />
-          <Route path="requests" element={<BeneficiaryRequests />} />
+          {/* Dashboard redirect */}
           <Route
-            path="requests/:bundleId"
-            element={<BeneficiaryBundleDetails />}
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardRedirect />
+              </ProtectedRoute>
+            }
           />
-          <Route path="sponsors" element={<BeneficiarySponsors />} />
-          <Route path="bill-history" element={<BeneficiaryBillHistory />} />
-          <Route path="settings" element={<BeneficiarySettings />} />
-          <Route path="web3-wallet" element={<BeneficiaryWeb3Wallet />} />
-        </Route>
 
-        {/* Sponsor Routes */}
-        <Route
-          path="/dashboard/sponsor"
-          element={
-            <ProtectedRoute>
-              <RoleProtectedRoute allowedRole="sponsor">
-                <SponsorLayout />
-              </RoleProtectedRoute>
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<SponsorDashboard />} />
-          <Route path="requests" element={<SponsorIncomingRequests />} />
-          <Route path="requests/:bundleId" element={<SponsorBundleDetails />} />
-          <Route path="wallet" element={<WalletAndToken />} />
-          {/* <Route path="beneficiaries" element={<SponsorBeneficiaries />} /> */}
-          {/* <Route path="bills-paid" element={<SponsorBillsPaid />} /> */}
-          <Route path="settings" element={<SponsorSettings />} />
-        </Route>
+          {/* Beneficiary Routes */}
+          <Route
+            path="/dashboard/beneficiary"
+            element={
+              <ProtectedRoute>
+                <RoleProtectedRoute allowedRole="beneficiary">
+                  <BeneficiaryLayout />
+                </RoleProtectedRoute>
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<BeneficiaryDashboard />} />
+            <Route path="requests" element={<BeneficiaryRequests />} />
+            <Route
+              path="requests/:bundleId"
+              element={<BeneficiaryBundleDetails />}
+            />
+            <Route path="sponsors" element={<BeneficiarySponsors />} />
+            <Route path="bill-history" element={<BeneficiaryBillHistory />} />
+            <Route path="settings" element={<BeneficiarySettings />} />
+            <Route path="web3-wallet" element={<BeneficiaryWeb3Wallet />} />
+          </Route>
 
-        {/* 404 Route */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          {/* Sponsor Routes */}
+          <Route
+            path="/dashboard/sponsor"
+            element={
+              <ProtectedRoute>
+                <RoleProtectedRoute allowedRole="sponsor">
+                  <SponsorLayout />
+                </RoleProtectedRoute>
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<SponsorDashboard />} />
+            <Route path="requests" element={<SponsorIncomingRequests />} />
+            <Route path="requests/:bundleId" element={<SponsorBundleDetails />} />
+            <Route path="wallet" element={<WalletAndToken />} />
+            {/* <Route path="beneficiaries" element={<SponsorBeneficiaries />} /> */}
+            {/* <Route path="bills-paid" element={<SponsorBillsPaid />} /> */}
+            <Route path="settings" element={<SponsorSettings />} />
+          </Route>
+
+          {/* 404 Route */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Web3Provider>
     </AuthProvider>
   );
 };
