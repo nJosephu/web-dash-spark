@@ -21,8 +21,7 @@ export interface BundleResponse {
   };
 }
 
-const API_URL =
-  "https://urgent-2kay-directed-bill-payment-system-k0rw.onrender.com";
+const API_URL = "https://urgent-2kay-directed-bill-payment-system.onrender.com";
 
 // Create a new bundle (request)
 export const createBundle = async (

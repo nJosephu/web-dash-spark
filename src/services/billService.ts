@@ -39,8 +39,7 @@ export interface BillsResponse {
   bills: Bill[];
 }
 
-const API_URL =
-  "https://urgent-2kay-directed-bill-payment-system-k0rw.onrender.com";
+const API_URL = "https://urgent-2kay-directed-bill-payment-system.onrender.com";
 
 // Cache key for React Query
 export const BILLS_QUERY_KEY = "bills";

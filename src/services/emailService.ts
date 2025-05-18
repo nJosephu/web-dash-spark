@@ -8,8 +8,7 @@ interface SendEmailResponse {
   message: string;
 }
 
-const API_URL =
-  "https://urgent-2kay-directed-bill-payment-system-k0rw.onrender.com";
+const API_URL = "https://urgent-2kay-directed-bill-payment-system.onrender.com";
 
 /**
  * Send an email notification using the API

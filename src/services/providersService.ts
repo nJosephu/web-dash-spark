@@ -14,7 +14,7 @@ export interface Provider {
 export const fetchProviders = async (): Promise<Provider[]> => {
   try {
     const API_URL =
-      "https://urgent-2kay-directed-bill-payment-system-k0rw.onrender.com";
+      "https://urgent-2kay-directed-bill-payment-system.onrender.com";
     const token = authService.getToken();
 
     console.log(

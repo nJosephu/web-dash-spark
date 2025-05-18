@@ -10,7 +10,7 @@ export const useApi = () => {
 
   // Update the API URL to use the consistent URL without -rss6
   const API_URL =
-    "https://urgent-2kay-directed-bill-payment-system-k0rw.onrender.com";
+    "https://urgent-2kay-directed-bill-payment-system.onrender.com";
 
   // Ensure we're using the most up-to-date token from sessionStorage
   useEffect(() => {
