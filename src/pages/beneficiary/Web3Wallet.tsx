@@ -619,7 +619,7 @@ const Web3Wallet = () => {
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-4 py-4">
-            <div className="grid grid-cols-2 items-start gap-4">
+            <div className="flex flex-col gap-4">
               <label
                 htmlFor="sponsor"
                 className="text-right text-sm font-medium text-gray-300"
@@ -650,7 +650,7 @@ const Web3Wallet = () => {
                 ))}
               </select>
             </div>
-            <div className="grid grid-cols-2 items-start gap-4">
+            <div className="flex flex-col gap-4">
               <label
                 htmlFor="description"
                 className="text-right text-sm font-medium text-gray-300"
@@ -667,7 +667,7 @@ const Web3Wallet = () => {
                 required
               />
             </div>
-            <div className="grid grid-cols-2 items-start gap-4">
+            <div className="flex flex-col gap-4">
               <label
                 htmlFor="amount"
                 className="text-right text-sm font-medium text-gray-300"
@@ -686,7 +686,7 @@ const Web3Wallet = () => {
                 required
               />
             </div>
-            <div className="grid grid-cols-2 items-start gap-4">
+            <div className="flex flex-col gap-4">
               <label
                 htmlFor="destinationAddress"
                 className="text-right text-sm font-medium text-gray-300"
