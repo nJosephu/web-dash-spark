@@ -1,4 +1,3 @@
-
 import {
   LayoutGrid,
   FileText,
@@ -25,10 +24,11 @@ import {
 } from "@/components/ui/breadcrumb";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import { Sheet, SheetTrigger } from "@/components/ui/sheet";
-import { useState, useEffect } from "react";
-import NotificationPanel from "./NotificationPanel";
+import { useEffect } from "react";
 import LogoutConfirmation from "../auth/LogoutConfirmation";
+import { Sheet, SheetTrigger } from "@/components/ui/sheet";
+import { useState } from "react";
+import NotificationPanel from "./NotificationPanel";
 import Bell from "../../images/notification-bing.png";
 
 interface TopNavProps {
