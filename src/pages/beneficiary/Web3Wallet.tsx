@@ -689,7 +689,7 @@ const Web3Wallet = () => {
             <div className="flex flex-col gap-4">
               <label
                 htmlFor="destinationAddress"
-                className="text-right text-sm font-medium text-gray-300"
+                className=" text-sm font-medium text-gray-300"
               >
                 Destination
               </label>
