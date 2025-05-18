@@ -1,9 +1,15 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import {
   CircleDollarSign,
@@ -15,7 +21,7 @@ import {
   EyeOff,
   ExternalLink,
   AlertCircle,
-  Send
+  Send,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useWeb3 } from "@/context/Web3Context";
@@ -24,81 +30,96 @@ import { shortenAddress, formatEthAmount } from "@/config/blockchain";
 import { ethers } from "ethers";
 import { NETWORK } from "@/config/blockchain";
 import MetaMaskAlert from "@/components/blockchain/MetaMaskAlert";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
 
 const Web3Wallet = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const { 
-    isConnected, 
-    isConnecting, 
-    address, 
-    ethBalance, 
-    u2kBalance, 
+  const {
+    isConnected,
+    isConnecting,
+    address,
+    ethBalance,
+    u2kBalance,
     connectWallet,
     isCorrectNetwork,
     switchNetwork,
     refreshBalances,
     showMetaMaskAlert,
     setShowMetaMaskAlert,
-    isBillContractAvailable
+    isBillContractAvailable,
   } = useWeb3();
-  
-  const { 
-    bills, 
-    isLoading: isLoadingBills, 
+
+  const {
+    bills,
+    isLoading: isLoadingBills,
     getBillStatusLabel,
-    createBill, 
-    isCreatingBill 
+    createBill,
+    isCreatingBill,
   } = useBlockchainBills();
-  
+
   const [balanceVisible, setBalanceVisible] = useState(true);
   const [isCreateRequestOpen, setIsCreateRequestOpen] = useState(false);
   const [newRequestData, setNewRequestData] = useState({
     description: "",
     amount: "",
-    destinationAddress: ""
+    destinationAddress: "",
   });
 
   // Create a reference to sponsor selector data
   const [selectedSponsor, setSelectedSponsor] = useState({
     id: "",
     name: "",
-    address: ""
+    address: "",
   });
 
   // Mock sponsors data - in a real app would come from API
   const mockSponsors = [
-    { id: "sponsor1", name: "John Sponsor", address: "0x1234567890123456789012345678901234567890" },
-    { id: "sponsor2", name: "Mary Supporter", address: "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd" },
+    {
+      id: "sponsor1",
+      name: "John Sponsor",
+      address: "0x1234567890123456789012345678901234567890",
+    },
+    {
+      id: "sponsor2",
+      name: "Mary Supporter",
+      address: "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd",
+    },
   ];
 
   // Calculate stats based on blockchain bills
   const calculateStats = () => {
     const billsArray = bills.address || [];
-    
+
     const totalRequested = billsArray.reduce((sum, bill) => {
       return sum + parseFloat(ethers.utils.formatEther(bill.amount));
     }, 0);
-    
+
     const approved = billsArray
-      .filter(bill => bill.status === 1) // Status 1 = Paid
+      .filter((bill) => bill.status === 1) // Status 1 = Paid
       .reduce((sum, bill) => {
         return sum + parseFloat(ethers.utils.formatEther(bill.amount));
       }, 0);
-      
+
     const rejected = billsArray
-      .filter(bill => bill.status === 2) // Status 2 = Rejected
+      .filter((bill) => bill.status === 2) // Status 2 = Rejected
       .reduce((sum, bill) => {
         return sum + parseFloat(ethers.utils.formatEther(bill.amount));
       }, 0);
-      
+
     const pending = billsArray
-      .filter(bill => bill.status === 0) // Status 0 = Pending
+      .filter((bill) => bill.status === 0) // Status 0 = Pending
       .reduce((sum, bill) => {
         return sum + parseFloat(ethers.utils.formatEther(bill.amount));
       }, 0);
-    
+
     return [
       {
         title: "Total Requested",
@@ -142,7 +163,7 @@ const Web3Wallet = () => {
     const { name, value } = e.target;
     setNewRequestData({
       ...newRequestData,
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -152,7 +173,7 @@ const Web3Wallet = () => {
       toast({
         title: "Error",
         description: "Please select a sponsor",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -161,47 +182,48 @@ const Web3Wallet = () => {
       toast({
         title: "Error",
         description: "Please fill all required fields",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
 
     try {
       // Use the current wallet address if no destination is specified
-      const destinationAddress = newRequestData.destinationAddress.trim() || address;
-      
+      const destinationAddress =
+        newRequestData.destinationAddress.trim() || address;
+
       if (!destinationAddress) {
         toast({
           title: "Error",
           description: "Destination address is required",
-          variant: "destructive"
+          variant: "destructive",
         });
         return;
       }
-      
+
       await createBill({
         sponsorId: selectedSponsor.id,
         paymentDestination: destinationAddress,
         amount: parseFloat(newRequestData.amount),
-        description: newRequestData.description
+        description: newRequestData.description,
       });
-      
+
       setIsCreateRequestOpen(false);
       setNewRequestData({
         description: "",
         amount: "",
-        destinationAddress: ""
+        destinationAddress: "",
       });
       setSelectedSponsor({
         id: "",
         name: "",
-        address: ""
+        address: "",
       });
     } catch (error: any) {
       toast({
         title: "Error",
         description: `Failed to create bill request: ${error.message}`,
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
@@ -219,29 +241,38 @@ const Web3Wallet = () => {
   };
 
   // Format bill requests for display
-  const requestHistoryData = bills.address ? bills.address.map((bill) => {
-    const status = getBillStatusLabel(bill.status);
-    return {
-      id: bill.id.toString(),
-      request: bill.description || "Blockchain Bill Request",
-      sponsor: shortenAddress(bill.sponsor),
-      status: status.label,
-      statusColor: status.color,
-      priority: parseFloat(ethers.utils.formatEther(bill.amount)) > 0.1 ? "High" : "Medium",
-      created: new Date(bill.createdAt * 1000).toLocaleDateString(),
-      processedDate: bill.processedAt ? new Date(bill.processedAt * 1000).toLocaleDateString() : '-',
-      amount: `${formatEthAmount(ethers.utils.formatEther(bill.amount))} ETH`
-    };
-  }) : [];
+  const requestHistoryData = bills.address
+    ? bills.address.map((bill) => {
+        const status = getBillStatusLabel(bill.status);
+        return {
+          id: bill.id.toString(),
+          request: bill.description || "Blockchain Bill Request",
+          sponsor: shortenAddress(bill.sponsor),
+          status: status.label,
+          statusColor: status.color,
+          priority:
+            parseFloat(ethers.utils.formatEther(bill.amount)) > 0.1
+              ? "High"
+              : "Medium",
+          created: new Date(bill.createdAt * 1000).toLocaleDateString(),
+          processedDate: bill.processedAt
+            ? new Date(bill.processedAt * 1000).toLocaleDateString()
+            : "-",
+          amount: `${formatEthAmount(
+            ethers.utils.formatEther(bill.amount)
+          )} ETH`,
+        };
+      })
+    : [];
 
   return (
     <div className="py-6">
       {/* MetaMask Alert Dialog */}
-      <MetaMaskAlert 
-        isOpen={showMetaMaskAlert} 
-        onClose={() => setShowMetaMaskAlert(false)} 
+      <MetaMaskAlert
+        isOpen={showMetaMaskAlert}
+        onClose={() => setShowMetaMaskAlert(false)}
       />
-      
+
       {/* Stats cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {statsData.map((stat, index) => (
@@ -306,7 +337,7 @@ const Web3Wallet = () => {
                 <p className="text-gray-400 text-sm text-center mb-6 max-w-md">
                   Connect your crypto wallet to create and track bill requests
                 </p>
-                <Button 
+                <Button
                   className="bg-[#6544E4] hover:bg-[#5A3DD0]"
                   onClick={handleConnectWallet}
                   disabled={isConnecting}
@@ -319,30 +350,37 @@ const Web3Wallet = () => {
                 <div className="flex justify-between items-center mb-6">
                   <span className="text-gray-400">Wallet Address</span>
                   <div className="flex items-center space-x-2">
-                    <span className="font-mono">{shortenAddress(address || '')}</span>
+                    <span className="font-mono">
+                      {shortenAddress(address || "")}
+                    </span>
                     <Button
                       variant="ghost"
                       size="icon"
                       className="h-5 w-5"
                       onClick={() => {
-                        window.open(`${NETWORK.blockExplorerUrl}/address/${address}`, '_blank');
+                        window.open(
+                          `${NETWORK.blockExplorerUrl}/address/${address}`,
+                          "_blank"
+                        );
                       }}
                     >
                       <ExternalLink size={14} />
                     </Button>
                   </div>
                 </div>
-                
+
                 {!isCorrectNetwork && (
                   <div className="bg-yellow-900/20 border border-yellow-900/50 text-yellow-400 px-4 py-3 rounded-lg mb-6 flex items-center">
                     <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0" />
                     <div>
                       <p className="font-medium">Wrong Network</p>
-                      <p className="text-sm">Please connect to Base Sepolia Testnet</p>
+                      <p className="text-sm">
+                        Please connect to Base Sepolia Testnet
+                      </p>
                     </div>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
+                    <Button
+                      variant="outline"
+                      size="sm"
                       className="ml-auto bg-yellow-500/20 border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/30"
                       onClick={switchNetwork}
                     >
@@ -350,20 +388,27 @@ const Web3Wallet = () => {
                     </Button>
                   </div>
                 )}
-                
+
                 <div className="grid md:grid-cols-2 gap-6">
                   {/* ETH Balance */}
                   <div className="bg-gradient-to-r from-[#6544E4]/5 to-[#6544E4]/10 p-5 rounded-xl">
                     <div className="flex items-start gap-4 mb-2">
                       <div className="p-3 rounded-full bg-[#6544E4]/20">
-                        <CircleDollarSign size={20} className="text-[#6544E4]" />
+                        <CircleDollarSign
+                          size={20}
+                          className="text-[#6544E4]"
+                        />
                       </div>
                       <div>
-                        <div className="text-gray-400 text-sm mb-1">ETH Balance</div>
-                        <div className="font-semibold text-2xl">
-                          {balanceVisible ? (ethBalance || "0.00") : "••••••••"}
+                        <div className="text-gray-400 text-sm mb-1">
+                          ETH Balance
                         </div>
-                        <div className="text-gray-400 text-xs">Base Sepolia Testnet</div>
+                        <div className="font-semibold text-2xl">
+                          {balanceVisible ? ethBalance || "0.00" : "••••••••"}
+                        </div>
+                        <div className="text-gray-400 text-xs">
+                          Base Sepolia Testnet
+                        </div>
                       </div>
                     </div>
                     <Button
@@ -379,7 +424,7 @@ const Web3Wallet = () => {
                       )}
                     </Button>
                   </div>
-                  
+
                   {/* U2KAY Tokens */}
                   <div className="bg-gradient-to-r from-[#6544E4]/5 to-[#6544E4]/10 p-5 rounded-xl">
                     <div className="flex items-start gap-4 mb-2">
@@ -387,11 +432,15 @@ const Web3Wallet = () => {
                         <Wallet size={20} className="text-[#6544E4]" />
                       </div>
                       <div>
-                        <div className="text-gray-400 text-sm mb-1">U2K Tokens</div>
-                        <div className="font-semibold text-2xl">
-                          {balanceVisible ? (u2kBalance || "0.00") : "••••••••"}
+                        <div className="text-gray-400 text-sm mb-1">
+                          U2K Tokens
                         </div>
-                        <div className="text-gray-400 text-xs">Rewards tokens</div>
+                        <div className="font-semibold text-2xl">
+                          {balanceVisible ? u2kBalance || "0.00" : "••••••••"}
+                        </div>
+                        <div className="text-gray-400 text-xs">
+                          Rewards tokens
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -408,22 +457,28 @@ const Web3Wallet = () => {
           </CardHeader>
           <CardContent>
             <p className="text-gray-400 text-sm mb-6">
-              Submit a bill request directly to your sponsor. Once approved, funds will be sent 
-              to your wallet or specified payment address. All transactions are recorded on the blockchain.
+              Submit a bill request directly to your sponsor. Once approved,
+              funds will be sent to your wallet or specified payment address.
+              All transactions are recorded on the blockchain.
             </p>
-            
+
             {!isBillContractAvailable && (
               <div className="bg-yellow-900/20 border border-yellow-900/50 text-yellow-400 px-4 py-3 rounded-lg mb-6">
                 <p className="font-medium">Bill Contract Not Available</p>
-                <p className="text-sm">The bill request contract is not available on this network. Please switch to Base Sepolia Testnet.</p>
+                <p className="text-sm">
+                  The bill request contract is not available on this network.
+                  Please switch to Base Sepolia Testnet.
+                </p>
               </div>
             )}
-            
+
             <div className="space-y-4">
-              <Button 
+              <Button
                 className="w-full py-6 bg-[#6544E4] hover:bg-[#5335C5] text-white"
                 onClick={() => setIsCreateRequestOpen(true)}
-                disabled={!isConnected || !isCorrectNetwork || !isBillContractAvailable}
+                disabled={
+                  !isConnected || !isCorrectNetwork || !isBillContractAvailable
+                }
               >
                 <Send className="h-4 w-4 mr-2" /> Create an URGENT 2KAY Request
               </Button>
@@ -502,13 +557,18 @@ const Web3Wallet = () => {
               <TableBody>
                 {requestHistoryData.length > 0 ? (
                   requestHistoryData.map((item) => (
-                    <TableRow key={item.id} className="border-b border-gray-800">
+                    <TableRow
+                      key={item.id}
+                      className="border-b border-gray-800"
+                    >
                       <TableCell className="text-sm">{item.id}</TableCell>
                       <TableCell className="text-sm">{item.request}</TableCell>
                       <TableCell className="text-sm">{item.sponsor}</TableCell>
                       <TableCell className="text-sm">{item.amount}</TableCell>
                       <TableCell className="text-sm">
-                        <span className={`px-2 py-1 ${item.statusColor} rounded-md text-xs`}>
+                        <span
+                          className={`px-2 py-1 ${item.statusColor} rounded-md text-xs`}
+                        >
                           {item.status}
                         </span>
                       </TableCell>
@@ -518,7 +578,9 @@ const Web3Wallet = () => {
                         </span>
                       </TableCell>
                       <TableCell className="text-sm">{item.created}</TableCell>
-                      <TableCell className="text-sm">{item.processedDate}</TableCell>
+                      <TableCell className="text-sm">
+                        {item.processedDate}
+                      </TableCell>
                       <TableCell className="text-sm">
                         <Button
                           variant="link"
@@ -531,8 +593,11 @@ const Web3Wallet = () => {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={9} className="py-10 text-center text-gray-400">
-                      {isConnected 
+                    <TableCell
+                      colSpan={9}
+                      className="py-10 text-center text-gray-400"
+                    >
+                      {isConnected
                         ? "No blockchain requests found. Create your first request!"
                         : "Connect your wallet to view blockchain requests"}
                     </TableCell>
@@ -553,9 +618,12 @@ const Web3Wallet = () => {
               Submit a new bill request to your sponsor.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="sponsor" className="text-right text-sm font-medium text-gray-300">
+          <div className="flex flex-col gap-4 py-4">
+            <div className="grid grid-cols-2 items-start gap-4">
+              <label
+                htmlFor="sponsor"
+                className="text-right text-sm font-medium text-gray-300"
+              >
                 Sponsor
               </label>
               <select
@@ -563,25 +631,30 @@ const Web3Wallet = () => {
                 className="col-span-3 flex h-10 w-full rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white"
                 onChange={(e) => {
                   const selectedId = e.target.value;
-                  const sponsor = mockSponsors.find(s => s.id === selectedId);
+                  const sponsor = mockSponsors.find((s) => s.id === selectedId);
                   if (sponsor) {
                     setSelectedSponsor({
                       id: sponsor.id,
                       name: sponsor.name,
-                      address: sponsor.address
+                      address: sponsor.address,
                     });
                   }
                 }}
                 value={selectedSponsor.id}
               >
                 <option value="">Select a sponsor</option>
-                {mockSponsors.map(sponsor => (
-                  <option key={sponsor.id} value={sponsor.id}>{sponsor.name}</option>
+                {mockSponsors.map((sponsor) => (
+                  <option key={sponsor.id} value={sponsor.id}>
+                    {sponsor.name}
+                  </option>
                 ))}
               </select>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="description" className="text-right text-sm font-medium text-gray-300">
+            <div className="grid grid-cols-2 items-start gap-4">
+              <label
+                htmlFor="description"
+                className="text-right text-sm font-medium text-gray-300"
+              >
                 Description*
               </label>
               <Input
@@ -594,8 +667,11 @@ const Web3Wallet = () => {
                 required
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="amount" className="text-right text-sm font-medium text-gray-300">
+            <div className="grid grid-cols-2 items-start gap-4">
+              <label
+                htmlFor="amount"
+                className="text-right text-sm font-medium text-gray-300"
+              >
                 Amount (ETH)*
               </label>
               <Input
@@ -610,8 +686,11 @@ const Web3Wallet = () => {
                 required
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="destinationAddress" className="text-right text-sm font-medium text-gray-300">
+            <div className="grid grid-cols-2 items-start gap-4">
+              <label
+                htmlFor="destinationAddress"
+                className="text-right text-sm font-medium text-gray-300"
+              >
                 Destination
               </label>
               <Input
@@ -628,14 +707,14 @@ const Web3Wallet = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => setIsCreateRequestOpen(false)}
               className="bg-transparent border-gray-700 text-white hover:bg-gray-800"
             >
               Cancel
             </Button>
-            <Button 
+            <Button
               onClick={handleCreateRequest}
               className="bg-[#6544E4] hover:bg-[#5335C5] text-white"
               disabled={isCreatingBill}
