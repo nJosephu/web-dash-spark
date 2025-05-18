@@ -1,55 +1,27 @@
+
 import { ethers } from "ethers";
 import { toast } from "sonner";
 import { NETWORK, CONTRACT_ADDRESSES, U2K_TOKEN_ABI, BILL_PAYMENT_ABI } from "../config/blockchain";
 
-// Enhanced function to check if a contract exists at the specified address
+// New function to check if a contract exists at the specified address
 export const isContractAvailable = async (
   provider: ethers.providers.Web3Provider,
   contractAddress: string
 ): Promise<boolean> => {
   try {
-    console.log(`Checking contract at address ${contractAddress}...`);
-    
-    // First verify the address format is valid
-    if (!ethers.utils.isAddress(contractAddress)) {
-      console.error(`Invalid address format: ${contractAddress}`);
-      return false;
-    }
-    
-    // Get current network to provide context for debugging
-    const network = await provider.getNetwork();
-    console.log(`Current network: Chain ID ${network.chainId} (${network.name})`);
-    console.log(`Target network: Chain ID ${NETWORK.chainId} (${NETWORK.chainName})`);
-    
-    // Check if we're on the expected network
-    if (network.chainId !== NETWORK.chainId) {
-      console.warn(`Network mismatch! Contract check may fail. Expected chain ID ${NETWORK.chainId}, but connected to ${network.chainId}`);
-    }
-    
     // Check if there is code at the address (contracts have code, regular addresses don't)
     const code = await provider.getCode(contractAddress);
-    
-    // Log the actual bytecode length for debugging
-    console.log(`Contract check at ${contractAddress}: Code length: ${(code.length - 2) / 2} bytes`);
+    console.log(`Contract check at ${contractAddress}:`, code);
     
     if (code === "0x") {
-      console.warn(`No contract found at address ${contractAddress} on chain ID ${network.chainId}`);
-      console.log(`Possible reasons: 
-        1. Contract not deployed to this network
-        2. Contract address is incorrect
-        3. Contract was deployed but has self-destructed`);
+      console.warn(`No contract found at address ${contractAddress}`);
       return false;
     }
     
-    console.log(`Contract verified at ${contractAddress} on chain ID ${network.chainId}`);
+    console.log(`Contract found at ${contractAddress}`);
     return true; // If code exists, contract exists
   } catch (error) {
     console.error("Error checking contract availability:", error);
-    if (error.code === 'NETWORK_ERROR') {
-      console.error("Network connection issue. Check your internet connection or RPC endpoint.");
-    } else if (error.code === 'SERVER_ERROR') {
-      console.error("RPC server error. The network endpoint may be down or overloaded.");
-    }
     return false;
   }
 };
