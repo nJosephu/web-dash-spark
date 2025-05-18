@@ -1,3 +1,4 @@
+
 import authService from "./authService";
 
 export interface CreateBundleRequest {
@@ -24,13 +25,11 @@ export interface BundleResponse {
 const API_URL = "https://urgent-2kay-directed-bill-payment-system.onrender.com";
 
 // Create a new bundle (request)
-export const createBundle = async (
-  bundleData: CreateBundleRequest
-): Promise<BundleResponse> => {
+export const createBundle = async (bundleData: CreateBundleRequest): Promise<BundleResponse> => {
   try {
     console.log("Creating bundle with data:", bundleData);
     const token = authService.getToken();
-
+    
     if (!token) {
       throw new Error("Authentication token not found");
     }
@@ -39,9 +38,9 @@ export const createBundle = async (
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify(bundleData),
+      body: JSON.stringify(bundleData)
     });
 
     const data = await response.json();

@@ -1,3 +1,4 @@
+
 import { useApi } from "@/hooks/useApi";
 import { useState, useEffect } from "react";
 import authService from "./authService";
@@ -13,21 +14,17 @@ export interface Provider {
 // Function to fetch providers
 export const fetchProviders = async (): Promise<Provider[]> => {
   try {
-    const API_URL =
-      "https://urgent-2kay-directed-bill-payment-system.onrender.com";
+    const API_URL = "https://urgent-2kay-directed-bill-payment-system.onrender.com";
     const token = authService.getToken();
-
-    console.log(
-      "Fetching providers with token:",
-      token ? "Token exists" : "No token"
-    );
-
+    
+    console.log("Fetching providers with token:", token ? "Token exists" : "No token");
+    
     const response = await fetch(`${API_URL}/api/providers`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        ...(token && { Authorization: `Bearer ${token}` }),
-      },
+        ...(token && { Authorization: `Bearer ${token}` })
+      }
     });
 
     if (!response.ok) {
@@ -46,11 +43,8 @@ export const fetchProviders = async (): Promise<Provider[]> => {
 };
 
 // Helper function to get provider name by ID
-export const getProviderNameById = (
-  providers: Provider[],
-  id: string
-): string => {
-  const provider = providers.find((provider) => provider.id === id);
+export const getProviderNameById = (providers: Provider[], id: string): string => {
+  const provider = providers.find(provider => provider.id === id);
   return provider ? provider.name : id; // Return ID as fallback if provider not found
 };
 
@@ -67,8 +61,7 @@ export const useProviders = () => {
         const providersData = await fetchProviders();
         setProviders(providersData);
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : "Failed to fetch providers";
+        const errorMessage = err instanceof Error ? err.message : "Failed to fetch providers";
         setError(errorMessage);
       } finally {
         setIsLoading(false);

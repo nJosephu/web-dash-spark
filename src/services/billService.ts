@@ -1,3 +1,4 @@
+
 import authService from "./authService";
 
 export interface CreateBillRequest {
@@ -45,13 +46,10 @@ const API_URL = "https://urgent-2kay-directed-bill-payment-system.onrender.com";
 export const BILLS_QUERY_KEY = "bills";
 
 // Create a new bill
-export const createBill = async (
-  billData: CreateBillRequest,
-  providerName?: string
-): Promise<BillResponse> => {
+export const createBill = async (billData: CreateBillRequest, providerName?: string): Promise<BillResponse> => {
   try {
     const token = authService.getToken();
-
+    
     if (!token) {
       throw new Error("Authentication token not found");
     }
@@ -60,9 +58,9 @@ export const createBill = async (
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify(billData),
+      body: JSON.stringify(billData)
     });
 
     const data = await response.json();
@@ -87,7 +85,7 @@ export const createBill = async (
 export const fetchBills = async (): Promise<BillsResponse> => {
   try {
     const token = authService.getToken();
-
+    
     if (!token) {
       throw new Error("Authentication token not found");
     }
@@ -96,8 +94,8 @@ export const fetchBills = async (): Promise<BillsResponse> => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     });
 
     if (!response.ok) {
@@ -114,12 +112,10 @@ export const fetchBills = async (): Promise<BillsResponse> => {
 };
 
 // Delete a bill
-export const deleteBill = async (
-  billId: string
-): Promise<{ message: string }> => {
+export const deleteBill = async (billId: string): Promise<{ message: string }> => {
   try {
     const token = authService.getToken();
-
+    
     if (!token) {
       throw new Error("Authentication token not found");
     }
@@ -128,8 +124,8 @@ export const deleteBill = async (
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     });
 
     if (!response.ok) {

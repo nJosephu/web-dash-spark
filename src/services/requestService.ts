@@ -1,3 +1,4 @@
+
 import { useAuth } from "@/context/AuthContext";
 
 // Define types for the API response
@@ -49,23 +50,17 @@ const API_URL = "https://urgent-2kay-directed-bill-payment-system.onrender.com";
 
 const requestService = {
   // Get all requests for the logged in user
-  getUserRequests: async (
-    userId: string,
-    token: string
-  ): Promise<RequestsResponse> => {
+  getUserRequests: async (userId: string, token: string): Promise<RequestsResponse> => {
     try {
       console.log(`Fetching requests for user: ${userId}`);
-
-      const response = await fetch(
-        `${API_URL}/api/requests/?requesterId=${userId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      
+      const response = await fetch(`${API_URL}/api/requests/?requesterId=${userId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -80,25 +75,19 @@ const requestService = {
       throw error;
     }
   },
-
+  
   // Get all requests for a specific sponsor
-  getSponsorRequests: async (
-    sponsorId: string,
-    token: string
-  ): Promise<RequestsResponse> => {
+  getSponsorRequests: async (sponsorId: string, token: string): Promise<RequestsResponse> => {
     try {
       console.log(`Fetching requests for sponsor: ${sponsorId}`);
-
-      const response = await fetch(
-        `${API_URL}/api/requests/?supporterId=${sponsorId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      
+      const response = await fetch(`${API_URL}/api/requests/?supporterId=${sponsorId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -113,20 +102,17 @@ const requestService = {
       throw error;
     }
   },
-
+  
   // Get a single request by ID
-  getRequestById: async (
-    requestId: string,
-    token: string
-  ): Promise<RequestResponse> => {
+  getRequestById: async (requestId: string, token: string): Promise<RequestResponse> => {
     try {
       console.log(`Fetching request details for ID: ${requestId}`);
-
+      
       const response = await fetch(`${API_URL}/api/requests/${requestId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          "Authorization": `Bearer ${token}`
         },
       });
 
@@ -143,23 +129,17 @@ const requestService = {
       throw error;
     }
   },
-
+  
   // Cancel a request by ID
-  cancelRequest: async (
-    requestId: string,
-    token: string
-  ): Promise<{ success: boolean }> => {
+  cancelRequest: async (requestId: string, token: string): Promise<{ success: boolean }> => {
     try {
-      const response = await fetch(
-        `${API_URL}/api/requests/${requestId}/cancel`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${API_URL}/api/requests/${requestId}/cancel`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -172,18 +152,15 @@ const requestService = {
       throw error;
     }
   },
-
+  
   // Delete a request by ID
-  deleteRequest: async (
-    requestId: string,
-    token: string
-  ): Promise<{ success: boolean }> => {
+  deleteRequest: async (requestId: string, token: string): Promise<{ success: boolean }> => {
     try {
       const response = await fetch(`${API_URL}/api/requests/${requestId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          "Authorization": `Bearer ${token}`
         },
       });
 
@@ -198,23 +175,17 @@ const requestService = {
       throw error;
     }
   },
-
+  
   // Send a reminder for a request
-  sendReminder: async (
-    requestId: string,
-    token: string
-  ): Promise<{ success: boolean }> => {
+  sendReminder: async (requestId: string, token: string): Promise<{ success: boolean }> => {
     try {
-      const response = await fetch(
-        `${API_URL}/api/requests/${requestId}/reminder`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${API_URL}/api/requests/${requestId}/reminder`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -226,7 +197,7 @@ const requestService = {
       console.error("Error sending reminder:", error);
       throw error;
     }
-  },
+  }
 };
 
 export default requestService;
