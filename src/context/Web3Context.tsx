@@ -21,6 +21,8 @@ interface Web3ContextType {
   isCorrectNetwork: boolean;
   switchNetwork: () => Promise<boolean>;
   refreshBalances: () => Promise<void>;
+  showMetaMaskAlert: boolean;
+  setShowMetaMaskAlert: (show: boolean) => void;
 }
 
 const Web3Context = createContext<Web3ContextType | undefined>(undefined);
@@ -48,6 +50,7 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
   const [u2kToken, setU2kToken] = useState<ethers.Contract | null>(null);
   const [billPaymentContract, setBillPaymentContract] = useState<ethers.Contract | null>(null);
   const [isCorrectNetwork, setIsCorrectNetwork] = useState(false);
+  const [showMetaMaskAlert, setShowMetaMaskAlert] = useState(false);
   
   const { user } = useAuth();
 
@@ -133,7 +136,7 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
 
   const connectWallet = async (): Promise<boolean> => {
     if (!window.ethereum) {
-      toast.error("Please install MetaMask to use blockchain features");
+      setShowMetaMaskAlert(true);
       return false;
     }
 
@@ -289,7 +292,9 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
     disconnectWallet,
     isCorrectNetwork,
     switchNetwork,
-    refreshBalances
+    refreshBalances,
+    showMetaMaskAlert,
+    setShowMetaMaskAlert
   };
 
   return <Web3Context.Provider value={value}>{children}</Web3Context.Provider>;

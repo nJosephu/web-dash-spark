@@ -1,23 +1,32 @@
-
 import { useState } from "react";
-import { Wallet, ArrowRight, RefreshCw, Clock, ChevronRight, ExternalLink, Medal, CircleDollarSign, PenSquare, CirclePlus, AlertCircle } from "lucide-react";
+import { useWeb3 } from "@/context/Web3Context";
+import MetaMaskAlert from "@/components/blockchain/MetaMaskAlert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
-import { toast } from "sonner";
-import { format } from "date-fns";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
+import {
+  CircleDollarSign,
+  Filter,
+  Plus,
+  Search,
+  Wallet,
+  Eye,
+  EyeOff,
+  ExternalLink,
+  AlertCircle
+} from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-import { useWeb3 } from "@/context/Web3Context";
 import { useBlockchainBills } from "@/hooks/useBlockchainBills";
+import { shortenAddress, formatEthAmount } from "@/config/blockchain";
 import { ethers } from "ethers";
-import { NETWORK, shortenAddress, formatEthAmount, BillStatus } from "@/config/blockchain";
+import { NETWORK } from "@/config/blockchain";
 
 const WalletAndToken = () => {
-  const [activeTab, setActiveTab] = useState("transactions");
   const { user } = useAuth();
+  const { toast } = useToast();
   const { 
     isConnected, 
     isConnecting, 
@@ -27,188 +36,253 @@ const WalletAndToken = () => {
     connectWallet,
     isCorrectNetwork,
     switchNetwork,
-    refreshBalances
+    refreshBalances,
+    showMetaMaskAlert,
+    setShowMetaMaskAlert
   } = useWeb3();
+  const { bills, isLoading: isLoadingBills } = useBlockchainBills();
   
-  const { bills, payBillWithNative, rejectBill, isLoading: isLoadingBills } = useBlockchainBills();
-  
-  const [selectedBillForPayment, setSelectedBillForPayment] = useState<{
-    id: string;
-    amount: string;
-    description: string;
-    beneficiary: string;
-  } | null>(null);
-  
-  const [paymentAmount, setPaymentAmount] = useState("");
-  const [isPayDialogOpen, setIsPayDialogOpen] = useState(false);
-  const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false);
-  
-  // Support tier data - in a real app this would come from the API
-  const supportProgress = 65; // percentage progress to next tier
-  const supportNeeded = 3; // more supporters needed for next tier
-  
-  // Mock data for transactions and activity - would be replaced with blockchain data
-  const mockTransactions = [
-    {
-      id: "tx1",
-      type: "Sent",
-      amount: "0.5 ETH",
-      recipient: "0xabcd...1234",
-      date: new Date(2025, 4, 10),
-      status: "Completed"
-    },
-    {
-      id: "tx2",
-      type: "Received",
-      amount: "120 U2KAY",
-      sender: "Urgent2Kay",
-      date: new Date(2025, 4, 8),
-      status: "Completed"
-    },
-    {
-      id: "tx3",
-      type: "Sent",
-      amount: "0.25 ETH",
-      recipient: "0xefgh...5678",
-      date: new Date(2025, 4, 5),
-      status: "Completed"
-    }
+  const [balanceVisible, setBalanceVisible] = useState(true);
+  const [isCreateRequestOpen, setIsCreateRequestOpen] = useState(false);
+  const [newRequestData, setNewRequestData] = useState({
+    description: "",
+    amount: "",
+    destinationAddress: ""
+  });
+
+  // Create a reference to sponsor selector data
+  const [selectedSponsor, setSelectedSponsor] = useState({
+    id: "",
+    name: ""
+  });
+
+  // Mock sponsors data - in a real app would come from API
+  const mockSponsors = [
+    { id: "sponsor1", name: "John Sponsor", address: "0x1234...5678" },
+    { id: "sponsor2", name: "Mary Supporter", address: "0xabcd...efgh" },
   ];
 
-  const mockActivity = [
-    {
-      id: "act1",
-      action: "Funded Request",
-      description: "School Fees Support",
-      date: new Date(2025, 4, 12),
-      amount: "0.75 ETH",
-      reward: "+50 U2KAY"
-    },
-    {
-      id: "act2",
-      action: "Received Tokens",
-      description: "Support Reward",
-      date: new Date(2025, 4, 8),
-      amount: "120 U2KAY"
-    },
-    {
-      id: "act3",
-      action: "Funded Request",
-      description: "Medical Bill Support",
-      date: new Date(2025, 4, 2),
-      amount: "0.5 ETH",
-      reward: "+30 U2KAY"
+  // Convert bill status to human-readable text and color
+  const getBillStatusInfo = (status: number) => {
+    switch (status) {
+      case 0:
+        return { label: "Pending", color: "bg-yellow-900/30 text-yellow-400" };
+      case 1:
+        return { label: "Completed", color: "bg-green-900/30 text-green-400" };
+      case 2:
+        return { label: "Rejected", color: "bg-red-900/30 text-red-400" };
+      default:
+        return { label: "Unknown", color: "bg-gray-400/30 text-gray-400" };
     }
-  ];
+  };
 
-  // Calculate sponsor metrics based on blockchain bills
-  const calculateMetrics = () => {
+  // Calculate stats based on blockchain bills
+  const calculateStats = () => {
     const billsArray = bills.address || [];
     
-    const requestsFunded = billsArray.filter(bill => bill.status === BillStatus.Paid).length;
+    const totalRequested = billsArray.reduce((sum, bill) => {
+      return sum + parseFloat(ethers.utils.formatEther(bill.amount));
+    }, 0);
     
-    const beneficiariesSupported = new Set(
-      billsArray
-        .filter(bill => bill.status === BillStatus.Paid)
-        .map(bill => bill.beneficiary)
-    ).size;
-    
-    const tokensEarned = u2kBalance || "0";
-    
-    // Determine support tier based on beneficiaries supported
-    let supportTier = "Bronze";
-    if (beneficiariesSupported >= 10) {
-      supportTier = "Platinum";
-    } else if (beneficiariesSupported >= 5) {
-      supportTier = "Gold";
-    } else if (beneficiariesSupported >= 3) {
-      supportTier = "Silver";
-    }
+    const approved = billsArray
+      .filter(bill => bill.status === 1) // Status 1 = Paid
+      .reduce((sum, bill) => {
+        return sum + parseFloat(ethers.utils.formatEther(bill.amount));
+      }, 0);
+      
+    const rejected = billsArray
+      .filter(bill => bill.status === 2) // Status 2 = Rejected
+      .reduce((sum, bill) => {
+        return sum + parseFloat(ethers.utils.formatEther(bill.amount));
+      }, 0);
+      
+    const pending = billsArray
+      .filter(bill => bill.status === 0) // Status 0 = Pending
+      .reduce((sum, bill) => {
+        return sum + parseFloat(ethers.utils.formatEther(bill.amount));
+      }, 0);
     
     return [
       {
-        title: "Requests Funded",
-        value: requestsFunded.toString(),
-        icon: <PenSquare size={18} />
+        title: "Total bills Requested",
+        value: `${totalRequested.toFixed(6)} ETH`,
+        increase: totalRequested > 0 ? "Active" : "No requests",
+        increaseText: "Total on blockchain",
+        color: "bg-green-500",
+        icon: <CircleDollarSign className="h-4 w-4" />,
       },
       {
-        title: "Beneficiaries Supported",
-        value: beneficiariesSupported.toString(),
-        icon: <CircleDollarSign size={18} />
+        title: "Approved Bill Requests",
+        value: `${approved.toFixed(6)} ETH`,
+        increase: approved > 0 ? "Paid" : "None yet",
+        increaseText: "Successful requests",
+        color: "bg-purple-500",
+        icon: <CircleDollarSign className="h-4 w-4" />,
       },
       {
-        title: "Tokens Earned",
-        value: parseFloat(tokensEarned).toFixed(2),
-        icon: <CirclePlus size={18} />
+        title: "Rejected Bill Requests",
+        value: `${rejected.toFixed(6)} ETH`,
+        increase: rejected > 0 ? "Rejected" : "None",
+        increaseText: "Unsuccessful requests",
+        color: "bg-red-500",
+        icon: <CircleDollarSign className="h-4 w-4" />,
       },
       {
-        title: "Support Tier",
-        value: supportTier,
-        icon: <Medal size={18} />
-      }
+        title: "Pending Bill Requests",
+        value: `${pending.toFixed(6)} ETH`,
+        increase: pending > 0 ? "Awaiting" : "None pending",
+        increaseText: "Under review",
+        color: "bg-yellow-500",
+        icon: <CircleDollarSign className="h-4 w-4" />,
+      },
     ];
   };
 
-  const metricsData = calculateMetrics();
+  const statsData = calculateStats();
 
-  const formatDate = (date: Date) => {
-    return format(date, "MMM d, yyyy");
+  // Handle modal input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setNewRequestData({
+      ...newRequestData,
+      [name]: value
+    });
   };
 
-  const handlePayBill = async () => {
-    if (!selectedBillForPayment) return;
-    
-    try {
-      await payBillWithNative({
-        billId: selectedBillForPayment.id,
-        amount: paymentAmount
+  // Handle create request
+  const handleCreateRequest = async () => {
+    if (!selectedSponsor.id) {
+      toast({
+        title: "Error",
+        description: "Please select a sponsor",
+        variant: "destructive"
       });
-      setIsPayDialogOpen(false);
-      setSelectedBillForPayment(null);
-      setPaymentAmount("");
-      refreshBalances();
-    } catch (error: any) {
-      toast.error(`Failed to pay bill: ${error.message}`);
+      return;
+    }
+
+    if (!newRequestData.description || !newRequestData.amount || !newRequestData.destinationAddress) {
+      toast({
+        title: "Error",
+        description: "Please fill all fields",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      // Would be integrated with the createBill function
+      toast({
+        title: "Success",
+        description: "Bill request created successfully"
+      });
+      setIsCreateRequestOpen(false);
+      setNewRequestData({
+        description: "",
+        amount: "",
+        destinationAddress: ""
+      });
+      setSelectedSponsor({
+        id: "",
+        name: ""
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to create bill request",
+        variant: "destructive"
+      });
     }
   };
 
-  const handleRejectBill = async () => {
-    if (!selectedBillForPayment) return;
-    
-    try {
-      await rejectBill(selectedBillForPayment.id);
-      setIsRejectDialogOpen(false);
-      setSelectedBillForPayment(null);
-    } catch (error: any) {
-      toast.error(`Failed to reject bill: ${error.message}`);
+  const toggleBalanceVisibility = () => {
+    setBalanceVisible(!balanceVisible);
+  };
+
+  // Handle MetaMask connect attempt
+  const handleConnectWallet = async () => {
+    const result = await connectWallet();
+    if (!result && !window.ethereum) {
+      setShowMetaMaskAlert(true);
     }
   };
+
+  // Request history from blockchain bills
+  const requestHistoryData = bills.address ? bills.address.map((bill, index) => {
+    const status = getBillStatusInfo(bill.status);
+    return {
+      id: bill.id.toString(),
+      request: bill.description || "Blockchain Bill Request",
+      sponsor: shortenAddress(bill.sponsor),
+      status: status.label,
+      statusColor: status.color,
+      priority: parseFloat(ethers.utils.formatEther(bill.amount)) > 0.1 ? "High" : "Medium",
+      created: new Date(bill.createdAt * 1000).toLocaleDateString(),
+      dueDate: "-",
+      amount: `${formatEthAmount(ethers.utils.formatEther(bill.amount))} ETH`
+    };
+  }) : [];
 
   return (
-    <div className="container p-0">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold mb-1">Wallet & Token</h1>
-        <p className="text-gray-500">Manage your crypto wallet and U2KAY tokens</p>
-      </div>
+    <div className="py-6">
+      {/* MetaMask Alert Dialog */}
+      <MetaMaskAlert 
+        isOpen={showMetaMaskAlert} 
+        onClose={() => setShowMetaMaskAlert(false)} 
+      />
       
-      {/* Wallet Section */}
-      <div className="grid gap-6 md:grid-cols-12 mb-8">
-        {/* Wallet Card - Left Column */}
-        <Card className="md:col-span-12 bg-white shadow-sm">
-          <CardHeader className="pb-3">
-            <div className="flex justify-between items-center">
-              <CardTitle className="text-lg font-medium">Wallet</CardTitle>
-              {isConnected && (
-                <Button 
-                  variant="outline" 
-                  className="gap-2 text-xs"
-                  onClick={refreshBalances}
-                >
-                  <RefreshCw size={14} />
-                  Refresh
-                </Button>
-              )}
-            </div>
+      {/* Stats cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {statsData.map((stat, index) => (
+          <Card
+            key={index}
+            className="bg-[#1A1F2C] text-white border-none shadow-md"
+          >
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center">
+                  <div className={`p-1.5 rounded-full ${stat.color} mr-2`}>
+                    {stat.icon}
+                  </div>
+                  <p className="text-xs text-gray-400">{stat.title}</p>
+                </div>
+                <div className="flex items-center text-xs text-green-400">
+                  <span className="mr-1">{stat.increase}</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M7 17L17 7M17 7H8M17 7V16"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div className="mt-1">
+                <p className="text-xl font-bold">{stat.value}</p>
+                <p className="text-xs text-gray-400">{stat.increaseText}</p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Wallet and Request Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        {/* Wallet Section */}
+        <Card className="bg-[#1A1F2C] text-white border-none shadow-md">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-xl">Wallet</CardTitle>
+            {isConnected && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="bg-gray-800 border-gray-700 text-white hover:bg-gray-700"
+                onClick={refreshBalances}
+              >
+                <Plus className="h-4 w-4 mr-1" /> Refresh balance
+              </Button>
+            )}
           </CardHeader>
           <CardContent>
             {!isConnected ? (
@@ -217,12 +291,12 @@ const WalletAndToken = () => {
                   <Wallet size={32} className="text-gray-500" />
                 </div>
                 <h3 className="font-medium mb-2">Connect Your Wallet</h3>
-                <p className="text-gray-500 text-sm text-center mb-6 max-w-md">
+                <p className="text-gray-400 text-sm text-center mb-6 max-w-md">
                   Connect your crypto wallet to view your balance and support requests
                 </p>
                 <Button 
                   className="bg-[#6544E4] hover:bg-[#5A3DD0]"
-                  onClick={connectWallet}
+                  onClick={handleConnectWallet}
                   disabled={isConnecting}
                 >
                   {isConnecting ? "Connecting..." : "Connect Wallet"}
@@ -231,19 +305,24 @@ const WalletAndToken = () => {
             ) : (
               <div>
                 <div className="flex justify-between items-center mb-6">
-                  <span className="text-gray-500">Wallet Address</span>
+                  <span className="text-gray-400">Wallet Address</span>
                   <div className="flex items-center space-x-2">
                     <span className="font-mono">{shortenAddress(address || '')}</span>
-                    <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => {
-                      window.open(`${NETWORK.blockExplorerUrl}/address/${address}`, '_blank');
-                    }}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-5 w-5"
+                      onClick={() => {
+                        window.open(`${NETWORK.blockExplorerUrl}/address/${address}`, '_blank');
+                      }}
+                    >
                       <ExternalLink size={14} />
                     </Button>
                   </div>
                 </div>
                 
                 {!isCorrectNetwork && (
-                  <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg mb-6 flex items-center">
+                  <div className="bg-yellow-900/20 border border-yellow-900/50 text-yellow-400 px-4 py-3 rounded-lg mb-6 flex items-center">
                     <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0" />
                     <div>
                       <p className="font-medium">Wrong Network</p>
@@ -252,7 +331,7 @@ const WalletAndToken = () => {
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="ml-auto bg-yellow-100 border-yellow-200 text-yellow-800 hover:bg-yellow-200"
+                      className="ml-auto bg-yellow-500/20 border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/30"
                       onClick={switchNetwork}
                     >
                       Switch Network
@@ -260,7 +339,7 @@ const WalletAndToken = () => {
                   </div>
                 )}
                 
-                <div className="grid md:grid-cols-3 gap-6">
+                <div className="grid md:grid-cols-2 gap-6">
                   {/* ETH Balance */}
                   <div className="bg-gradient-to-r from-[#6544E4]/5 to-[#6544E4]/10 p-5 rounded-xl">
                     <div className="flex items-start gap-4 mb-2">
@@ -268,372 +347,273 @@ const WalletAndToken = () => {
                         <CircleDollarSign size={20} className="text-[#6544E4]" />
                       </div>
                       <div>
-                        <div className="text-gray-500 text-sm mb-1">ETH Balance</div>
-                        <div className="font-semibold text-2xl">{ethBalance || "0.00"}</div>
-                        <div className="text-gray-500 text-xs">Base Sepolia Testnet</div>
+                        <div className="text-gray-400 text-sm mb-1">ETH Balance</div>
+                        <div className="font-semibold text-2xl">
+                          {balanceVisible ? (ethBalance || "0.00") : "••••••••"}
+                        </div>
+                        <div className="text-gray-400 text-xs">Base Sepolia Testnet</div>
                       </div>
                     </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="p-1 h-auto hover:bg-transparent"
+                      onClick={toggleBalanceVisibility}
+                    >
+                      {balanceVisible ? (
+                        <EyeOff className="h-4 w-4 text-gray-400" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-gray-400" />
+                      )}
+                    </Button>
                   </div>
                   
                   {/* U2KAY Tokens */}
                   <div className="bg-gradient-to-r from-[#6544E4]/5 to-[#6544E4]/10 p-5 rounded-xl">
                     <div className="flex items-start gap-4 mb-2">
                       <div className="p-3 rounded-full bg-[#6544E4]/20">
-                        <CirclePlus size={20} className="text-[#6544E4]" />
+                        <Wallet size={20} className="text-[#6544E4]" />
                       </div>
                       <div>
-                        <div className="text-gray-500 text-sm mb-1">U2KAY Tokens</div>
-                        <div className="font-semibold text-2xl">{u2kBalance || "0.00"}</div>
-                        <div className="text-gray-500 text-xs">Support rewards</div>
+                        <div className="text-gray-400 text-sm mb-1">U2K Tokens</div>
+                        <div className="font-semibold text-2xl">
+                          {balanceVisible ? (u2kBalance || "0.00") : "••••••••"}
+                        </div>
+                        <div className="text-gray-400 text-xs">Rewards tokens</div>
                       </div>
                     </div>
-                  </div>
-                  
-                  {/* Support Requests Button */}
-                  <div className="flex items-center justify-center">
-                    <Button 
-                      className="bg-[#6544E4] hover:bg-[#5A3DD0] w-full h-14 text-base"
-                      disabled={!isConnected || !isCorrectNetwork}
-                    >
-                      Support Requests
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Button>
                   </div>
                 </div>
               </div>
             )}
           </CardContent>
         </Card>
+
+        {/* Create Request Section */}
+        <Card className="bg-[#1A1F2C] text-white border-none shadow-md">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xl">Create a new bill request</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-gray-400 text-sm mb-6">
+              Bundle your expenses into one smart request and send it directly
+              to your sponsor. Funds go straight to the service providers,
+              secure, transparent, and hassle-free.
+            </p>
+            <div className="space-y-4">
+              <Button 
+                className="w-full py-6 bg-[#6544E4] hover:bg-[#5335C5] text-white"
+                onClick={() => setIsCreateRequestOpen(true)}
+                disabled={!isConnected || !isCorrectNetwork}
+              >
+                Create an URGENT 2KAY Request
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full py-6 bg-transparent border-gray-700 text-white hover:bg-gray-800"
+                disabled={!isConnected || bills.address.length === 0}
+              >
+                See Previous Requests
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
-      
-      {/* Stats Cards Row */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        {metricsData.map((stat, index) => (
-          <StatCard 
-            key={index}
-            title={stat.title} 
-            value={stat.value}
-            icon={stat.icon}
-          />
-        ))}
-      </div>
-      
-      {/* Support Tiers */}
-      <Card className="mb-8 bg-white shadow-sm">
-        <CardHeader className="pb-3">
-          <div className="flex justify-between items-center">
-            <CardTitle className="text-lg font-medium">Support Rewards</CardTitle>
-            <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100">Current: Gold</Badge>
+
+      {/* Request History Section */}
+      <Card className="bg-[#1A1F2C] text-white border-none shadow-md">
+        <CardHeader className="pb-2">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-xl">Bill request history</CardTitle>
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <Search className="h-4 w-4 absolute left-2.5 top-2.5 text-gray-400" />
+                <Input
+                  placeholder="Search"
+                  className="pl-9 bg-gray-800 border-gray-700 text-white h-9"
+                />
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="bg-gray-800 border-gray-700 text-white hover:bg-gray-700"
+              >
+                <Filter className="h-4 w-4 mr-1" /> Filter by
+              </Button>
+              <Button variant="ghost" size="sm" className="text-[#6544E4]">
+                View all
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
-          <div className="mb-4">
-            <div className="flex justify-between items-center mb-2">
-              <div className="flex items-center">
-                <Medal className="text-[#6544E4] mr-2" size={18} />
-                <span className="font-medium text-sm">{supportNeeded} more supports to reach Platinum</span>
-              </div>
-              <span className="text-sm font-medium text-[#6544E4]">{supportProgress}%</span>
-            </div>
-            <Progress value={supportProgress} className="h-2 bg-gray-100" indicatorClassName="bg-[#6544E4]" />
-          </div>
-          
-          <div className="grid sm:grid-cols-3 gap-4">
-            <div className="border border-gray-200 rounded-lg p-3">
-              <div className="flex justify-between items-center mb-2">
-                <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">Silver</Badge>
-                <span className="text-xs font-medium">500 U2KAY</span>
-              </div>
-              <div className="text-sm text-gray-500">Support 3+ beneficiaries</div>
-            </div>
-            
-            <div className="border border-[#6544E4] rounded-lg p-3 bg-purple-50">
-              <div className="flex justify-between items-center mb-2">
-                <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100">Gold</Badge>
-                <span className="text-xs font-medium">1,000 U2KAY</span>
-              </div>
-              <div className="text-sm text-gray-500">Support 5+ beneficiaries</div>
-            </div>
-            
-            <div className="border border-gray-200 rounded-lg p-3">
-              <div className="flex justify-between items-center mb-2">
-                <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">Platinum</Badge>
-                <span className="text-xs font-medium">2,000 U2KAY</span>
-              </div>
-              <div className="text-sm text-gray-500">Support 10+ beneficiaries</div>
-            </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-700">
+                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    ID
+                  </th>
+                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    Request
+                  </th>
+                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    Sponsor
+                  </th>
+                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    Amount
+                  </th>
+                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    Request status
+                  </th>
+                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    Priority
+                  </th>
+                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    Created
+                  </th>
+                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {requestHistoryData.length > 0 ? (
+                  requestHistoryData.map((item) => (
+                    <tr key={item.id} className="border-b border-gray-800">
+                      <td className="py-4 text-sm">{item.id}</td>
+                      <td className="py-4 text-sm">{item.request}</td>
+                      <td className="py-4 text-sm">{item.sponsor}</td>
+                      <td className="py-4 text-sm">{item.amount}</td>
+                      <td className="py-4 text-sm">
+                        <span className={`px-2 py-1 ${item.statusColor} rounded-md text-xs`}>
+                          {item.status}
+                        </span>
+                      </td>
+                      <td className="py-4 text-sm">
+                        <span className="px-2 py-1 bg-red-900/30 text-red-400 rounded-md text-xs">
+                          {item.priority}
+                        </span>
+                      </td>
+                      <td className="py-4 text-sm">{item.created}</td>
+                      <td className="py-4 text-sm">
+                        <Button
+                          variant="link"
+                          className="text-[#6544E4] p-0 h-auto"
+                        >
+                          View more info
+                        </Button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={8} className="py-10 text-center text-gray-400">
+                      {isConnected 
+                        ? "No blockchain requests found. Create your first request!"
+                        : "Connect your wallet to view blockchain requests"}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </CardContent>
       </Card>
-      
-      {/* Bill Requests Section */}
-      <Card className="bg-white shadow-sm mb-8">
-        <CardHeader className="pb-3">
-          <div className="flex justify-between items-center">
-            <CardTitle className="text-lg font-medium">Pending Bill Requests</CardTitle>
-            <Button variant="ghost" className="text-[#6544E4] p-0 h-auto hover:bg-transparent hover:text-[#5A3DD0]">
-              See all
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {!isConnected ? (
-            <div className="text-center py-10 text-gray-500">
-              Connect your wallet to view pending bill requests
-            </div>
-          ) : bills.address && bills.address.filter(bill => bill.status === BillStatus.Pending).length > 0 ? (
-            <div className="space-y-4">
-              {bills.address
-                .filter(bill => bill.status === BillStatus.Pending)
-                .map((bill) => (
-                  <div key={bill.id.toString()} className="flex items-center justify-between border-b pb-4">
-                    <div className="flex items-start space-x-4">
-                      <div className="p-2 rounded-full bg-[#6544E4]/10">
-                        <CircleDollarSign size={18} className="text-[#6544E4]" />
-                      </div>
-                      <div>
-                        <div className="font-medium">{bill.description || `Bill Request #${bill.id}`}</div>
-                        <div className="text-sm text-gray-500">From: {shortenAddress(bill.beneficiary)}</div>
-                        <div className="text-sm font-medium text-[#6544E4]">
-                          {formatEthAmount(ethers.utils.formatEther(bill.amount))} ETH
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex space-x-2">
-                      <Button 
-                        size="sm" 
-                        className="bg-[#6544E4] hover:bg-[#5A3DD0]"
-                        onClick={() => {
-                          setSelectedBillForPayment({
-                            id: bill.id.toString(),
-                            amount: ethers.utils.formatEther(bill.amount),
-                            description: bill.description || `Bill Request #${bill.id}`,
-                            beneficiary: bill.beneficiary
-                          });
-                          setPaymentAmount(ethers.utils.formatEther(bill.amount));
-                          setIsPayDialogOpen(true);
-                        }}
-                      >
-                        Pay
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        className="border-[#6544E4] text-[#6544E4] hover:bg-[#6544E4]/10"
-                        onClick={() => {
-                          setSelectedBillForPayment({
-                            id: bill.id.toString(),
-                            amount: ethers.utils.formatEther(bill.amount),
-                            description: bill.description || `Bill Request #${bill.id}`,
-                            beneficiary: bill.beneficiary
-                          });
-                          setIsRejectDialogOpen(true);
-                        }}
-                      >
-                        Reject
-                      </Button>
-                    </div>
-                  </div>
+
+      {/* Create Request Modal */}
+      <Dialog open={isCreateRequestOpen} onOpenChange={setIsCreateRequestOpen}>
+        <DialogContent className="sm:max-w-[500px] bg-[#1A1F2C] text-white border-gray-700">
+          <DialogHeader>
+            <DialogTitle className="text-xl">Create Bill Request</DialogTitle>
+            <DialogDescription className="text-gray-400">
+              Submit a new bill request to your sponsor.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="sponsor" className="text-right text-sm font-medium text-gray-300">
+                Sponsor
+              </label>
+              <select
+                id="sponsor"
+                className="col-span-3 flex h-10 w-full rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white"
+                onChange={(e) => {
+                  const selectedId = e.target.value;
+                  const sponsor = mockSponsors.find(s => s.id === selectedId);
+                  if (sponsor) {
+                    setSelectedSponsor({
+                      id: sponsor.id,
+                      name: sponsor.name
+                    });
+                  }
+                }}
+              >
+                <option value="">Select a sponsor</option>
+                {mockSponsors.map(sponsor => (
+                  <option key={sponsor.id} value={sponsor.id}>{sponsor.name}</option>
                 ))}
+              </select>
             </div>
-          ) : (
-            <div className="text-center py-10 text-gray-500">
-              No pending bill requests
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="description" className="text-right text-sm font-medium text-gray-300">
+                Description
+              </label>
+              <Input
+                id="description"
+                name="description"
+                placeholder="Bill description"
+                className="col-span-3 bg-gray-800 border-gray-700 text-white"
+                value={newRequestData.description}
+                onChange={handleInputChange}
+              />
             </div>
-          )}
-        </CardContent>
-      </Card>
-      
-      {/* Recent Activity Section */}
-      <Card className="bg-white shadow-sm mb-8">
-        <CardHeader className="pb-3">
-          <div className="flex justify-between items-center">
-            <CardTitle className="text-lg font-medium">Recent Activity</CardTitle>
-            <Button variant="ghost" className="text-[#6544E4] p-0 h-auto hover:bg-transparent hover:text-[#5A3DD0]">
-              See all
-            </Button>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="amount" className="text-right text-sm font-medium text-gray-300">
+                Amount (ETH)
+              </label>
+              <Input
+                id="amount"
+                name="amount"
+                type="number"
+                step="0.001"
+                placeholder="0.00"
+                className="col-span-3 bg-gray-800 border-gray-700 text-white"
+                value={newRequestData.amount}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="destinationAddress" className="text-right text-sm font-medium text-gray-300">
+                Destination
+              </label>
+              <Input
+                id="destinationAddress"
+                name="destinationAddress"
+                placeholder="0x..."
+                className="col-span-3 bg-gray-800 border-gray-700 text-white"
+                value={newRequestData.destinationAddress}
+                onChange={handleInputChange}
+              />
+            </div>
           </div>
-        </CardHeader>
-        <CardContent>
-          {mockActivity.length > 0 ? (
-            <div className="space-y-4">
-              {mockActivity.slice(0, 3).map((activity) => (
-                <div key={activity.id} className="flex items-center justify-between border-b pb-3">
-                  <div className="flex items-start space-x-4">
-                    <div className="p-2 rounded-full bg-[#6544E4]/10">
-                      <Clock size={18} className="text-[#6544E4]" />
-                    </div>
-                    <div>
-                      <div className="font-medium">{activity.action}</div>
-                      <div className="text-sm text-gray-500">{activity.description}</div>
-                      {activity.reward && (
-                        <Badge className="mt-1 bg-green-100 text-green-800 hover:bg-green-100">{activity.reward}</Badge>
-                      )}
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-sm">{formatDate(activity.date)}</div>
-                    <div className="text-xs font-medium">{activity.amount}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-10 text-gray-500">
-              No activity yet
-            </div>
-          )}
-        </CardContent>
-      </Card>
-      
-      {/* Transactions Section */}
-      <Card className="bg-white shadow-sm">
-        <CardHeader className="pb-3">
-          <div className="flex justify-between items-center">
-            <CardTitle className="text-lg font-medium">Transactions</CardTitle>
-            <Button variant="ghost" className="text-[#6544E4] p-0 h-auto hover:bg-transparent hover:text-[#5A3DD0]">
-              See all
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={() => setIsCreateRequestOpen(false)}
+              className="bg-transparent border-gray-700 text-white hover:bg-gray-800"
+            >
+              Cancel
             </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {mockTransactions.length > 0 ? (
-            <div className="space-y-4">
-              {mockTransactions.map((tx) => (
-                <div key={tx.id} className="flex items-center justify-between border-b pb-3">
-                  <div className="flex items-start space-x-4">
-                    <div className={`p-2 rounded-full ${tx.type === "Sent" ? "bg-orange-100" : "bg-green-100"}`}>
-                      <ArrowRight size={16} className={tx.type === "Sent" ? "text-orange-600 rotate-45" : "text-green-600 -rotate-45"} />
-                    </div>
-                    <div>
-                      <div className="font-medium">{tx.type} {tx.amount}</div>
-                      <div className="text-sm text-gray-500">
-                        {tx.type === "Sent" ? `To: ${tx.recipient}` : `From: ${tx.sender}`}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-sm">{formatDate(tx.date)}</div>
-                    <div className="text-xs text-gray-500">{tx.status}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-10 text-gray-500">
-              No transactions yet
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Pay Bill Dialog */}
-      <Dialog open={isPayDialogOpen} onOpenChange={setIsPayDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Pay Bill Request</DialogTitle>
-            <DialogDescription>
-              You're about to pay the following bill request:
-            </DialogDescription>
-          </DialogHeader>
-          
-          {selectedBillForPayment && (
-            <>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <span className="text-right text-sm font-medium">Description:</span>
-                  <span className="col-span-3">{selectedBillForPayment.description}</span>
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <span className="text-right text-sm font-medium">Beneficiary:</span>
-                  <span className="col-span-3">{shortenAddress(selectedBillForPayment.beneficiary)}</span>
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <span className="text-right text-sm font-medium">Amount (ETH):</span>
-                  <div className="col-span-3">
-                    <input
-                      type="number"
-                      value={paymentAmount}
-                      onChange={(e) => setPaymentAmount(e.target.value)}
-                      className="w-full p-2 border rounded"
-                      step="0.001"
-                      min={0}
-                    />
-                  </div>
-                </div>
-              </div>
-              
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setIsPayDialogOpen(false)}>Cancel</Button>
-                <Button
-                  onClick={handlePayBill}
-                  className="bg-[#6544E4] hover:bg-[#5A3DD0]"
-                >
-                  Confirm Payment
-                </Button>
-              </DialogFooter>
-            </>
-          )}
+            <Button 
+              onClick={handleCreateRequest}
+              className="bg-[#6544E4] hover:bg-[#5335C5] text-white"
+            >
+              Create Request
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
-      
-      {/* Reject Bill Dialog */}
-      <Dialog open={isRejectDialogOpen} onOpenChange={setIsRejectDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Reject Bill Request</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to reject this bill request?
-            </DialogDescription>
-          </DialogHeader>
-          
-          {selectedBillForPayment && (
-            <>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <span className="text-right text-sm font-medium">Description:</span>
-                  <span className="col-span-3">{selectedBillForPayment.description}</span>
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <span className="text-right text-sm font-medium">Beneficiary:</span>
-                  <span className="col-span-3">{shortenAddress(selectedBillForPayment.beneficiary)}</span>
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <span className="text-right text-sm font-medium">Amount:</span>
-                  <span className="col-span-3">{selectedBillForPayment.amount} ETH</span>
-                </div>
-              </div>
-              
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setIsRejectDialogOpen(false)}>Cancel</Button>
-                <Button
-                  variant="destructive"
-                  onClick={handleRejectBill}
-                >
-                  Reject Bill
-                </Button>
-              </DialogFooter>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
-    </div>
-  );
-};
-
-// StatCard component for the stats section
-const StatCard = ({ title, value, icon }) => {
-  return (
-    <div className="p-4 rounded-lg border border-gray-200 bg-white">
-      <div className="flex items-start gap-3">
-        <div className="p-2.5 rounded-full bg-[#6544E4]/10 mt-0.5">
-          <div className="text-[#6544E4]">{icon}</div>
-        </div>
-        <div>
-          <div className="text-gray-500 text-sm">{title}</div>
-          <div className="font-medium text-xl mt-1">{value}</div>
-        </div>
-      </div>
     </div>
   );
 };

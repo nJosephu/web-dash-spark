@@ -23,6 +23,7 @@ import { useBlockchainBills } from "@/hooks/useBlockchainBills";
 import { shortenAddress, formatEthAmount } from "@/config/blockchain";
 import { ethers } from "ethers";
 import { NETWORK } from "@/config/blockchain";
+import MetaMaskAlert from "@/components/blockchain/MetaMaskAlert";
 
 const Web3Wallet = () => {
   const { user } = useAuth();
@@ -36,7 +37,9 @@ const Web3Wallet = () => {
     connectWallet,
     isCorrectNetwork,
     switchNetwork,
-    refreshBalances
+    refreshBalances,
+    showMetaMaskAlert,
+    setShowMetaMaskAlert
   } = useWeb3();
   const { bills, isLoading: isLoadingBills } = useBlockchainBills();
   
@@ -195,6 +198,14 @@ const Web3Wallet = () => {
   const toggleBalanceVisibility = () => {
     setBalanceVisible(!balanceVisible);
   };
+  
+  // Handle MetaMask connect attempt
+  const handleConnectWallet = async () => {
+    const result = await connectWallet();
+    if (!result && !window.ethereum) {
+      setShowMetaMaskAlert(true);
+    }
+  };
 
   // Request history from blockchain bills
   const requestHistoryData = bills.address ? bills.address.map((bill, index) => {
@@ -214,6 +225,12 @@ const Web3Wallet = () => {
 
   return (
     <div className="py-6">
+      {/* MetaMask Alert Dialog */}
+      <MetaMaskAlert 
+        isOpen={showMetaMaskAlert} 
+        onClose={() => setShowMetaMaskAlert(false)} 
+      />
+      
       {/* Stats cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {statsData.map((stat, index) => (
@@ -280,7 +297,7 @@ const Web3Wallet = () => {
                 </p>
                 <Button 
                   className="bg-[#6544E4] hover:bg-[#5A3DD0]"
-                  onClick={connectWallet}
+                  onClick={handleConnectWallet}
                   disabled={isConnecting}
                 >
                   {isConnecting ? "Connecting..." : "Connect Wallet"}
