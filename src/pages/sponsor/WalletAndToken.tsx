@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useWeb3 } from "@/context/Web3Context";
 import MetaMaskAlert from "@/components/blockchain/MetaMaskAlert";
@@ -153,14 +152,27 @@ const WalletAndToken = () => {
           billId: selectedBill.id,
           amount: ethers.utils.formatEther(selectedBill.amount)
         });
+        toast({
+          title: "Payment Successful",
+          description: `Payment with ${paymentType} processed successfully`,
+          variant: "default",
+        });
       } else {
         await payBillWithU2K(selectedBill.id);
+        toast({
+          title: "Payment Successful",
+          description: `Payment with ${paymentType} processed successfully`,
+          variant: "default",
+        });
       }
       setIsPaymentDialogOpen(false);
-      toast.success(`Payment with ${paymentType} processed successfully`);
     } catch (error) {
       console.error("Payment error:", error);
-      toast.error(`Failed to process payment: ${error.message}`);
+      toast({
+        title: "Payment Failed",
+        description: `Failed to process payment: ${error.message}`,
+        variant: "destructive",
+      });
     }
   };
 
@@ -168,10 +180,18 @@ const WalletAndToken = () => {
   const handleRejectBill = async (billId: string) => {
     try {
       await rejectBill(billId);
-      toast.success("Bill rejected successfully");
+      toast({
+        title: "Bill Rejected",
+        description: "Bill rejected successfully",
+        variant: "default",
+      });
     } catch (error) {
       console.error("Rejection error:", error);
-      toast.error(`Failed to reject bill: ${error.message}`);
+      toast({
+        title: "Rejection Failed",
+        description: `Failed to reject bill: ${error.message}`,
+        variant: "destructive",
+      });
     }
   };
 
