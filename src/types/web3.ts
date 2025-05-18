@@ -18,4 +18,6 @@ export interface Web3ContextType {
   refreshBalances: () => Promise<void>;
   showMetaMaskAlert: boolean;
   setShowMetaMaskAlert: (show: boolean) => void;
+  isTokenContractAvailable: boolean;
+  isBillContractAvailable: boolean;
 }
