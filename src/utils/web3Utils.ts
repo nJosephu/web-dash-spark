@@ -11,7 +11,15 @@ export const isContractAvailable = async (
   try {
     // Check if there is code at the address (contracts have code, regular addresses don't)
     const code = await provider.getCode(contractAddress);
-    return code !== "0x"; // If code exists, contract exists
+    console.log(`Contract check at ${contractAddress}:`, code);
+    
+    if (code === "0x") {
+      console.warn(`No contract found at address ${contractAddress}`);
+      return false;
+    }
+    
+    console.log(`Contract found at ${contractAddress}`);
+    return true; // If code exists, contract exists
   } catch (error) {
     console.error("Error checking contract availability:", error);
     return false;
@@ -25,6 +33,17 @@ export const initializeContracts = async (provider: ethers.providers.Web3Provide
   let billPaymentContract = null;
 
   try {
+    // Get current network to provide better error information
+    const network = await provider.getNetwork();
+    console.log("Connected to network:", { 
+      name: network.name, 
+      chainId: network.chainId 
+    });
+    console.log("Required network:", { 
+      name: NETWORK.chainName, 
+      chainId: NETWORK.chainId 
+    });
+    
     // Check if token contract exists before initializing
     const tokenContractAvailable = await isContractAvailable(provider, CONTRACT_ADDRESSES.u2kToken);
     
@@ -34,8 +53,9 @@ export const initializeContracts = async (provider: ethers.providers.Web3Provide
         U2K_TOKEN_ABI,
         signer
       );
+      console.log("U2K Token contract initialized successfully");
     } else {
-      console.log("U2K Token contract not available on this network");
+      console.warn("U2K Token contract not available at address", CONTRACT_ADDRESSES.u2kToken);
     }
     
     // Check if bill payment contract exists before initializing
@@ -47,8 +67,9 @@ export const initializeContracts = async (provider: ethers.providers.Web3Provide
         BILL_PAYMENT_ABI,
         signer
       );
+      console.log("Bill Payment contract initialized successfully");
     } else {
-      console.log("Bill Payment contract not available on this network");
+      console.warn("Bill Payment contract not available at address", CONTRACT_ADDRESSES.billPayment);
     }
   } catch (error) {
     console.error("Error initializing contracts:", error);
@@ -94,16 +115,20 @@ export const switchToNetwork = async (): Promise<boolean> => {
   if (!window.ethereum) return false;
   
   try {
+    console.log(`Attempting to switch to network with chainId: 0x${NETWORK.chainId.toString(16)}`);
+    
     await window.ethereum.request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId: `0x${NETWORK.chainId.toString(16)}` }],
     });
     
+    console.log("Successfully switched to network");
     return true;
   } catch (switchError: any) {
     // This error code indicates that the chain has not been added to MetaMask
     if (switchError.code === 4902) {
       try {
+        console.log("Network not found in wallet, attempting to add it");
         await window.ethereum.request({
           method: 'wallet_addEthereumChain',
           params: [
@@ -116,6 +141,7 @@ export const switchToNetwork = async (): Promise<boolean> => {
             },
           ],
         });
+        console.log("Network successfully added to wallet");
         return true;
       } catch (addError) {
         console.error("Error adding chain:", addError);
