@@ -3,9 +3,9 @@
 
 // Network details
 export const NETWORK = {
-  chainId: 84532, // Base Sepolia Testnet - correct chain ID
+  chainId: 11155111, // Base Sepolia Testnet - updated to match documentation
   chainName: "Base Sepolia Testnet",
-  rpcUrl: "https://sepolia.base.org", // Using official Base Sepolia RPC
+  rpcUrl: "https://base-sepolia.g.alchemy.com/v2/E8dbOUE0UW0805txb2tZSsK7icYnHDm7/", // Using Alchemy RPC from documentation
   blockExplorerUrl: "https://sepolia-explorer.base.org/",
   nativeCurrency: {
     name: "Ethereum",
