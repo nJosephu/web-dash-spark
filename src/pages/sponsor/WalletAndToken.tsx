@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useWeb3 } from "@/context/Web3Context";
 import MetaMaskAlert from "@/components/blockchain/MetaMaskAlert";
@@ -16,7 +17,9 @@ import {
   Eye,
   EyeOff,
   ExternalLink,
-  AlertCircle
+  AlertCircle,
+  Check,
+  X
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useBlockchainBills } from "@/hooks/useBlockchainBills";
@@ -38,43 +41,24 @@ const WalletAndToken = () => {
     switchNetwork,
     refreshBalances,
     showMetaMaskAlert,
-    setShowMetaMaskAlert
+    setShowMetaMaskAlert,
+    isTokenContractAvailable,
+    isBillContractAvailable
   } = useWeb3();
-  const { bills, isLoading: isLoadingBills } = useBlockchainBills();
+  
+  const {
+    bills,
+    isLoading: isLoadingBills,
+    payBillWithNative,
+    payBillWithU2K,
+    rejectBill,
+    getBillStatusLabel
+  } = useBlockchainBills();
   
   const [balanceVisible, setBalanceVisible] = useState(true);
-  const [isCreateRequestOpen, setIsCreateRequestOpen] = useState(false);
-  const [newRequestData, setNewRequestData] = useState({
-    description: "",
-    amount: "",
-    destinationAddress: ""
-  });
-
-  // Create a reference to sponsor selector data
-  const [selectedSponsor, setSelectedSponsor] = useState({
-    id: "",
-    name: ""
-  });
-
-  // Mock sponsors data - in a real app would come from API
-  const mockSponsors = [
-    { id: "sponsor1", name: "John Sponsor", address: "0x1234...5678" },
-    { id: "sponsor2", name: "Mary Supporter", address: "0xabcd...efgh" },
-  ];
-
-  // Convert bill status to human-readable text and color
-  const getBillStatusInfo = (status: number) => {
-    switch (status) {
-      case 0:
-        return { label: "Pending", color: "bg-yellow-900/30 text-yellow-400" };
-      case 1:
-        return { label: "Completed", color: "bg-green-900/30 text-green-400" };
-      case 2:
-        return { label: "Rejected", color: "bg-red-900/30 text-red-400" };
-      default:
-        return { label: "Unknown", color: "bg-gray-400/30 text-gray-400" };
-    }
-  };
+  const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
+  const [selectedBill, setSelectedBill] = useState<any>(null);
+  const [paymentType, setPaymentType] = useState<'ETH' | 'U2K'>('ETH');
 
   // Calculate stats based on blockchain bills
   const calculateStats = () => {
@@ -104,7 +88,7 @@ const WalletAndToken = () => {
     
     return [
       {
-        title: "Total bills Requested",
+        title: "Total Bills Received",
         value: `${totalRequested.toFixed(6)} ETH`,
         increase: totalRequested > 0 ? "Active" : "No requests",
         increaseText: "Total on blockchain",
@@ -115,7 +99,7 @@ const WalletAndToken = () => {
         title: "Approved Bill Requests",
         value: `${approved.toFixed(6)} ETH`,
         increase: approved > 0 ? "Paid" : "None yet",
-        increaseText: "Successful requests",
+        increaseText: "Successful payments",
         color: "bg-purple-500",
         icon: <CircleDollarSign className="h-4 w-4" />,
       },
@@ -123,7 +107,7 @@ const WalletAndToken = () => {
         title: "Rejected Bill Requests",
         value: `${rejected.toFixed(6)} ETH`,
         increase: rejected > 0 ? "Rejected" : "None",
-        increaseText: "Unsuccessful requests",
+        increaseText: "Denied requests",
         color: "bg-red-500",
         icon: <CircleDollarSign className="h-4 w-4" />,
       },
@@ -131,7 +115,7 @@ const WalletAndToken = () => {
         title: "Pending Bill Requests",
         value: `${pending.toFixed(6)} ETH`,
         increase: pending > 0 ? "Awaiting" : "None pending",
-        increaseText: "Under review",
+        increaseText: "Need your review",
         color: "bg-yellow-500",
         icon: <CircleDollarSign className="h-4 w-4" />,
       },
@@ -139,60 +123,6 @@ const WalletAndToken = () => {
   };
 
   const statsData = calculateStats();
-
-  // Handle modal input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setNewRequestData({
-      ...newRequestData,
-      [name]: value
-    });
-  };
-
-  // Handle create request
-  const handleCreateRequest = async () => {
-    if (!selectedSponsor.id) {
-      toast({
-        title: "Error",
-        description: "Please select a sponsor",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (!newRequestData.description || !newRequestData.amount || !newRequestData.destinationAddress) {
-      toast({
-        title: "Error",
-        description: "Please fill all fields",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    try {
-      // Would be integrated with the createBill function
-      toast({
-        title: "Success",
-        description: "Bill request created successfully"
-      });
-      setIsCreateRequestOpen(false);
-      setNewRequestData({
-        description: "",
-        amount: "",
-        destinationAddress: ""
-      });
-      setSelectedSponsor({
-        id: "",
-        name: ""
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to create bill request",
-        variant: "destructive"
-      });
-    }
-  };
 
   const toggleBalanceVisibility = () => {
     setBalanceVisible(!balanceVisible);
@@ -206,21 +136,79 @@ const WalletAndToken = () => {
     }
   };
 
-  // Request history from blockchain bills
-  const requestHistoryData = bills.address ? bills.address.map((bill, index) => {
-    const status = getBillStatusInfo(bill.status);
-    return {
-      id: bill.id.toString(),
-      request: bill.description || "Blockchain Bill Request",
-      sponsor: shortenAddress(bill.sponsor),
-      status: status.label,
-      statusColor: status.color,
-      priority: parseFloat(ethers.utils.formatEther(bill.amount)) > 0.1 ? "High" : "Medium",
-      created: new Date(bill.createdAt * 1000).toLocaleDateString(),
-      dueDate: "-",
-      amount: `${formatEthAmount(ethers.utils.formatEther(bill.amount))} ETH`
-    };
-  }) : [];
+  // Handle opening the payment dialog
+  const handleOpenPaymentDialog = (bill: any, type: 'ETH' | 'U2K') => {
+    setSelectedBill(bill);
+    setPaymentType(type);
+    setIsPaymentDialogOpen(true);
+  };
+
+  // Handle payment confirmation
+  const handleConfirmPayment = async () => {
+    if (!selectedBill) return;
+    
+    try {
+      if (paymentType === 'ETH') {
+        await payBillWithNative({
+          billId: selectedBill.id,
+          amount: ethers.utils.formatEther(selectedBill.amount)
+        });
+      } else {
+        await payBillWithU2K(selectedBill.id);
+      }
+      setIsPaymentDialogOpen(false);
+      toast.success(`Payment with ${paymentType} processed successfully`);
+    } catch (error) {
+      console.error("Payment error:", error);
+      toast.error(`Failed to process payment: ${error.message}`);
+    }
+  };
+
+  // Handle bill rejection
+  const handleRejectBill = async (billId: string) => {
+    try {
+      await rejectBill(billId);
+      toast.success("Bill rejected successfully");
+    } catch (error) {
+      console.error("Rejection error:", error);
+      toast.error(`Failed to reject bill: ${error.message}`);
+    }
+  };
+
+  // Format the bills for display
+  const pendingBillsData = bills.address ? bills.address
+    .filter(bill => bill.status === 0) // Only show pending bills
+    .map((bill) => {
+      const status = getBillStatusLabel(bill.status);
+      return {
+        id: bill.id.toString(),
+        request: bill.description || "Blockchain Bill Request",
+        beneficiary: shortenAddress(bill.beneficiary || ''),
+        status: status.label,
+        statusColor: status.color,
+        priority: parseFloat(ethers.utils.formatEther(bill.amount)) > 0.1 ? "High" : "Medium",
+        created: new Date(bill.createdAt * 1000).toLocaleDateString(),
+        amount: `${formatEthAmount(ethers.utils.formatEther(bill.amount))} ETH`,
+        rawAmount: bill.amount
+      };
+    }) : [];
+
+  const processedBillsData = bills.address ? bills.address
+    .filter(bill => bill.status !== 0) // Only show processed bills
+    .map((bill) => {
+      const status = getBillStatusLabel(bill.status);
+      return {
+        id: bill.id.toString(),
+        request: bill.description || "Blockchain Bill Request",
+        beneficiary: shortenAddress(bill.beneficiary || ''),
+        status: status.label,
+        statusColor: status.color,
+        priority: parseFloat(ethers.utils.formatEther(bill.amount)) > 0.1 ? "High" : "Medium",
+        created: new Date(bill.createdAt * 1000).toLocaleDateString(),
+        processed: bill.processedAt ? new Date(bill.processedAt * 1000).toLocaleDateString() : '-',
+        amount: `${formatEthAmount(ethers.utils.formatEther(bill.amount))} ETH`,
+      };
+    }) : [];
 
   return (
     <div className="py-6">
@@ -267,7 +255,7 @@ const WalletAndToken = () => {
         ))}
       </div>
 
-      {/* Wallet and Request Section */}
+      {/* Wallet and Pay Bills Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         {/* Wallet Section */}
         <Card className="bg-[#1A1F2C] text-white border-none shadow-md">
@@ -292,7 +280,7 @@ const WalletAndToken = () => {
                 </div>
                 <h3 className="font-medium mb-2">Connect Your Wallet</h3>
                 <p className="text-gray-400 text-sm text-center mb-6 max-w-md">
-                  Connect your crypto wallet to view your balance and support requests
+                  Connect your crypto wallet to view your balance and manage bill payments
                 </p>
                 <Button 
                   className="bg-[#6544E4] hover:bg-[#5A3DD0]"
@@ -379,7 +367,11 @@ const WalletAndToken = () => {
                         <div className="font-semibold text-2xl">
                           {balanceVisible ? (u2kBalance || "0.00") : "••••••••"}
                         </div>
-                        <div className="text-gray-400 text-xs">Rewards tokens</div>
+                        <div className="text-gray-400 text-xs">
+                          {isTokenContractAvailable 
+                            ? "Available for payments" 
+                            : "Token contract not available"}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -389,42 +381,83 @@ const WalletAndToken = () => {
           </CardContent>
         </Card>
 
-        {/* Create Request Section */}
+        {/* Pay Bills Section */}
         <Card className="bg-[#1A1F2C] text-white border-none shadow-md">
           <CardHeader className="pb-2">
-            <CardTitle className="text-xl">Create a new bill request</CardTitle>
+            <CardTitle className="text-xl">Pay Bills</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-gray-400 text-sm mb-6">
-              Bundle your expenses into one smart request and send it directly
-              to your sponsor. Funds go straight to the service providers,
-              secure, transparent, and hassle-free.
+              Review and pay incoming bill requests from beneficiaries. You can pay with ETH or U2K tokens.
+              All transactions are recorded on the blockchain for transparency.
             </p>
-            <div className="space-y-4">
-              <Button 
-                className="w-full py-6 bg-[#6544E4] hover:bg-[#5335C5] text-white"
-                onClick={() => setIsCreateRequestOpen(true)}
-                disabled={!isConnected || !isCorrectNetwork}
-              >
-                Create an URGENT 2KAY Request
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full py-6 bg-transparent border-gray-700 text-white hover:bg-gray-800"
-                disabled={!isConnected || bills.address.length === 0}
-              >
-                See Previous Requests
-              </Button>
-            </div>
+            
+            {!isBillContractAvailable && (
+              <div className="bg-yellow-900/20 border border-yellow-900/50 text-yellow-400 px-4 py-3 rounded-lg mb-6">
+                <p className="font-medium">Bill Contract Not Available</p>
+                <p className="text-sm">The bill payment contract is not available on this network. Please switch to Base Sepolia Testnet.</p>
+              </div>
+            )}
+            
+            {pendingBillsData.length === 0 ? (
+              <div className="text-center py-6 text-gray-400">
+                {isConnected 
+                  ? "No pending bill requests to review"
+                  : "Connect your wallet to view pending bill requests"}
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <p className="font-medium text-white">Pending Payments</p>
+                {pendingBillsData.map((bill) => (
+                  <div key={bill.id} className="bg-gray-800/50 rounded-lg p-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <div>
+                        <p className="text-sm font-medium">{bill.request}</p>
+                        <p className="text-xs text-gray-400">From: {bill.beneficiary}</p>
+                      </div>
+                      <p className="font-medium">{bill.amount}</p>
+                    </div>
+                    <div className="flex justify-end space-x-2 mt-3">
+                      <Button 
+                        variant="outline"
+                        size="sm"
+                        className="bg-transparent border-red-500/30 text-red-400 hover:bg-red-500/20"
+                        onClick={() => handleRejectBill(bill.id)}
+                        disabled={!isConnected || !isCorrectNetwork || !isBillContractAvailable}
+                      >
+                        <X className="h-4 w-4 mr-1" /> Reject
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="bg-transparent border-[#6544E4]/30 text-[#6544E4] hover:bg-[#6544E4]/20"
+                        onClick={() => handleOpenPaymentDialog(bill, 'U2K')}
+                        disabled={!isConnected || !isCorrectNetwork || !isTokenContractAvailable || !isBillContractAvailable}
+                      >
+                        Pay with U2K
+                      </Button>
+                      <Button
+                        size="sm"
+                        className="bg-[#6544E4] hover:bg-[#5335C5] text-white"
+                        onClick={() => handleOpenPaymentDialog(bill, 'ETH')}
+                        disabled={!isConnected || !isCorrectNetwork || !isBillContractAvailable}
+                      >
+                        <Check className="h-4 w-4 mr-1" /> Pay with ETH
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
 
-      {/* Request History Section */}
+      {/* Bills History Section */}
       <Card className="bg-[#1A1F2C] text-white border-none shadow-md">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-xl">Bill request history</CardTitle>
+            <CardTitle className="text-xl">Bill Payment History</CardTitle>
             <div className="flex items-center gap-2">
               <div className="relative">
                 <Search className="h-4 w-4 absolute left-2.5 top-2.5 text-gray-400" />
@@ -458,50 +491,46 @@ const WalletAndToken = () => {
                     Request
                   </th>
                   <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    Sponsor
+                    Beneficiary
                   </th>
                   <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Amount
                   </th>
                   <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    Request status
-                  </th>
-                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    Priority
+                    Status
                   </th>
                   <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Created
                   </th>
                   <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    Action
+                    Processed
+                  </th>
+                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    Actions
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {requestHistoryData.length > 0 ? (
-                  requestHistoryData.map((item) => (
+                {processedBillsData.length > 0 ? (
+                  processedBillsData.map((item) => (
                     <tr key={item.id} className="border-b border-gray-800">
                       <td className="py-4 text-sm">{item.id}</td>
                       <td className="py-4 text-sm">{item.request}</td>
-                      <td className="py-4 text-sm">{item.sponsor}</td>
+                      <td className="py-4 text-sm">{item.beneficiary}</td>
                       <td className="py-4 text-sm">{item.amount}</td>
                       <td className="py-4 text-sm">
                         <span className={`px-2 py-1 ${item.statusColor} rounded-md text-xs`}>
                           {item.status}
                         </span>
                       </td>
-                      <td className="py-4 text-sm">
-                        <span className="px-2 py-1 bg-red-900/30 text-red-400 rounded-md text-xs">
-                          {item.priority}
-                        </span>
-                      </td>
                       <td className="py-4 text-sm">{item.created}</td>
+                      <td className="py-4 text-sm">{item.processed}</td>
                       <td className="py-4 text-sm">
                         <Button
                           variant="link"
                           className="text-[#6544E4] p-0 h-auto"
                         >
-                          View more info
+                          View details
                         </Button>
                       </td>
                     </tr>
@@ -510,8 +539,8 @@ const WalletAndToken = () => {
                   <tr>
                     <td colSpan={8} className="py-10 text-center text-gray-400">
                       {isConnected 
-                        ? "No blockchain requests found. Create your first request!"
-                        : "Connect your wallet to view blockchain requests"}
+                        ? "No processed bills found."
+                        : "Connect your wallet to view bill payment history"}
                     </td>
                   </tr>
                 )}
@@ -521,95 +550,50 @@ const WalletAndToken = () => {
         </CardContent>
       </Card>
 
-      {/* Create Request Modal */}
-      <Dialog open={isCreateRequestOpen} onOpenChange={setIsCreateRequestOpen}>
+      {/* Payment Confirmation Dialog */}
+      <Dialog open={isPaymentDialogOpen} onOpenChange={setIsPaymentDialogOpen}>
         <DialogContent className="sm:max-w-[500px] bg-[#1A1F2C] text-white border-gray-700">
           <DialogHeader>
-            <DialogTitle className="text-xl">Create Bill Request</DialogTitle>
+            <DialogTitle className="text-xl">Confirm Payment</DialogTitle>
             <DialogDescription className="text-gray-400">
-              Submit a new bill request to your sponsor.
+              You are about to pay the following bill with {paymentType}
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="sponsor" className="text-right text-sm font-medium text-gray-300">
-                Sponsor
-              </label>
-              <select
-                id="sponsor"
-                className="col-span-3 flex h-10 w-full rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-sm text-white"
-                onChange={(e) => {
-                  const selectedId = e.target.value;
-                  const sponsor = mockSponsors.find(s => s.id === selectedId);
-                  if (sponsor) {
-                    setSelectedSponsor({
-                      id: sponsor.id,
-                      name: sponsor.name
-                    });
-                  }
-                }}
-              >
-                <option value="">Select a sponsor</option>
-                {mockSponsors.map(sponsor => (
-                  <option key={sponsor.id} value={sponsor.id}>{sponsor.name}</option>
-                ))}
-              </select>
+          {selectedBill && (
+            <div className="py-4">
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Description:</span>
+                  <span>{selectedBill.request}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Beneficiary:</span>
+                  <span>{selectedBill.beneficiary}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Amount:</span>
+                  <span className="font-medium">{selectedBill.amount}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Payment method:</span>
+                  <span>{paymentType}</span>
+                </div>
+              </div>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="description" className="text-right text-sm font-medium text-gray-300">
-                Description
-              </label>
-              <Input
-                id="description"
-                name="description"
-                placeholder="Bill description"
-                className="col-span-3 bg-gray-800 border-gray-700 text-white"
-                value={newRequestData.description}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="amount" className="text-right text-sm font-medium text-gray-300">
-                Amount (ETH)
-              </label>
-              <Input
-                id="amount"
-                name="amount"
-                type="number"
-                step="0.001"
-                placeholder="0.00"
-                className="col-span-3 bg-gray-800 border-gray-700 text-white"
-                value={newRequestData.amount}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <label htmlFor="destinationAddress" className="text-right text-sm font-medium text-gray-300">
-                Destination
-              </label>
-              <Input
-                id="destinationAddress"
-                name="destinationAddress"
-                placeholder="0x..."
-                className="col-span-3 bg-gray-800 border-gray-700 text-white"
-                value={newRequestData.destinationAddress}
-                onChange={handleInputChange}
-              />
-            </div>
-          </div>
+          )}
           <DialogFooter>
             <Button 
               variant="outline" 
-              onClick={() => setIsCreateRequestOpen(false)}
+              onClick={() => setIsPaymentDialogOpen(false)}
               className="bg-transparent border-gray-700 text-white hover:bg-gray-800"
             >
               Cancel
             </Button>
             <Button 
-              onClick={handleCreateRequest}
+              onClick={handleConfirmPayment}
               className="bg-[#6544E4] hover:bg-[#5335C5] text-white"
             >
-              Create Request
+              Confirm Payment
             </Button>
           </DialogFooter>
         </DialogContent>

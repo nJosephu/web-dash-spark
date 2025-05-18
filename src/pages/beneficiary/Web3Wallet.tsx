@@ -1,9 +1,8 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -15,7 +14,8 @@ import {
   Eye,
   EyeOff,
   ExternalLink,
-  AlertCircle
+  AlertCircle,
+  Send
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useWeb3 } from "@/context/Web3Context";
@@ -24,6 +24,7 @@ import { shortenAddress, formatEthAmount } from "@/config/blockchain";
 import { ethers } from "ethers";
 import { NETWORK } from "@/config/blockchain";
 import MetaMaskAlert from "@/components/blockchain/MetaMaskAlert";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 
 const Web3Wallet = () => {
   const { user } = useAuth();
@@ -39,9 +40,17 @@ const Web3Wallet = () => {
     switchNetwork,
     refreshBalances,
     showMetaMaskAlert,
-    setShowMetaMaskAlert
+    setShowMetaMaskAlert,
+    isBillContractAvailable
   } = useWeb3();
-  const { bills, isLoading: isLoadingBills } = useBlockchainBills();
+  
+  const { 
+    bills, 
+    isLoading: isLoadingBills, 
+    getBillStatusLabel,
+    createBill, 
+    isCreatingBill 
+  } = useBlockchainBills();
   
   const [balanceVisible, setBalanceVisible] = useState(true);
   const [isCreateRequestOpen, setIsCreateRequestOpen] = useState(false);
@@ -54,28 +63,15 @@ const Web3Wallet = () => {
   // Create a reference to sponsor selector data
   const [selectedSponsor, setSelectedSponsor] = useState({
     id: "",
-    name: ""
+    name: "",
+    address: ""
   });
 
   // Mock sponsors data - in a real app would come from API
   const mockSponsors = [
-    { id: "sponsor1", name: "John Sponsor", address: "0x1234...5678" },
-    { id: "sponsor2", name: "Mary Supporter", address: "0xabcd...efgh" },
+    { id: "sponsor1", name: "John Sponsor", address: "0x1234567890123456789012345678901234567890" },
+    { id: "sponsor2", name: "Mary Supporter", address: "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd" },
   ];
-
-  // Convert bill status to human-readable text and color
-  const getBillStatusInfo = (status: number) => {
-    switch (status) {
-      case 0:
-        return { label: "Pending", color: "bg-yellow-900/30 text-yellow-400" };
-      case 1:
-        return { label: "Completed", color: "bg-green-900/30 text-green-400" };
-      case 2:
-        return { label: "Rejected", color: "bg-red-900/30 text-red-400" };
-      default:
-        return { label: "Unknown", color: "bg-gray-400/30 text-gray-400" };
-    }
-  };
 
   // Calculate stats based on blockchain bills
   const calculateStats = () => {
@@ -105,7 +101,7 @@ const Web3Wallet = () => {
     
     return [
       {
-        title: "Total bills Requested",
+        title: "Total Requested",
         value: `${totalRequested.toFixed(6)} ETH`,
         increase: totalRequested > 0 ? "Active" : "No requests",
         increaseText: "Total on blockchain",
@@ -113,15 +109,15 @@ const Web3Wallet = () => {
         icon: <CircleDollarSign className="h-4 w-4" />,
       },
       {
-        title: "Approved Bill Requests",
+        title: "Approved Requests",
         value: `${approved.toFixed(6)} ETH`,
-        increase: approved > 0 ? "Paid" : "None yet",
+        increase: approved > 0 ? "Received" : "None yet",
         increaseText: "Successful requests",
         color: "bg-purple-500",
         icon: <CircleDollarSign className="h-4 w-4" />,
       },
       {
-        title: "Rejected Bill Requests",
+        title: "Rejected Requests",
         value: `${rejected.toFixed(6)} ETH`,
         increase: rejected > 0 ? "Rejected" : "None",
         increaseText: "Unsuccessful requests",
@@ -129,7 +125,7 @@ const Web3Wallet = () => {
         icon: <CircleDollarSign className="h-4 w-4" />,
       },
       {
-        title: "Pending Bill Requests",
+        title: "Pending Requests",
         value: `${pending.toFixed(6)} ETH`,
         increase: pending > 0 ? "Awaiting" : "None pending",
         increaseText: "Under review",
@@ -152,7 +148,7 @@ const Web3Wallet = () => {
 
   // Handle create request
   const handleCreateRequest = async () => {
-    if (!selectedSponsor.id) {
+    if (!selectedSponsor.id || !selectedSponsor.address) {
       toast({
         title: "Error",
         description: "Please select a sponsor",
@@ -161,21 +157,35 @@ const Web3Wallet = () => {
       return;
     }
 
-    if (!newRequestData.description || !newRequestData.amount || !newRequestData.destinationAddress) {
+    if (!newRequestData.description || !newRequestData.amount) {
       toast({
         title: "Error",
-        description: "Please fill all fields",
+        description: "Please fill all required fields",
         variant: "destructive"
       });
       return;
     }
 
     try {
-      // Would be integrated with the createBill function
-      toast({
-        title: "Success",
-        description: "Bill request created successfully"
+      // Use the current wallet address if no destination is specified
+      const destinationAddress = newRequestData.destinationAddress.trim() || address;
+      
+      if (!destinationAddress) {
+        toast({
+          title: "Error",
+          description: "Destination address is required",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      await createBill({
+        sponsorId: selectedSponsor.id,
+        paymentDestination: destinationAddress,
+        amount: parseFloat(newRequestData.amount),
+        description: newRequestData.description
       });
+      
       setIsCreateRequestOpen(false);
       setNewRequestData({
         description: "",
@@ -184,12 +194,13 @@ const Web3Wallet = () => {
       });
       setSelectedSponsor({
         id: "",
-        name: ""
+        name: "",
+        address: ""
       });
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: "Failed to create bill request",
+        description: `Failed to create bill request: ${error.message}`,
         variant: "destructive"
       });
     }
@@ -198,7 +209,7 @@ const Web3Wallet = () => {
   const toggleBalanceVisibility = () => {
     setBalanceVisible(!balanceVisible);
   };
-  
+
   // Handle MetaMask connect attempt
   const handleConnectWallet = async () => {
     const result = await connectWallet();
@@ -207,9 +218,9 @@ const Web3Wallet = () => {
     }
   };
 
-  // Request history from blockchain bills
-  const requestHistoryData = bills.address ? bills.address.map((bill, index) => {
-    const status = getBillStatusInfo(bill.status);
+  // Format bill requests for display
+  const requestHistoryData = bills.address ? bills.address.map((bill) => {
+    const status = getBillStatusLabel(bill.status);
     return {
       id: bill.id.toString(),
       request: bill.description || "Blockchain Bill Request",
@@ -218,7 +229,7 @@ const Web3Wallet = () => {
       statusColor: status.color,
       priority: parseFloat(ethers.utils.formatEther(bill.amount)) > 0.1 ? "High" : "Medium",
       created: new Date(bill.createdAt * 1000).toLocaleDateString(),
-      dueDate: "-",
+      processedDate: bill.processedAt ? new Date(bill.processedAt * 1000).toLocaleDateString() : '-',
       amount: `${formatEthAmount(ethers.utils.formatEther(bill.amount))} ETH`
     };
   }) : [];
@@ -293,7 +304,7 @@ const Web3Wallet = () => {
                 </div>
                 <h3 className="font-medium mb-2">Connect Your Wallet</h3>
                 <p className="text-gray-400 text-sm text-center mb-6 max-w-md">
-                  Connect your crypto wallet to view your balance and support requests
+                  Connect your crypto wallet to create and track bill requests
                 </p>
                 <Button 
                   className="bg-[#6544E4] hover:bg-[#5A3DD0]"
@@ -397,17 +408,24 @@ const Web3Wallet = () => {
           </CardHeader>
           <CardContent>
             <p className="text-gray-400 text-sm mb-6">
-              Bundle your expenses into one smart request and send it directly
-              to your sponsor. Funds go straight to the service providers,
-              secure, transparent, and hassle-free.
+              Submit a bill request directly to your sponsor. Once approved, funds will be sent 
+              to your wallet or specified payment address. All transactions are recorded on the blockchain.
             </p>
+            
+            {!isBillContractAvailable && (
+              <div className="bg-yellow-900/20 border border-yellow-900/50 text-yellow-400 px-4 py-3 rounded-lg mb-6">
+                <p className="font-medium">Bill Contract Not Available</p>
+                <p className="text-sm">The bill request contract is not available on this network. Please switch to Base Sepolia Testnet.</p>
+              </div>
+            )}
+            
             <div className="space-y-4">
               <Button 
                 className="w-full py-6 bg-[#6544E4] hover:bg-[#5335C5] text-white"
                 onClick={() => setIsCreateRequestOpen(true)}
-                disabled={!isConnected || !isCorrectNetwork}
+                disabled={!isConnected || !isCorrectNetwork || !isBillContractAvailable}
               >
-                Create an URGENT 2KAY Request
+                <Send className="h-4 w-4 mr-2" /> Create an URGENT 2KAY Request
               </Button>
               <Button
                 variant="outline"
@@ -449,75 +467,79 @@ const Web3Wallet = () => {
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-700">
-                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-b border-gray-700">
+                  <TableHead className="text-xs font-medium text-gray-400 uppercase tracking-wider">
                     ID
-                  </th>
-                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Request
-                  </th>
-                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Sponsor
-                  </th>
-                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Amount
-                  </th>
-                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                    Request status
-                  </th>
-                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    Status
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Priority
-                  </th>
-                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Created
-                  </th>
-                  <th className="py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+                    Processed
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Action
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {requestHistoryData.length > 0 ? (
                   requestHistoryData.map((item) => (
-                    <tr key={item.id} className="border-b border-gray-800">
-                      <td className="py-4 text-sm">{item.id}</td>
-                      <td className="py-4 text-sm">{item.request}</td>
-                      <td className="py-4 text-sm">{item.sponsor}</td>
-                      <td className="py-4 text-sm">{item.amount}</td>
-                      <td className="py-4 text-sm">
+                    <TableRow key={item.id} className="border-b border-gray-800">
+                      <TableCell className="text-sm">{item.id}</TableCell>
+                      <TableCell className="text-sm">{item.request}</TableCell>
+                      <TableCell className="text-sm">{item.sponsor}</TableCell>
+                      <TableCell className="text-sm">{item.amount}</TableCell>
+                      <TableCell className="text-sm">
                         <span className={`px-2 py-1 ${item.statusColor} rounded-md text-xs`}>
                           {item.status}
                         </span>
-                      </td>
-                      <td className="py-4 text-sm">
+                      </TableCell>
+                      <TableCell className="text-sm">
                         <span className="px-2 py-1 bg-red-900/30 text-red-400 rounded-md text-xs">
                           {item.priority}
                         </span>
-                      </td>
-                      <td className="py-4 text-sm">{item.created}</td>
-                      <td className="py-4 text-sm">
+                      </TableCell>
+                      <TableCell className="text-sm">{item.created}</TableCell>
+                      <TableCell className="text-sm">{item.processedDate}</TableCell>
+                      <TableCell className="text-sm">
                         <Button
                           variant="link"
                           className="text-[#6544E4] p-0 h-auto"
                         >
-                          View more info
+                          View details
                         </Button>
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))
                 ) : (
-                  <tr>
-                    <td colSpan={8} className="py-10 text-center text-gray-400">
+                  <TableRow>
+                    <TableCell colSpan={9} className="py-10 text-center text-gray-400">
                       {isConnected 
                         ? "No blockchain requests found. Create your first request!"
                         : "Connect your wallet to view blockchain requests"}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 )}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </CardContent>
       </Card>
@@ -545,10 +567,12 @@ const Web3Wallet = () => {
                   if (sponsor) {
                     setSelectedSponsor({
                       id: sponsor.id,
-                      name: sponsor.name
+                      name: sponsor.name,
+                      address: sponsor.address
                     });
                   }
                 }}
+                value={selectedSponsor.id}
               >
                 <option value="">Select a sponsor</option>
                 {mockSponsors.map(sponsor => (
@@ -558,7 +582,7 @@ const Web3Wallet = () => {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <label htmlFor="description" className="text-right text-sm font-medium text-gray-300">
-                Description
+                Description*
               </label>
               <Input
                 id="description"
@@ -567,11 +591,12 @@ const Web3Wallet = () => {
                 className="col-span-3 bg-gray-800 border-gray-700 text-white"
                 value={newRequestData.description}
                 onChange={handleInputChange}
+                required
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <label htmlFor="amount" className="text-right text-sm font-medium text-gray-300">
-                Amount (ETH)
+                Amount (ETH)*
               </label>
               <Input
                 id="amount"
@@ -582,6 +607,7 @@ const Web3Wallet = () => {
                 className="col-span-3 bg-gray-800 border-gray-700 text-white"
                 value={newRequestData.amount}
                 onChange={handleInputChange}
+                required
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -591,11 +617,14 @@ const Web3Wallet = () => {
               <Input
                 id="destinationAddress"
                 name="destinationAddress"
-                placeholder="0x..."
+                placeholder="0x... (default: your wallet address)"
                 className="col-span-3 bg-gray-800 border-gray-700 text-white"
                 value={newRequestData.destinationAddress}
                 onChange={handleInputChange}
               />
+            </div>
+            <div className="col-span-4 text-xs text-gray-400 px-4">
+              * Required fields
             </div>
           </div>
           <DialogFooter>
@@ -609,8 +638,9 @@ const Web3Wallet = () => {
             <Button 
               onClick={handleCreateRequest}
               className="bg-[#6544E4] hover:bg-[#5335C5] text-white"
+              disabled={isCreatingBill}
             >
-              Create Request
+              {isCreatingBill ? "Creating..." : "Create Request"}
             </Button>
           </DialogFooter>
         </DialogContent>
