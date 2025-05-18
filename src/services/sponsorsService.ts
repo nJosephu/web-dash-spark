@@ -14,7 +14,7 @@ export interface SponsorApiResponse {
 
 // Use the consistent API URL, matching what's used in authService.ts
 const API_URL =
-  "https://urgent-2kay-directed-bill-payment-system-k0rw.onrender.com/";
+  "https://urgent-2kay-directed-bill-payment-system-k0rw.onrender.com";
 
 // Direct fetch function for sponsors
 export const fetchSponsors = async (): Promise<SponsorApiResponse[]> => {

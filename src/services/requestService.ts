@@ -46,7 +46,7 @@ export interface RequestResponse {
 }
 
 const API_URL =
-  "https://urgent-2kay-directed-bill-payment-system-k0rw.onrender.com/";
+  "https://urgent-2kay-directed-bill-payment-system-k0rw.onrender.com";
 
 const requestService = {
   // Get all requests for the logged in user

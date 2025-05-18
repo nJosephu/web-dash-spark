@@ -40,7 +40,7 @@ export interface BillsResponse {
 }
 
 const API_URL =
-  "https://urgent-2kay-directed-bill-payment-system-k0rw.onrender.com/";
+  "https://urgent-2kay-directed-bill-payment-system-k0rw.onrender.com";
 
 // Cache key for React Query
 export const BILLS_QUERY_KEY = "bills";

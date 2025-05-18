@@ -22,7 +22,7 @@ export interface BundleResponse {
 }
 
 const API_URL =
-  "https://urgent-2kay-directed-bill-payment-system-k0rw.onrender.com/";
+  "https://urgent-2kay-directed-bill-payment-system-k0rw.onrender.com";
 
 // Create a new bundle (request)
 export const createBundle = async (
