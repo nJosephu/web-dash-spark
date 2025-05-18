@@ -61,6 +61,7 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
 
   // Listen for account changes
   useEffect(() => {
+    // Check if ethereum is available
     if (!window.ethereum) return;
 
     const handleAccountsChanged = (accounts: string[]) => {
@@ -83,8 +84,10 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
     window.ethereum.on('chainChanged', handleChainChanged);
 
     return () => {
-      window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
-      window.ethereum.removeListener('chainChanged', handleChainChanged);
+      if (window.ethereum) {
+        window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
+        window.ethereum.removeListener('chainChanged', handleChainChanged);
+      }
     };
   }, [address]);
 
