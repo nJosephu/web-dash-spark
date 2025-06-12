@@ -7,14 +7,12 @@ import logo from "../images/Logo.png";
 import logo2 from "../images/logo2kpurple.png";
 import { ArrowRight } from "lucide-react";
 import DashboardPage from "../images/URGENT 2KAY App Screenshot.png";
-
 const LandingPage = () => {
   const isMobile = useIsMobile();
   const [isPageLoaded, setIsPageLoaded] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const howItWorksSection = useScrollAnimation();
   const ctaSection = useScrollAnimation();
-
   useEffect(() => {
     // Trigger fade-in animation after component mounts
     const timer = setTimeout(() => {
@@ -30,34 +28,21 @@ const LandingPage = () => {
         setIsScrolled(false);
       }
     };
-
     window.addEventListener("scroll", handleScroll);
-
     return () => {
       clearTimeout(timer);
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
-  return (
-    <div className="min-h-screen flex flex-col">
+  return <div className="min-h-screen flex flex-col">
       {/* Header - now fixed with backdrop effect when scrolled */}
-      <header
-        className={`fixed top-0 z-50 w-full px-4 py-4 lg:px-[154px] lg:py-6 flex items-center justify-between transition-all duration-300 ${
-          isScrolled
-            ? "bg-white/90 backdrop-blur-md shadow-sm"
-            : "bg-transparent"
-        }`}
-      >
+      <header className={`fixed top-0 z-50 w-full px-4 py-4 lg:px-[154px] lg:py-6 flex items-center justify-between transition-all duration-300 ${isScrolled ? "bg-white/90 backdrop-blur-md shadow-sm" : "bg-transparent"}`}>
         <div className="flex items-center">
           <img src={logo} alt="Urgent 2kay" className="h-6 md:h-8" />
         </div>
         <div className="flex items-center gap-2 md:gap-4">
           <Link to="/login">
-            <Button
-              variant="outline"
-              className="font-medium text-[#6544E4] border border-[#6544E4] transition-all hover:scale-105"
-            >
+            <Button variant="outline" className="font-medium text-[#6544E4] border border-[#6544E4] transition-all hover:scale-105">
               Log In
             </Button>
           </Link>
@@ -70,19 +55,11 @@ const LandingPage = () => {
       </header>
 
       {/* Added padding to account for fixed header */}
-      <div
-        className={`pt-16 md:pt-24 ${isPageLoaded ? "" : "invisible"}`}
-      ></div>
+      <div className={`pt-16 md:pt-24 ${isPageLoaded ? "" : "invisible"}`}></div>
 
       {/* Hero Section */}
-      <section
-        className={`px-4 pt-12 md:pt-20 [background:linear-gradient(180deg,_#FFFFFF_0%,_#6544E4_100%)] flex-1 flex flex-col items-center text-center transition-all duration-1000 ease-in-out ${
-          isPageLoaded
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-10"
-        }
-`}
-      >
+      <section className={`px-4 pt-12 md:pt-20 [background:linear-gradient(180deg,_#FFFFFF_0%,_#6544E4_100%)] flex-1 flex flex-col items-center text-center transition-all duration-1000 ease-in-out ${isPageLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
+`}>
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl md:text-5xl font-bold text-[#1F2937] mb-4">
             Pay Bills Without Awkward Conversations
@@ -92,10 +69,7 @@ const LandingPage = () => {
             sponsors. Collection made simple!
           </p>
           <Link to="/role-selection">
-            <Button
-              size="lg"
-              className="bg-[#6544E4] hover:bg-[#5A3DD0] text-white px-8 py-6 rounded-lg text-lg transition-all hover:scale-105"
-            >
+            <Button size="lg" className="bg-[#6544E4] hover:bg-[#5A3DD0] text-white px-8 py-6 rounded-lg text-lg transition-all hover:scale-105">
               Get Started
             </Button>
           </Link>
@@ -103,23 +77,12 @@ const LandingPage = () => {
 
         {/* Dashboard Preview */}
         <div className="mt-12 md:mt-16 max-w-5xl mx-auto w-full shadow-2xl rounded-lg overflow-hidden transition-transform hover:scale-[1.01] duration-300">
-          <img
-            src={DashboardPage}
-            alt="Dashboard Preview"
-            className="w-full h-auto"
-          />
+          <img src={DashboardPage} alt="Dashboard Preview" className="w-full h-auto" />
         </div>
       </section>
 
       {/* How It Works Section */}
-      <section
-        ref={howItWorksSection.ref}
-        className={`px-4 py-16 md:py-36 bg-white transition-all duration-1000 ease-in-out ${
-          howItWorksSection.isVisible
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-10"
-        }`}
-      >
+      <section ref={howItWorksSection.ref} className={`px-4 py-16 md:py-36 bg-white transition-all duration-1000 ease-in-out ${howItWorksSection.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
         <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl md:text-4xl font-bold text-center mb-16">
             How It Works
@@ -164,14 +127,7 @@ const LandingPage = () => {
       </section>
 
       {/* CTA Section */}
-      <section
-        ref={ctaSection.ref}
-        className={`px-4 py-16 md:py-36 bg-[#D3C7FE] transition-all duration-1000 ease-in-out ${
-          ctaSection.isVisible
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-10"
-        }`}
-      >
+      <section ref={ctaSection.ref} className={`px-4 py-16 md:py-36 bg-[#D3C7FE] transition-all duration-1000 ease-in-out ${ctaSection.isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
         <div className="max-w-3xl mx-auto text-center text-[#6544E4]">
           <h2 className="text-2xl md:text-3xl font-bold mb-3">
             Ready to Simplify Your Bill Payments?
@@ -181,10 +137,7 @@ const LandingPage = () => {
             Urgent 2Kay
           </p>
           <Link to="/role-selection">
-            <Button
-              size="lg"
-              className="bg-[#6544E4] hover:bg-[#5A3DD0] text-white px-8 py-6 rounded-lg text-lg transition-all hover:scale-105"
-            >
+            <Button size="lg" className="bg-[#6544E4] hover:bg-[#5A3DD0] text-white px-8 py-6 rounded-lg text-lg transition-all hover:scale-105">
               Get Started Now
             </Button>
           </Link>
@@ -217,8 +170,6 @@ const LandingPage = () => {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default LandingPage;
